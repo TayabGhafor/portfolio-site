@@ -421,13 +421,12 @@ button { -webkit-tap-highlight-color: transparent; }
 /* Shared premium navigation and system controls */
 .site-controls { position: fixed; inset: 0; z-index: 44; pointer-events: none; }
 .site-controls > * { pointer-events: auto; }
-.site-controls .settings-trigger { position: fixed; z-index: 48; right: 0; top: 48%; display: flex; width: 48px; height: 48px; align-items: center; gap: 10px; justify-content: flex-start; padding: 7px; overflow: hidden; border: 1px solid rgba(255,255,255,.12); border-right: 0; border-radius: 9px 0 0 9px; background: rgba(8,8,8,.72); box-shadow: -16px 12px 42px rgba(0,0,0,.42), inset 0 1px rgba(255,255,255,.04); backdrop-filter: blur(22px) saturate(115%); color: #fff; transition: width .4s cubic-bezier(.2,.8,.2,1), border-color .3s ease, background .3s ease; }
-.site-controls .settings-trigger:hover, .site-controls .settings-trigger:focus-visible, .site-controls .settings-trigger[aria-expanded="true"] { width: 104px; border-color: rgba(255,255,255,.27); background: rgba(15,15,15,.9); }
-.settings-trigger-core { flex: 0 0 32px; width: 32px; height: 32px; display: grid; place-items: center; border-radius: 6px; background: #fff; color: #050505; box-shadow: 0 0 20px rgba(255,255,255,.09); }
+.site-controls .settings-trigger { position: fixed; z-index: 48; right: 0; top: 48%; display: grid; width: 48px; height: 48px; place-items: center; padding: 7px; overflow: hidden; border: 1px solid rgba(255,255,255,.12); border-right: 0; border-radius: 9px 0 0 9px; background: rgba(8,8,8,.72); box-shadow: -16px 12px 42px rgba(0,0,0,.42), inset 0 1px rgba(255,255,255,.04); backdrop-filter: blur(22px) saturate(115%); color: #fff; transition: border-color .3s ease, background .3s ease, box-shadow .45s ease; }
+.site-controls .settings-trigger:hover, .site-controls .settings-trigger:focus-visible, .site-controls .settings-trigger[aria-expanded="true"] { width: 48px; border-color: rgba(255,255,255,.27); background: rgba(15,15,15,.9); outline: none; }
+.settings-trigger-core { width: 32px; height: 32px; display: grid; place-items: center; border-radius: 6px; background: #fff; color: #050505; box-shadow: 0 0 20px rgba(255,255,255,.09); transition: transform .62s cubic-bezier(.18,.9,.2,1), border-radius .45s ease, box-shadow .45s ease; }
 .site-controls .settings-trigger svg { box-sizing: border-box; width: 15px; height: 15px; padding: 0; border-radius: 0; fill: currentColor; background: transparent; }
-.settings-trigger-label { opacity: 0; transform: translateX(8px); color: rgba(255,255,255,.72); font: 7px var(--font-mono); letter-spacing: .16em; transition: opacity .25s ease, transform .35s cubic-bezier(.2,.8,.2,1); }
-.site-controls .settings-trigger:hover .settings-trigger-label, .site-controls .settings-trigger:focus-visible .settings-trigger-label, .site-controls .settings-trigger[aria-expanded="true"] .settings-trigger-label { opacity: 1; transform: none; }
-.site-controls .settings-trigger:hover svg, .site-controls .settings-trigger[aria-expanded="true"] svg { transform: rotate(90deg); }
+.site-controls .settings-trigger:active .settings-trigger-core { transform: scale(.84); transition-duration: .12s; }
+.site-controls .settings-trigger[aria-expanded="true"] .settings-trigger-core { transform: rotate(90deg) scale(1.02); border-radius: 50%; box-shadow: 0 0 26px rgba(255,255,255,.18); }
 
 .site-controls .nav-dock { position: fixed; z-index: 47; right: 3.1vw; bottom: 3.2vh; display: flex; align-items: center; gap: 15px; }
 .site-controls .nav-dock > button { width: 320px; height: 58px; grid-template-columns: 34px 28px 1fr 46px; padding: 5px 5px 5px 16px; border-color: rgba(255,255,255,.12); background: linear-gradient(120deg, rgba(20,20,20,.82), rgba(6,6,6,.74)); box-shadow: 0 22px 60px rgba(0,0,0,.42), inset 0 1px rgba(255,255,255,.04); }
@@ -442,6 +441,9 @@ button { -webkit-tap-highlight-color: transparent; }
 .site-controls .control-panel::before { content: ""; position: absolute; left: 18px; right: 18px; top: 0; height: 1px; background: linear-gradient(90deg, transparent, rgba(255,255,255,.7), transparent); opacity: .45; }
 .site-controls .control-panel::after { content: ""; position: absolute; width: 150px; height: 150px; right: -70px; top: -80px; border-radius: 50%; background: rgba(255,255,255,.025); filter: blur(18px); pointer-events: none; }
 .site-controls .control-panel.is-open { transform: translateY(-2px); }
+.site-controls .menu-panel { right: 3.1vw; bottom: calc(3.2vh + 57px); width: 320px; border-bottom-color: rgba(255,255,255,.06); border-radius: 10px 10px 0 0; transform: translateY(24px) scaleY(.94); transform-origin: right bottom; clip-path: inset(100% 0 0 0 round 10px 10px 0 0); transition: opacity .22s ease, transform .54s cubic-bezier(.18,.86,.2,1), clip-path .54s cubic-bezier(.18,.86,.2,1); }
+.site-controls .menu-panel.is-open { transform: none; clip-path: inset(0 0 0 0 round 10px 10px 0 0); }
+.site-controls .nav-dock > button[aria-expanded="true"] { transform: none; border-top-color: rgba(255,255,255,.055); border-radius: 0 0 8px 8px; box-shadow: 0 28px 70px rgba(0,0,0,.52), inset 0 1px rgba(255,255,255,.025); }
 .site-controls .panel-head { position: relative; z-index: 1; align-items: center; padding: 2px 2px 15px; }
 .site-controls .panel-head h2 { margin-bottom: 4px; font-size: 21px; letter-spacing: .015em; }
 .site-controls .panel-head span { color: rgba(255,255,255,.34); font-size: 7px; letter-spacing: .18em; }
@@ -466,6 +468,9 @@ button { -webkit-tap-highlight-color: transparent; }
 .site-controls .menu-panel nav strong { color: rgba(255,255,255,.9); font-size: 11px; text-transform: uppercase; }
 .menu-link-icon { width: 32px; height: 32px; display: grid; place-items: center; border: 1px solid rgba(255,255,255,.08); border-radius: 6px; background: rgba(255,255,255,.035); color: rgba(255,255,255,.6); font: 13px/1 var(--font-mono); transition: color .25s ease, background .25s ease, transform .35s cubic-bezier(.2,.8,.2,1); }
 .site-controls .menu-panel nav a:hover .menu-link-icon { color: #050505; background: #fff; transform: rotate(-5deg) scale(1.04); }
+.scramble-text { position: relative; display: inline-grid; min-width: 0; vertical-align: baseline; }
+.scramble-text > span { grid-area: 1 / 1; white-space: pre; }
+.scramble-measure { visibility: hidden; pointer-events: none; }
 .panel-foot { position: relative; z-index: 1; display: flex; align-items: center; justify-content: space-between; margin-top: 12px; padding: 12px 2px 1px; border-top: 1px solid rgba(255,255,255,.075); color: rgba(255,255,255,.28); font: 6px var(--font-mono); letter-spacing: .12em; }
 .panel-foot span { display: flex; align-items: center; gap: 7px; }
 .panel-foot i { width: 4px; height: 4px; border-radius: 50%; background: #fff; box-shadow: 0 0 8px rgba(255,255,255,.5); animation: statusPulse 1.7s ease-in-out infinite; }
@@ -496,6 +501,7 @@ button { -webkit-tap-highlight-color: transparent; }
 @media (max-width: 1100px) {
   .site-controls .nav-dock { right: 24px; bottom: 24px; }
   .site-controls .control-panel { right: 24px; bottom: 87px; width: 326px; max-height: calc(100svh - 120px); overflow-y: auto; }
+  .site-controls .menu-panel { right: 24px; bottom: 81px; width: 320px; }
 }
 
 @media (max-width: 800px) {
@@ -508,6 +514,7 @@ button { -webkit-tap-highlight-color: transparent; }
   .site-controls .nav-dock > button { width: 100%; height: 54px; grid-template-columns: 34px 26px 1fr 43px; }
   .site-controls .nav-dock > button > b { height: 38px; }
   .site-controls .control-panel { left: 20px; right: 20px; bottom: 81px; width: auto; max-height: calc(100svh - 112px); padding: 16px; border-radius: 9px; }
+  .site-controls .menu-panel { left: 20px; right: 20px; bottom: 73px; width: auto; border-radius: 9px 9px 0 0; }
   .site-controls .control-panel::before { left: 16px; right: 16px; }
   .site-controls .panel-head h2 { font-size: 19px; }
   .menu-utility-grid a { min-height: 70px; }
@@ -520,6 +527,7 @@ button { -webkit-tap-highlight-color: transparent; }
   .site-controls .nav-dock .wave { display: none; }
   .site-controls .nav-dock > button { height: 52px; }
   .site-controls .control-panel { left: 12px; right: 12px; bottom: 70px; max-height: calc(100svh - 88px); padding: 14px; }
+  .site-controls .menu-panel { left: 12px; right: 12px; bottom: 63px; }
   .menu-utility-grid { gap: 6px; }
   .menu-utility-grid a { min-height: 66px; padding: 9px; grid-template-columns: 27px 1fr; column-gap: 8px; }
   .utility-icon { width: 27px; height: 27px; }
@@ -535,8 +543,8 @@ button { -webkit-tap-highlight-color: transparent; }
 .icon-hover-scope:hover .morph-icon .icon-outline, .icon-hover-scope:focus-visible .morph-icon .icon-outline, .icon-hover-scope[aria-expanded="true"] .morph-icon .icon-outline { opacity: 0; transform: scale(1.28) rotate(12deg); filter: blur(1px); }
 .icon-hover-scope:hover .morph-icon .icon-fill, .icon-hover-scope:focus-visible .morph-icon .icon-fill, .icon-hover-scope[aria-expanded="true"] .morph-icon .icon-fill { opacity: 1; transform: scale(1) rotate(0deg); filter: blur(0); }
 .site-controls .settings-trigger .morph-icon svg { box-sizing: border-box; width: var(--icon-size); height: var(--icon-size); padding: 0; border-radius: 0; background: transparent; }
-.site-controls .settings-trigger:hover .morph-icon .icon-outline, .site-controls .settings-trigger:focus-visible .morph-icon .icon-outline, .site-controls .settings-trigger[aria-expanded="true"] .morph-icon .icon-outline { opacity: 0; transform: scale(1.25) rotate(100deg); filter: blur(1px); }
-.site-controls .settings-trigger:hover .morph-icon .icon-fill, .site-controls .settings-trigger:focus-visible .morph-icon .icon-fill, .site-controls .settings-trigger[aria-expanded="true"] .morph-icon .icon-fill { opacity: 1; transform: scale(1) rotate(90deg); filter: blur(0); }
+.site-controls .settings-trigger:hover .morph-icon .icon-outline, .site-controls .settings-trigger:focus-visible .morph-icon .icon-outline, .site-controls .settings-trigger[aria-expanded="true"] .morph-icon .icon-outline { opacity: 0; transform: scale(1.18); filter: blur(1px); }
+.site-controls .settings-trigger:hover .morph-icon .icon-fill, .site-controls .settings-trigger:focus-visible .morph-icon .icon-fill, .site-controls .settings-trigger[aria-expanded="true"] .morph-icon .icon-fill { opacity: 1; transform: scale(1); filter: blur(0); }
 .site-controls .settings-trigger:hover .morph-icon, .site-controls .settings-trigger[aria-expanded="true"] .morph-icon { transform: none; }
 .menu-link-icon .morph-icon, .utility-icon .morph-icon, .setting-icon .morph-icon, .dock-page-icon .morph-icon { color: currentColor; }
 .site-controls .menu-panel nav a:hover .menu-link-icon .icon-fill { color: #050505; }
