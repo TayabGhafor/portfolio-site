@@ -1,20 +1,10 @@
 'use client';
 
 import { lazy, Suspense, useCallback, useEffect, useRef, useState, type CSSProperties, type PointerEvent as ReactPointerEvent } from 'react';
+import { SiteControls, type ControlPanel, type PerformanceTier } from '../src/components/SiteControls';
 import { projects } from '../src/content/projects';
 
 const ParticlePortrait = lazy(() => import('../src/components/ParticlePortrait').then((module) => ({ default: module.ParticlePortrait })));
-
-type Panel = 'menu' | 'settings' | null;
-type PerformanceTier = 'high' | 'balanced' | 'saver';
-
-function GearIcon() {
-  return <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 8.2a3.8 3.8 0 1 0 0 7.6 3.8 3.8 0 0 0 0-7.6Zm8.3 5.2v-2.8l-2.2-.6a7.4 7.4 0 0 0-.7-1.6l1.1-2-2-2-2 1.1a7.4 7.4 0 0 0-1.6-.7L12.3 2H9.5l-.6 2.2a7.4 7.4 0 0 0-1.6.7l-2-1.1-2 2 1.1 2a7.4 7.4 0 0 0-.7 1.6l-2.2.6v2.8l2.2.6c.2.6.4 1.1.7 1.6l-1.1 2 2 2 2-1.1c.5.3 1 .5 1.6.7l.6 2.2h2.8l.6-2.2c.6-.2 1.1-.4 1.6-.7l2 1.1 2-2-1.1-2c.3-.5.5-1 .7-1.6l2.2-.6Z" /></svg>;
-}
-
-function MenuGlyph({ open }: { open: boolean }) {
-  return <span className={`menu-glyph ${open ? 'is-open' : ''}`} aria-hidden="true"><i /><i /><i /></span>;
-}
 
 function Loader({ progress, ready, leaving, onEnter }: { progress: number; ready: boolean; leaving: boolean; onEnter: () => void }) {
   return (
@@ -34,7 +24,7 @@ function Loader({ progress, ready, leaving, onEnter }: { progress: number; ready
 export default function Home() {
   const shellRef = useRef<HTMLElement>(null);
   const loadStartRef = useRef(0);
-  const [panel, setPanel] = useState<Panel>(null);
+  const [panel, setPanel] = useState<ControlPanel>(null);
   const [time, setTime] = useState('--:--:--');
   const [tier, setTier] = useState<PerformanceTier>('high');
   const [motion, setMotion] = useState(true);
@@ -186,32 +176,7 @@ export default function Home() {
           <div><span>Local Time</span><strong>Pakistan / PKT&nbsp; {time}</strong></div>
         </footer>
 
-        <button className="settings-trigger" onClick={() => setPanel(panel === 'settings' ? null : 'settings')} aria-expanded={panel === 'settings'} aria-label="Open system configuration"><GearIcon /></button>
-
-        <aside className={`control-panel menu-panel ${panel === 'menu' ? 'is-open' : ''}`} aria-hidden={panel !== 'menu'}>
-          <div className="panel-head"><div><h2>Menu</h2><span>NAVIGATION</span></div><b>DIR</b></div>
-          <div className="social-links"><span>LINKEDIN</span><span>GITHUB</span><a href="/Tayab-Malik.pdf" target="_blank" rel="noreferrer">RESUME <b>↗</b></a></div>
-          <a className="lab-row" href="https://syntaxguild.vercel.app/" target="_blank" rel="noreferrer"><span>DEV LAB</span><strong>SYNTAX GUILD</strong><b>↗</b></a>
-          <nav aria-label="Primary navigation">
-            <a href="/contact"><small>[04]</small><strong>CONTACT</strong><i>+</i></a>
-            <a href="/projects"><small>[03]</small><strong>PROJECTS</strong><i>+</i></a>
-            <a href="/about"><small>[02]</small><strong>ABOUT</strong><i>+</i></a>
-          </nav>
-        </aside>
-
-        <aside className={`control-panel settings-panel ${panel === 'settings' ? 'is-open' : ''}`} aria-hidden={panel !== 'settings'}>
-          <div className="panel-head"><div><h2>System</h2><span>GLOBAL CONFIG</span></div><b>SET</b></div>
-          <section><header><span>[01] MOTION SYSTEM</span><small>{motion ? 'FULL' : 'REDUCED'}</small></header><button className="wide-setting" onClick={toggleMotion}><strong>{motion ? 'Full motion' : 'Reduced motion'}</strong><span>{motion ? 'POINTER / CORE / HOVERS' : 'ESSENTIAL STATE ONLY'}</span></button></section>
-          <section><header><span>[02] PERFORMANCE TIER</span><small>SYS</small></header><div className="tier-buttons">{(['high', 'balanced', 'saver'] as PerformanceTier[]).map((option) => <button className={tier === option ? 'active' : ''} onClick={() => chooseTier(option)} key={option}>{option}</button>)}</div></section>
-          <p className="system-active"><i /> SYSTEM ACTIVE</p>
-        </aside>
-
-        <div className="nav-dock">
-          <span className="wave" aria-hidden="true"><i /><i /><i /><i /><i /></span>
-          <button onClick={() => setPanel(panel === 'menu' ? null : 'menu')} aria-expanded={panel === 'menu'} aria-label="Toggle menu">
-            <small>[01]</small><strong>HOME</strong><b><MenuGlyph open={panel === 'menu'} /></b>
-          </button>
-        </div>
+        <SiteControls currentPage="home" panel={panel} motion={motion} tier={tier} onPanelChange={setPanel} onToggleMotion={toggleMotion} onTierChange={chooseTier} />
       </div>
 
       {!entered && <Loader progress={displayProgress} ready={ready} leaving={leaving} onEnter={enterPortfolio} />}

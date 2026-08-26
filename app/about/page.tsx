@@ -3,6 +3,7 @@
 import Image from 'next/image';
 import Link from 'next/link';
 import { useEffect, useRef, useState, type PointerEvent as ReactPointerEvent, type UIEvent } from 'react';
+import { SiteControls, type ControlPanel, type PerformanceTier } from '../../src/components/SiteControls';
 
 const skillGroups = [
   { sector: 'Sector_01', title: 'Core & Frameworks', skills: ['JavaScript', 'TypeScript', 'React', 'Next.js', 'Tailwind CSS'] },
@@ -12,30 +13,36 @@ const skillGroups = [
   { sector: 'Sector_05', title: 'Tooling & Delivery', skills: ['Git', 'Docker', 'API Integration', 'Production UI'] },
 ];
 
-function GearIcon() {
-  return <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 8.2a3.8 3.8 0 1 0 0 7.6 3.8 3.8 0 0 0 0-7.6Zm8.3 5.2v-2.8l-2.2-.6a7.4 7.4 0 0 0-.7-1.6l1.1-2-2-2-2 1.1a7.4 7.4 0 0 0-1.6-.7L12.3 2H9.5l-.6 2.2a7.4 7.4 0 0 0-1.6.7l-2-1.1-2 2 1.1 2a7.4 7.4 0 0 0-.7 1.6l-2.2.6v2.8l2.2.6c.2.6.4 1.1.7 1.6l-1.1 2 2 2 2-1.1c.5.3 1 .5 1.6.7l.6 2.2h2.8l.6-2.2c.6-.2 1.1-.4 1.6-.7l2 1.1 2-2-1.1-2c.3-.5.5-1 .7-1.6l2.2-.6Z" /></svg>;
-}
-
-function MenuGlyph({ open }: { open: boolean }) {
-  return <span className={`menu-glyph ${open ? 'is-open' : ''}`} aria-hidden="true"><i /><i /><i /></span>;
-}
-
 export default function AboutPage() {
   const shellRef = useRef<HTMLDivElement>(null);
-  const [menuOpen, setMenuOpen] = useState(false);
-  const [settingsOpen, setSettingsOpen] = useState(false);
+  const [panel, setPanel] = useState<ControlPanel>(null);
   const [motion, setMotion] = useState(true);
-  const [tier, setTier] = useState<'high' | 'medium' | 'saver'>('high');
+  const [tier, setTier] = useState<PerformanceTier>('high');
   const [scroll, setScroll] = useState(0);
   const [time, setTime] = useState('--:--');
 
   useEffect(() => {
+    const storedTier = window.localStorage.getItem('tm-performance') as PerformanceTier | null;
+    const storedMotion = window.localStorage.getItem('tm-motion');
+    window.queueMicrotask(() => {
+      if (storedTier) setTier(storedTier);
+      if (storedMotion === 'reduced' || window.matchMedia('(prefers-reduced-motion: reduce)').matches) setMotion(false);
+    });
+
     const updateTime = () => setTime(new Intl.DateTimeFormat('en-GB', {
       timeZone: 'Asia/Karachi', hour: '2-digit', minute: '2-digit', hour12: false,
     }).format(new Date()));
     updateTime();
     const timer = window.setInterval(updateTime, 30_000);
     return () => window.clearInterval(timer);
+  }, []);
+
+  useEffect(() => {
+    const closePanels = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') setPanel(null);
+    };
+    window.addEventListener('keydown', closePanels);
+    return () => window.removeEventListener('keydown', closePanels);
   }, []);
 
   const handleScroll = (event: UIEvent<HTMLDivElement>) => {
@@ -51,14 +58,15 @@ export default function AboutPage() {
     shell.style.setProperty('--pointer-y', `${event.clientY}px`);
   };
 
-  const toggleSettings = () => {
-    setSettingsOpen((open) => !open);
-    setMenuOpen(false);
+  const toggleMotion = () => {
+    const next = !motion;
+    setMotion(next);
+    window.localStorage.setItem('tm-motion', next ? 'full' : 'reduced');
   };
 
-  const toggleMenu = () => {
-    setMenuOpen((open) => !open);
-    setSettingsOpen(false);
+  const chooseTier = (next: PerformanceTier) => {
+    setTier(next);
+    window.localStorage.setItem('tm-performance', next);
   };
 
   return (
@@ -145,23 +153,7 @@ export default function AboutPage() {
 
       <div className="about-scroll-progress" aria-hidden="true"><span>{String(Math.round(scroll * 100)).padStart(2, '0')}%</span><i><b style={{ transform: `translateX(${scroll * 100}%)` }} /></i><span>100%</span></div>
 
-      <button className="settings-trigger about-settings-trigger" onClick={toggleSettings} aria-expanded={settingsOpen} aria-label="Open system configuration"><GearIcon /></button>
-
-      <aside className={`control-panel about-menu-panel ${menuOpen ? 'is-open' : ''}`} aria-hidden={!menuOpen}>
-        <div className="panel-head"><div><h2>Menu</h2><span>NAVIGATION</span></div><b>DIR</b></div>
-        <div className="social-links"><span>LINKEDIN</span><span>GITHUB</span><a href="/Tayab-Malik.pdf" target="_blank" rel="noreferrer">RESUME <b>↗</b></a></div>
-        <a className="lab-row" href="https://syntaxguild.vercel.app/" target="_blank" rel="noreferrer"><span>DEV LAB</span><strong>SYNTAX GUILD</strong><b>↗</b></a>
-        <nav aria-label="Primary navigation"><Link href="/contact"><small>[04]</small><strong>CONTACT</strong><i>+</i></Link><Link href="/projects"><small>[03]</small><strong>PROJECTS</strong><i>+</i></Link><Link href="/"><small>[01]</small><strong>HOME</strong><i>+</i></Link></nav>
-      </aside>
-
-      <aside className={`control-panel settings-panel about-settings-panel ${settingsOpen ? 'is-open' : ''}`} aria-hidden={!settingsOpen}>
-        <div className="panel-head"><div><h2>System</h2><span>GLOBAL CONFIG</span></div><b>SET</b></div>
-        <section><header><span>[01] MOTION SYSTEM</span><small>{motion ? 'FULL' : 'REDUCED'}</small></header><button className="wide-setting" onClick={() => setMotion((value) => !value)}><strong>{motion ? 'Full motion' : 'Reduced motion'}</strong><span>{motion ? 'POINTER / SCROLL / HOVERS' : 'ESSENTIAL STATE ONLY'}</span></button></section>
-        <section><header><span>[02] PERFORMANCE TIER</span><small>SYS</small></header><div className="tier-buttons">{(['high', 'medium', 'saver'] as const).map((option) => <button className={tier === option ? 'active' : ''} onClick={() => setTier(option)} key={option}>{option}</button>)}</div></section>
-        <p className="system-active"><i /> SYSTEM ACTIVE</p>
-      </aside>
-
-      <div className="nav-dock about-nav-dock"><span className="wave" aria-hidden="true"><i /><i /><i /><i /><i /></span><button onClick={toggleMenu} aria-expanded={menuOpen} aria-label="Toggle menu"><small>[02]</small><strong>ABOUT</strong><b><MenuGlyph open={menuOpen} /></b></button></div>
+      <SiteControls currentPage="about" panel={panel} motion={motion} tier={tier} onPanelChange={setPanel} onToggleMotion={toggleMotion} onTierChange={chooseTier} />
     </div>
   );
 }
