@@ -1,6 +1,5 @@
 'use client';
 
-import Link from 'next/link';
 import { useEffect, useRef, useState, type CSSProperties } from 'react';
 import {
   CursorClickIcon,
@@ -38,7 +37,7 @@ const pages: Array<{ key: PageKey; href: string; index: string; label: string; i
 
 const scrambleCharacters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789@#$%&';
 
-function ScrambleText({ text, run, enabled, delay = 0 }: { text: string; run: number; enabled: boolean; delay?: number }) {
+export function ScrambleText({ text, run, enabled, delay = 0 }: { text: string; run: number; enabled: boolean; delay?: number }) {
   const textRef = useRef<HTMLSpanElement>(null);
 
   useEffect(() => {
@@ -140,11 +139,11 @@ function MenuLink({ page, open, motion, delay }: { page: (typeof pages)[number];
   };
 
   return (
-    <Link className="icon-hover-scope" href={page.href} onPointerEnter={animate} onFocus={animate}>
+    <a className="icon-hover-scope" href={page.href} onPointerEnter={animate} onFocus={animate}>
       <small>[{page.index}]</small>
       <strong><ScrambleText text={page.label} run={run} enabled={open && motion} delay={run === 0 ? delay : 0} /></strong>
       <span className="menu-link-icon"><MorphIcon icon={page.icon} size={17} /></span>
-    </Link>
+    </a>
   );
 }
 
@@ -153,6 +152,10 @@ export function SiteControls({ currentPage, panel, motion, tier, onPanelChange, 
   const menuOpen = panel === 'menu';
   const settingsOpen = panel === 'settings';
   const [dockRun, setDockRun] = useState(0);
+  const dockExpanded = panel !== null;
+  const dock = settingsOpen
+    ? { index: 'SYS', label: 'Settings', icon: GearSixIcon }
+    : current;
 
   return (
     <div className="site-controls">
@@ -219,17 +222,17 @@ export function SiteControls({ currentPage, panel, motion, tier, onPanelChange, 
         <span className="wave" aria-hidden="true"><i /><i /><i /><i /><i /></span>
         <button
           className="icon-hover-scope"
-          onClick={() => onPanelChange(menuOpen ? null : 'menu')}
+          onClick={() => onPanelChange(dockExpanded ? null : 'menu')}
           onPointerEnter={() => motion && setDockRun((value) => value + 1)}
           onFocus={() => motion && setDockRun((value) => value + 1)}
-          aria-expanded={menuOpen}
-          aria-controls="global-menu-panel"
-          aria-label="Toggle menu"
+          aria-expanded={dockExpanded}
+          aria-controls={settingsOpen ? 'global-settings-panel' : 'global-menu-panel'}
+          aria-label={dockExpanded ? 'Close current panel' : 'Open menu'}
         >
-          <small>[{current.index}]</small>
-          <span className="dock-page-icon"><MorphIcon icon={current.icon} size={17} /></span>
-          <strong><ScrambleText text={current.label} run={dockRun} enabled={motion && dockRun > 0} /></strong>
-          <b><MenuGlyph open={menuOpen} /></b>
+          <small>[{dock.index}]</small>
+          <span className="dock-page-icon"><MorphIcon icon={dock.icon} size={17} /></span>
+          <strong><ScrambleText text={dock.label} run={dockRun} enabled={motion && dockRun > 0} /></strong>
+          <b><MenuGlyph open={dockExpanded} /></b>
         </button>
       </div>
     </div>

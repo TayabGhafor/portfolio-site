@@ -1,8 +1,9 @@
 'use client';
 
 import { lazy, Suspense, useCallback, useEffect, useRef, useState, type CSSProperties, type PointerEvent as ReactPointerEvent } from 'react';
-import { SiteControls, type ControlPanel, type PerformanceTier } from '../src/components/SiteControls';
+import { ScrambleText, SiteControls, type ControlPanel, type PerformanceTier } from '../src/components/SiteControls';
 import { projects } from '../src/content/projects';
+import { readSitePreferences } from '../src/lib/sitePreferences';
 
 const ParticlePortrait = lazy(() => import('../src/components/ParticlePortrait').then((module) => ({ default: module.ParticlePortrait })));
 
@@ -33,14 +34,14 @@ export default function Home() {
   const [modelReady, setModelReady] = useState(false);
   const [entered, setEntered] = useState(false);
   const [leaving, setLeaving] = useState(false);
+  const [roleRun, setRoleRun] = useState(0);
 
   useEffect(() => {
     loadStartRef.current = performance.now();
-    const storedTier = window.localStorage.getItem('tm-performance') as PerformanceTier | null;
-    const storedMotion = window.localStorage.getItem('tm-motion');
     window.queueMicrotask(() => {
-      if (storedTier) setTier(storedTier);
-      if (storedMotion === 'reduced' || window.matchMedia('(prefers-reduced-motion: reduce)').matches) setMotion(false);
+      const preferences = readSitePreferences();
+      setTier(preferences.tier);
+      setMotion(preferences.motion);
     });
 
     const update = () => setTime(new Intl.DateTimeFormat('en-GB', {
@@ -144,9 +145,14 @@ export default function Home() {
 
         <section id="content" className="hero-copy">
           <span className="hero-kicker"><i /> PORTFOLIO / INDEX_01</span>
-          <h1 aria-label="Frontend Developer">
-            <span data-text="FRONTEND">FRONTEND</span>
-            <span data-text="DEVELOPER">DEVELOPER</span>
+          <h1
+            aria-label="Frontend Developer"
+            tabIndex={0}
+            onPointerEnter={() => motion && setRoleRun((value) => value + 1)}
+            onFocus={() => motion && setRoleRun((value) => value + 1)}
+          >
+            <span className="hero-role-line"><ScrambleText text="FRONTEND" run={roleRun} enabled={motion && roleRun > 0} /></span>
+            <span className="hero-role-line"><ScrambleText text="DEVELOPER" run={roleRun} enabled={motion && roleRun > 0} delay={75} /></span>
           </h1>
           <div className="info-log">
             <i aria-hidden="true" />

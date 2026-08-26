@@ -4,6 +4,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { useEffect, useRef, useState, type PointerEvent as ReactPointerEvent, type UIEvent } from 'react';
 import { SiteControls, type ControlPanel, type PerformanceTier } from '../../src/components/SiteControls';
+import { readSitePreferences } from '../../src/lib/sitePreferences';
 
 const skillGroups = [
   { sector: 'Sector_01', title: 'Core & Frameworks', skills: ['JavaScript', 'TypeScript', 'React', 'Next.js', 'Tailwind CSS'] },
@@ -22,11 +23,10 @@ export default function AboutPage() {
   const [time, setTime] = useState('--:--');
 
   useEffect(() => {
-    const storedTier = window.localStorage.getItem('tm-performance') as PerformanceTier | null;
-    const storedMotion = window.localStorage.getItem('tm-motion');
     window.queueMicrotask(() => {
-      if (storedTier) setTier(storedTier);
-      if (storedMotion === 'reduced' || window.matchMedia('(prefers-reduced-motion: reduce)').matches) setMotion(false);
+      const preferences = readSitePreferences();
+      setTier(preferences.tier);
+      setMotion(preferences.motion);
     });
 
     const updateTime = () => setTime(new Intl.DateTimeFormat('en-GB', {
