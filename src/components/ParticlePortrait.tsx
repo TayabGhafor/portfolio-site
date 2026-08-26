@@ -168,8 +168,8 @@ export function ParticlePortrait({ motion, tier, onProgress, onReady }: Particle
       const repelRadius = Math.min(width, height) * 0.16;
 
       const aura = context.createRadialGradient(centerX, centerY * 0.96, 0, centerX, centerY, portraitWidth * 0.62);
-      aura.addColorStop(0, `rgba(255, 44, 35, ${0.018 + hoverAmount * 0.018})`);
-      aura.addColorStop(0.48, `rgba(183, 8, 3, ${0.014 + hoverAmount * 0.012})`);
+      aura.addColorStop(0, `rgba(255, 255, 255, ${0.018 + hoverAmount * 0.018})`);
+      aura.addColorStop(0.48, `rgba(255, 255, 255, ${0.008 + hoverAmount * 0.008})`);
       aura.addColorStop(1, 'rgba(0, 0, 0, 0)');
       context.fillStyle = aura;
       context.fillRect(centerX - portraitWidth, centerY - portraitHeight * 0.55, portraitWidth * 2, portraitHeight * 1.1);
@@ -178,7 +178,7 @@ export function ParticlePortrait({ motion, tier, onProgress, onReady }: Particle
         context.save();
         context.translate(centerX, centerY);
         context.rotate(time * 0.000025);
-        context.strokeStyle = `rgba(255, 49, 41, ${0.025 + hoverAmount * 0.035})`;
+        context.strokeStyle = `rgba(255, 255, 255, ${0.025 + hoverAmount * 0.035})`;
         context.lineWidth = 0.6;
         context.setLineDash([2, 13]);
         context.beginPath();
@@ -215,9 +215,9 @@ export function ParticlePortrait({ motion, tier, onProgress, onReady }: Particle
         const size = baseSize * (1 + hoverAmount * particle.depth * 0.8);
         const shimmer = motion ? Math.max(0, Math.sin(time * 0.0013 + particle.twinkle * 18)) * particle.twinkle * 0.1 : 0;
         const alpha = Math.min(1, 0.24 + particle.strength * 0.62 + particle.feature * 0.2 + shimmer);
-        const redAccent = particle.accent > 0.972 && (particle.feature > 0.22 || particle.strength > 0.72);
-        context.fillStyle = redAccent
-          ? `rgba(255, 54, 45, ${Math.min(0.76, alpha * (0.42 + hoverAmount * 0.32))})`
+        const brightAccent = particle.accent > 0.972 && (particle.feature > 0.22 || particle.strength > 0.72);
+        context.fillStyle = brightAccent
+          ? `rgba(255, 255, 255, ${Math.min(1, alpha * (0.64 + hoverAmount * 0.32))})`
           : `rgba(244, 244, 244, ${alpha})`;
         context.fillRect(particle.x, particle.y, size, size);
 
@@ -232,7 +232,7 @@ export function ParticlePortrait({ motion, tier, onProgress, onReady }: Particle
       if (pointerInside && motion && tier !== 'saver') {
         const cursorGlow = context.createRadialGradient(pointerX, pointerY, 0, pointerX, pointerY, repelRadius * 0.72);
         cursorGlow.addColorStop(0, `rgba(255, 255, 255, ${0.045 * hoverAmount})`);
-        cursorGlow.addColorStop(0.25, `rgba(255, 49, 41, ${0.02 * hoverAmount})`);
+        cursorGlow.addColorStop(0.25, `rgba(255, 255, 255, ${0.012 * hoverAmount})`);
         cursorGlow.addColorStop(1, 'rgba(0, 0, 0, 0)');
         context.fillStyle = cursorGlow;
         context.beginPath();

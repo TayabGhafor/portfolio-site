@@ -7,6 +7,7 @@ const mono = Geist_Mono({ variable: '--font-mono', subsets: ['latin'] });
 const display = Oswald({ variable: '--font-display', subsets: ['latin'] });
 
 export const metadata: Metadata = {
+  metadataBase: new URL('https://tayab-malik-portfolio.tayyab884890.chatgpt.site'),
   title: 'Tayab Malik | Frontend Developer',
   description: 'Frontend developer building polished React, Next.js, TypeScript, and responsive SaaS interfaces.',
   icons: { icon: '/favicon.png' },

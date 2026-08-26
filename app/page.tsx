@@ -166,13 +166,10 @@ export default function Home() {
 
         <section className="face-stage">
           <div className="portrait-aura" aria-hidden="true" />
-          <div className="portrait-orbits" aria-hidden="true"><i /><i /><i /></div>
-          <div className="portrait-axis" aria-hidden="true"><i /><i /></div>
           <Suspense fallback={<div className="face-scene face-fallback" aria-hidden="true" />}>
             <ParticlePortrait motion={motion} tier={tier} onProgress={handleSceneProgress} onReady={handleSceneReady} />
           </Suspense>
           <div className="face-scanline" aria-hidden="true" />
-          <div className="portrait-lock" aria-hidden="true"><i /><span>IDENTITY LOCK</span><b>98.7%</b></div>
           <span className="face-coordinate coordinate-left">OBJ_01 // ACTIVE</span>
           <span className="face-coordinate coordinate-right">POINTER_REACTIVE</span>
         </section>
