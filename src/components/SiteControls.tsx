@@ -1,6 +1,18 @@
 'use client';
 
 import Link from 'next/link';
+import type { CSSProperties } from 'react';
+import {
+  CursorClickIcon,
+  FileTextIcon,
+  GearSixIcon,
+  HouseIcon,
+  PaperPlaneTiltIcon,
+  SparkleIcon,
+  SquaresFourIcon,
+  UserCircleIcon,
+  type Icon,
+} from '@phosphor-icons/react';
 
 export type ControlPanel = 'menu' | 'settings' | null;
 export type PerformanceTier = 'high' | 'balanced' | 'saver';
@@ -17,15 +29,20 @@ interface SiteControlsProps {
   onTierChange: (tier: PerformanceTier) => void;
 }
 
-const pages: Array<{ key: PageKey; href: string; index: string; label: string; icon: string }> = [
-  { key: 'contact', href: '/contact', index: '04', label: 'Contact', icon: '↗' },
-  { key: 'projects', href: '/projects', index: '03', label: 'Projects', icon: '▦' },
-  { key: 'about', href: '/about', index: '02', label: 'About', icon: '◉' },
-  { key: 'home', href: '/', index: '01', label: 'Home', icon: '⌂' },
+const pages: Array<{ key: PageKey; href: string; index: string; label: string; icon: Icon }> = [
+  { key: 'contact', href: '/contact', index: '04', label: 'Contact', icon: PaperPlaneTiltIcon },
+  { key: 'projects', href: '/projects', index: '03', label: 'Projects', icon: SquaresFourIcon },
+  { key: 'about', href: '/about', index: '02', label: 'About', icon: UserCircleIcon },
+  { key: 'home', href: '/', index: '01', label: 'Home', icon: HouseIcon },
 ];
 
-function GearIcon() {
-  return <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 8.2a3.8 3.8 0 1 0 0 7.6 3.8 3.8 0 0 0 0-7.6Zm8.3 5.2v-2.8l-2.2-.6a7.4 7.4 0 0 0-.7-1.6l1.1-2-2-2-2 1.1a7.4 7.4 0 0 0-1.6-.7L12.3 2H9.5l-.6 2.2a7.4 7.4 0 0 0-1.6.7l-2-1.1-2 2 1.1 2a7.4 7.4 0 0 0-.7 1.6l-2.2.6v2.8l2.2.6c.2.6.4 1.1.7 1.6l-1.1 2 2 2 2-1.1c.5.3 1 .5 1.6.7l.6 2.2h2.8l.6-2.2c.6-.2 1.1-.4 1.6-.7l2 1.1 2-2-1.1-2c.3-.5.5-1 .7-1.6l2.2-.6Z" /></svg>;
+function MorphIcon({ icon: IconComponent, size = 18 }: { icon: Icon; size?: number }) {
+  return (
+    <span className="morph-icon" style={{ '--icon-size': `${size}px` } as CSSProperties} aria-hidden="true">
+      <IconComponent className="icon-outline" size={size} weight="light" />
+      <IconComponent className="icon-fill" size={size} weight="fill" />
+    </span>
+  );
 }
 
 function MenuGlyph({ open }: { open: boolean }) {
@@ -46,7 +63,7 @@ export function SiteControls({ currentPage, panel, motion, tier, onPanelChange, 
         aria-controls="global-settings-panel"
         aria-label="Open system configuration"
       >
-        <span className="settings-trigger-core"><GearIcon /></span>
+        <span className="settings-trigger-core icon-hover-scope"><MorphIcon icon={GearSixIcon} size={17} /></span>
         <span className="settings-trigger-label">SYSTEM</span>
       </button>
 
@@ -57,16 +74,16 @@ export function SiteControls({ currentPage, panel, motion, tier, onPanelChange, 
         </div>
 
         <div className="menu-utility-grid">
-          <a href="/Tayab-Malik.pdf" target="_blank" rel="noreferrer"><span className="utility-icon">↗</span><small>PROFILE</small><strong>RESUME</strong></a>
-          <a href="https://syntaxguild.vercel.app/" target="_blank" rel="noreferrer"><span className="utility-icon">✦</span><small>DEV LAB</small><strong>SYNTAX GUILD</strong></a>
+          <a className="icon-hover-scope" href="/Tayab-Malik.pdf" target="_blank" rel="noreferrer"><span className="utility-icon"><MorphIcon icon={FileTextIcon} size={17} /></span><small>PROFILE</small><strong>RESUME</strong></a>
+          <a className="icon-hover-scope" href="https://syntaxguild.vercel.app/" target="_blank" rel="noreferrer"><span className="utility-icon"><MorphIcon icon={SparkleIcon} size={17} /></span><small>DEV LAB</small><strong>SYNTAX GUILD</strong></a>
         </div>
 
         <nav aria-label="Primary navigation">
           {pages.filter((page) => page.key !== currentPage).map((page) => (
-            <Link href={page.href} key={page.key}>
+            <Link className="icon-hover-scope" href={page.href} key={page.key}>
               <small>[{page.index}]</small>
               <strong>{page.label}</strong>
-              <span className="menu-link-icon" aria-hidden="true">{page.icon}</span>
+              <span className="menu-link-icon"><MorphIcon icon={page.icon} size={17} /></span>
             </Link>
           ))}
         </nav>
@@ -82,8 +99,8 @@ export function SiteControls({ currentPage, panel, motion, tier, onPanelChange, 
 
         <section className="settings-section">
           <header><span>[01] MOTION SYSTEM</span><small>{motion ? 'FULL' : 'REDUCED'}</small></header>
-          <button className="motion-setting" onClick={onToggleMotion} aria-pressed={motion}>
-            <span className="setting-icon" aria-hidden="true">◎</span>
+          <button className="motion-setting icon-hover-scope" onClick={onToggleMotion} aria-pressed={motion}>
+            <span className="setting-icon"><MorphIcon icon={CursorClickIcon} size={19} /></span>
             <span><strong>{motion ? 'Full motion' : 'Reduced motion'}</strong><small>{motion ? 'POINTER / CORE / HOVERS' : 'ESSENTIAL STATE ONLY'}</small></span>
             <i className={motion ? 'is-on' : ''}><b /></i>
           </button>
@@ -106,13 +123,14 @@ export function SiteControls({ currentPage, panel, motion, tier, onPanelChange, 
       <div className="nav-dock">
         <span className="wave" aria-hidden="true"><i /><i /><i /><i /><i /></span>
         <button
+          className="icon-hover-scope"
           onClick={() => onPanelChange(menuOpen ? null : 'menu')}
           aria-expanded={menuOpen}
           aria-controls="global-menu-panel"
           aria-label="Toggle menu"
         >
           <small>[{current.index}]</small>
-          <span className="dock-page-icon" aria-hidden="true">{current.icon}</span>
+          <span className="dock-page-icon"><MorphIcon icon={current.icon} size={17} /></span>
           <strong>{current.label}</strong>
           <b><MenuGlyph open={menuOpen} /></b>
         </button>

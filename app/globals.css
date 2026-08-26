@@ -528,6 +528,20 @@ button { -webkit-tap-highlight-color: transparent; }
   .setting-icon { width: 34px; height: 34px; }
 }
 
+.morph-icon { position: relative; display: inline-grid; width: var(--icon-size); height: var(--icon-size); place-items: center; flex: 0 0 var(--icon-size); }
+.morph-icon svg { position: absolute; inset: 0; width: var(--icon-size); height: var(--icon-size); transform-origin: center; will-change: transform, opacity; transition: opacity .24s ease, transform .46s cubic-bezier(.18,.9,.2,1), filter .3s ease; }
+.morph-icon .icon-outline { opacity: 1; transform: scale(1) rotate(0deg); }
+.morph-icon .icon-fill { opacity: 0; transform: scale(.58) rotate(-16deg); filter: blur(2px); }
+.icon-hover-scope:hover .morph-icon .icon-outline, .icon-hover-scope:focus-visible .morph-icon .icon-outline, .icon-hover-scope[aria-expanded="true"] .morph-icon .icon-outline { opacity: 0; transform: scale(1.28) rotate(12deg); filter: blur(1px); }
+.icon-hover-scope:hover .morph-icon .icon-fill, .icon-hover-scope:focus-visible .morph-icon .icon-fill, .icon-hover-scope[aria-expanded="true"] .morph-icon .icon-fill { opacity: 1; transform: scale(1) rotate(0deg); filter: blur(0); }
+.site-controls .settings-trigger .morph-icon svg { box-sizing: border-box; width: var(--icon-size); height: var(--icon-size); padding: 0; border-radius: 0; background: transparent; }
+.site-controls .settings-trigger:hover .morph-icon .icon-outline, .site-controls .settings-trigger:focus-visible .morph-icon .icon-outline, .site-controls .settings-trigger[aria-expanded="true"] .morph-icon .icon-outline { opacity: 0; transform: scale(1.25) rotate(100deg); filter: blur(1px); }
+.site-controls .settings-trigger:hover .morph-icon .icon-fill, .site-controls .settings-trigger:focus-visible .morph-icon .icon-fill, .site-controls .settings-trigger[aria-expanded="true"] .morph-icon .icon-fill { opacity: 1; transform: scale(1) rotate(90deg); filter: blur(0); }
+.site-controls .settings-trigger:hover .morph-icon, .site-controls .settings-trigger[aria-expanded="true"] .morph-icon { transform: none; }
+.menu-link-icon .morph-icon, .utility-icon .morph-icon, .setting-icon .morph-icon, .dock-page-icon .morph-icon { color: currentColor; }
+.site-controls .menu-panel nav a:hover .menu-link-icon .icon-fill { color: #050505; }
+.motion-setting[aria-pressed="true"] .setting-icon { border-color: rgba(255,255,255,.2); color: #fff; background: rgba(255,255,255,.07); box-shadow: inset 0 0 18px rgba(255,255,255,.025); }
+
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { scroll-behavior: auto !important; animation: none !important; transition-duration: .01ms !important; }
   .face-scanline, .pointer-field { display: none; }
