@@ -23,6 +23,25 @@ const principles: Array<{ label: string; icon: Icon }> = [
   { label: 'PRODUCT THINKING', icon: ChartLineUpIcon },
 ];
 
+const experienceTimeline = [
+  {
+    period: 'DEC 2025 - PRESENT',
+    company: 'Tallysis',
+    role: 'SQA Analyst',
+    location: 'Lahore, Pakistan',
+    summary: 'Contributing to software quality through structured web testing, issue discovery, and usability-focused QA.',
+    highlights: ['Manual web testing and test-case execution', 'UI and usability testing', 'API response testing with Postman', 'Bug reporting, re-testing, and developer collaboration'],
+  },
+  {
+    period: 'AUG 2025 - NOV 2025',
+    company: 'CodeAlpha',
+    role: 'Frontend Development Intern',
+    location: '4 MONTHS',
+    summary: 'Completed a frontend development internship, building practical experience during a four-month placement.',
+    highlights: [],
+  },
+] as const;
+
 const skillSectors = [
   { id: '01', title: 'Core & Frameworks', illustration: '/about-page-illustrations/skills/Core-frameworks-transparent.png', icon: StackIcon, skills: [['JavaScript', 'The language layer behind expressive browser experiences.'], ['TypeScript', 'Safer interfaces through explicit, scalable contracts.'], ['React', 'Component architecture for interactive product surfaces.'], ['Next.js', 'Production-minded routing, rendering, and delivery.'], ['Tailwind CSS', 'Composable styling for fast, consistent iteration.']] },
   { id: '02', title: 'Interface Engineering', illustration: '/about-page-illustrations/skills/interface-engineering-transparent.png', icon: SquaresFourIcon, skills: [['Responsive UI', 'Layouts that remain intentional from phone to desktop.'], ['Frontend Architecture', 'Systems that keep complex interfaces understandable.'], ['GSAP', 'Narrative motion used with restraint and purpose.'], ['ShadCN UI', 'Flexible primitives for polished product workflows.'], ['Radix UI', 'Accessible behavior underneath custom visual systems.']] },
@@ -148,7 +167,7 @@ export default function AboutPage() {
 
       <Reveal className="about-block technical-arsenal"><div className="about-section-heading"><div><span className="about-section-id">[ CAPABILITY_INDEX ]</span><h2><RevealHeading text="TECHNICAL ARSENAL" run={heroRun} /></h2></div><p>Hover a capability to inspect the system.</p></div><div className="skill-sector-list">{skillSectors.map((sector) => <SkillSector key={sector.id} sector={sector} open={isMobile ? openSector === sector.id : true} onToggle={() => setOpenSector(openSector === sector.id ? '' : sector.id)} />)}</div></Reveal>
 
-      <Reveal id="experience" className="about-feature-panel experience-panel"><FloatingVisual src="/about-page-illustrations/learning-by-building-transparent.png" alt="Wireframe terrain representing learning through building" className="experience-art" /><div className="feature-copy"><span className="about-section-id">[ EXPERIENCE_LOG ]</span><p className="about-eyebrow">PROFESSIONAL FOUNDATION</p><h2><RevealHeading text="LEARNING BY BUILDING" run={heroRun} /></h2><div className="experience-record"><span>ROLE_01</span><strong>Frontend Developer Intern</strong><a href="https://softaccess.co.uk/" target="_blank" rel="noreferrer">SoftAccess <ArrowUpRightIcon size={14} /></a><small>Interface Engineering</small></div><p className="about-body-copy">My project work spans agency websites, commerce experiences, social products, scheduling platforms, and SaaS-style interfaces—each one sharpening the balance between visual craft and maintainable code.</p></div></Reveal>
+      <Reveal id="experience" className="about-block experience-timeline"><div className="experience-timeline-heading"><div><span className="about-section-id">[ EXPERIENCE_LOG ]</span><p className="about-eyebrow">PROFESSIONAL FOUNDATION</p><h2><RevealHeading text="EXPERIENCE" run={heroRun} /><br /><RevealHeading text="TIMELINE" run={heroRun} /></h2></div><p>Quality assurance and frontend development experience, ordered from current to earliest.</p></div><ol className="experience-timeline-list">{experienceTimeline.map((entry, index) => <li key={entry.company} className="experience-timeline-item"><div className="experience-timeline-marker" aria-hidden="true"><i /><span>{String(index + 1).padStart(2, '0')}</span></div><article><div className="experience-timeline-meta"><span>{entry.period}</span><span>{entry.location}</span></div><h3>{entry.company}</h3><h4>{entry.role}</h4><p>{entry.summary}</p>{entry.highlights.length > 0 && <ul>{entry.highlights.map((highlight) => <li key={highlight}>{highlight}</li>)}</ul>}</article></li>)}</ol></Reveal>
 
       <Reveal id="contact-cta" className="about-feature-panel cta-panel"><FloatingVisual src="/about-page-illustrations/turn-into-reality-transparent.png" alt="Concentric orbital radar illustration" className="cta-art" /><div className="feature-copy"><span className="about-section-id">[ NEXT_ACTION ]</span><p className="about-eyebrow">HAVE A PRODUCT CONCEPT?</p><h2><RevealHeading text="LET'S TURN IT INTO" run={heroRun} /><br /><RevealHeading text="REALITY" run={heroRun} /></h2><p className="about-body-copy">Bring the idea. I&apos;ll bring frontend engineering, thoughtful interaction, and the persistence required to ship it properly.</p><div className="about-cta-row"><Link href="/contact">Contact <ArrowUpRightIcon size={15} /></Link></div></div></Reveal>
     </main>
