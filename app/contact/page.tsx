@@ -1,36 +1,35 @@
 'use client';
 
+import { useState } from 'react';
 import { InteriorChrome } from '../../src/components/InteriorChrome';
-import { portfolio } from '../../src/content/portfolio';
+import { ScrambleText } from '../../src/components/SiteControls';
 
-const channels = [
-  { id: '01', label: 'GitHub', value: 'TayabGhafor', href: portfolio.github ?? 'https://github.com/TayabGhafor' },
-  { id: '02', label: 'Resume', value: 'Tayab-Malik.pdf', href: '/Tayab-Malik.pdf' },
-  { id: '03', label: 'Dev lab', value: 'Syntax Guild', href: 'https://syntaxguild.vercel.app/' },
+const socials = [
+  { label: 'LinkedIn', href: 'https://www.linkedin.com/in/tayabmalik' },
+  { label: 'Upwork', href: 'https://www.upwork.com/freelancers/~0103602940333795be' },
+  { label: 'GitHub', href: 'https://github.com/TayabGhafor' },
 ];
 
-export default function ContactPage() {
-  return (
-    <InteriorChrome currentPage="contact" index="04" label="CONTACT" wide footerNote="Available for frontend work">
-      <main className="about-content">
-        <section className="about-intro about-block">
-          <span className="about-section-id">[ SIGNAL / 04 ]</span>
-          <h1>Start a brief</h1>
-          <p className="about-lede">Open to frontend opportunities</p>
-          <h2>React, Next.js, and product interfaces</h2>
-          <p>If you have a product, a rebuild, or a SaaS interface that needs to feel sharper in production, reach out through one of the channels below.</p>
-        </section>
+function HoverScramble({ text, className = '' }: { text: string; className?: string }) {
+  const [run, setRun] = useState(0);
+  const animate = () => setRun((value) => value + 1);
+  return <span className={`contact-scramble ${className}`} onPointerEnter={animate} onFocus={animate} tabIndex={0}><span className="contact-scramble-static">{text}</span><span className="contact-scramble-live" aria-hidden="true"><ScrambleText text={text} run={run} enabled={run > 0} /></span></span>;
+}
 
-        <section className="about-block contact-channels" aria-label="Contact channels">
-          {channels.map((channel) => (
-            <a className="contact-channel" href={channel.href} target="_blank" rel="noreferrer" key={channel.id}>
-              <small>CH_{channel.id}</small>
-              <strong>{channel.label}</strong>
-              <span>{channel.value}</span>
-            </a>
-          ))}
-        </section>
-      </main>
-    </InteriorChrome>
-  );
+export default function ContactPage() {
+  return <InteriorChrome currentPage="contact" index="04" label="CONTACT" wide footerNote="Available for frontend work">
+    <div className="contact-corner-title" aria-hidden="true"><HoverScramble text="CONTACT" /></div>
+    <main className="about-content contact-reference">
+      <h1 className="contact-seo-title">Contact Tayab Malik</h1>
+      <section className="contact-reference-rail" aria-label="Contact Tayab Malik">
+        <span className="contact-reference-prompt">WANNA SAY HELLO?</span>
+        <div className="contact-reference-rule" />
+        <a className="contact-primary contact-email" href="mailto:tayabghafor@gmail.com"><HoverScramble text="TAYABGHAFOR@GMAIL.COM" /></a>
+        <div className="contact-reference-rule" />
+        <a className="contact-primary contact-phone" href="tel:+92146209702"><HoverScramble text="+92 146209702" /></a>
+        <p className="contact-copyright">© 2026 TAYAB MALIK</p>
+        <nav className="contact-socials" aria-label="Social links">{socials.map((social) => <a key={social.label} href={social.href} target="_blank" rel="noreferrer"><HoverScramble text={social.label.toUpperCase()} /></a>)}</nav>
+      </section>
+    </main>
+  </InteriorChrome>;
 }
