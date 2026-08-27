@@ -68,7 +68,34 @@ function FloatingVisual({ src, alt, className = '', priority = false }: { src: s
   return <div ref={ref} className={`about-visual ${className}`}><span className="about-visual-grid" aria-hidden="true" /><span className="about-visual-scan" aria-hidden="true" /><Image src={src} alt={alt} fill sizes="(max-width: 760px) 92vw, 52vw" priority={priority} /></div>;
 }
 
-function RevealHeading({ text, run }: { text: string; run: number }) { return <ScrambleText text={text} run={run} enabled={run > 0} delay={run === 1 ? 90 : 0} />; }
+function RevealHeading({ text, run }: { text: string; run: number }) {
+  const [hoverRun, setHoverRun] = useState(0);
+  const nextRun = Math.max(run, hoverRun);
+  return <span className="about-scramble-line" onPointerEnter={() => setHoverRun((value) => Math.max(value, run) + 1)} onFocus={() => setHoverRun((value) => Math.max(value, run) + 1)} tabIndex={0}><ScrambleText text={text} run={nextRun} enabled={nextRun > 0} delay={nextRun === 1 ? 90 : 0} /></span>;
+}
+
+function AboutPortraitRail() {
+  const ref = useRef<HTMLElement>(null);
+  useEffect(() => {
+    const node = ref.current;
+    if (!node || !window.matchMedia('(pointer: fine)').matches || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    const move = (event: PointerEvent) => {
+      const rect = node.getBoundingClientRect();
+      const x = ((event.clientX - rect.left) / rect.width - .5) * 2;
+      const y = ((event.clientY - rect.top) / rect.height - .5) * 2;
+      node.style.setProperty('--portrait-x', `${x * 9}px`);
+      node.style.setProperty('--portrait-y', `${y * 7}px`);
+    };
+    const reset = () => { node.style.setProperty('--portrait-x', '0px'); node.style.setProperty('--portrait-y', '0px'); };
+    node.addEventListener('pointermove', move, { passive: true });
+    node.addEventListener('pointerleave', reset);
+    return () => { node.removeEventListener('pointermove', move); node.removeEventListener('pointerleave', reset); };
+  }, []);
+  return <aside ref={ref} className="about-portrait-rail" aria-label="Tayab Malik particle portrait">
+    <div className="about-portrait-art"><Image src="/portrait/tayab-about-particle-v2-transparent.png" alt="Particle portrait of Tayab Malik" fill priority sizes="(max-width: 760px) 220px, 400px" /></div>
+    <div className="about-portrait-readout"><span>[ PROFILE_SIGNAL ]</span><b>TM_02</b><small>SUBJECT / TAYAB_MALIK</small><small>STATUS / ACTIVE</small></div>
+  </aside>;
+}
 
 function SkillItem({ name, description, index, active, onActive }: { name: string; description: string; index: string; active: boolean; onActive: () => void }) {
   const [run, setRun] = useState(0);
@@ -102,11 +129,10 @@ export default function AboutPage() {
     return () => media.removeEventListener('change', update);
   }, []);
 
-  return <InteriorChrome currentPage="about" index="02" label="ABOUT" wide footerNote="Open to frontend opportunities">
+  return <InteriorChrome currentPage="about" index="02" label="ABOUT" wide aside={<AboutPortraitRail />} footerNote="Open to frontend opportunities">
     <main className="about-content about-redesign">
       <Reveal className="about-hero-redesign">
-        <div className="about-hero-copy"><span className="about-section-id">[ PROFILE / 02 ]</span><p className="about-eyebrow">ABOUT ME</p><h1><RevealHeading text="MEET TAYAB" run={heroRun} /></h1><p className="about-lede">A frontend developer</p><h2><RevealHeading text="ENGINEERING POLISHED" run={heroRun} /><br /><RevealHeading text="WEB EXPERIENCES" run={heroRun} /></h2><p className="about-body-copy">I craft functional, responsive, and visually refined interfaces. My work combines frontend architecture, thoughtful interaction, accessibility, performance, and product thinking.</p><div className="about-meta-grid"><div><small>LOCATION</small><strong>Pakistan / PKT</strong></div><div><small>EXPERIENCE</small><strong>Frontend Developer Intern <em>SoftAccess</em></strong></div><div><small>AVAILABILITY</small><strong>Open for opportunities</strong></div></div><div className="about-principles" aria-label="Frontend principles">{principles.map(({ label, icon: PrincipleIcon }) => <span key={label}><i><PrincipleIcon size={15} weight="light" /></i><b>{label}</b></span>)}</div></div>
-        <div className="about-hero-art-wrap"><span className="about-availability"><small>AVAILABLE FOR</small><b>NEW OPPORTUNITIES</b><i /></span><FloatingVisual src="/about-page-illustrations/about-hero-transparent.png" alt="Abstract glass panels and a flowing wireframe system" className="about-hero-art" priority /><div className="about-identity-readout"><span>[ IDENTITY_SYSTEM ]</span><b>TM_02</b><small>SUBJECT / TAYAB_MALIK</small><small>STATUS / ACTIVE</small></div></div>
+        <div className="about-hero-copy"><span className="about-section-id">[ PROFILE / 02 ]</span><p className="about-eyebrow">A FRONTEND DEVELOPER</p><h1><RevealHeading text="MEET TAYAB" run={heroRun} /></h1><h2><RevealHeading text="ENGINEERING POLISHED" run={heroRun} /><br /><RevealHeading text="WEB EXPERIENCES" run={heroRun} /></h2><p className="about-body-copy">I craft functional, responsive, and visually refined interfaces. My work combines frontend architecture, thoughtful interaction, accessibility, performance, and product thinking.</p><div className="about-meta-grid"><div><small>LOCATION</small><strong>Pakistan / PKT</strong></div><div><small>EXPERIENCE</small><strong>Frontend Developer Intern <em>SoftAccess</em></strong></div><div><small>AVAILABILITY</small><strong>Open for opportunities</strong></div></div><div className="about-principles" aria-label="Frontend principles">{principles.map(({ label, icon: PrincipleIcon }) => <span key={label}><i><PrincipleIcon size={15} weight="light" /></i><b>{label}</b></span>)}</div></div>
       </Reveal>
 
       <Reveal className="about-feature-panel core-direction-panel"><FloatingVisual src="/about-page-illustrations/modren-product-interface-transparent.png" alt="Transparent glass cube representing product architecture" className="core-direction-art" /><div className="feature-copy"><span className="about-section-id">[ CORE_DIRECTION ]</span><p className="about-eyebrow">FOCUSED ON</p><h2><RevealHeading text="MODERN PRODUCT" run={heroRun} /><br /><RevealHeading text="INTERFACES" run={heroRun} /></h2><p className="about-body-copy">I work across React, Next.js, TypeScript, state management, API integration, and full-stack foundations. The goal is always the same: create responsive products that are technically reliable and enjoyable to use.</p></div></Reveal>
