@@ -15,13 +15,18 @@ function Loader({ progress, ready, leaving, onEnter }: { progress: number; ready
   return (
     <section className={`loader-screen ${ready ? 'is-ready' : ''} ${leaving ? 'is-leaving' : ''}`} aria-label="Portfolio introduction" aria-live="polite">
       <div className="loader-grid" aria-hidden="true"><i /><i /><i /><i /></div>
+      <div className="loader-grid-labels" aria-hidden="true">
+        <span>GRID_L1_R1</span><span>GRID_L2_R1</span><span>GRID_RIGHT_SIMPLE</span>
+        <span>GRID_L1_R2</span><span>GRID_L2_MASTER</span><span>GRID_L1_R3</span><span>GRID_L2_R4</span>
+      </div>
       <div className="loader-counter">{String(Math.round(progress)).padStart(2, '0')}%</div>
       <button className="loader-enter" disabled={!ready} onClick={onEnter}>
         <strong>{ready ? 'CLICK' : 'WAIT'}</strong><span>{ready ? 'TO ENTER' : 'INITIALIZING'}</span>
       </button>
-      <div className="loader-performance"><span>PERFORMANCE</span><b>HIGH</b><i /><b className="muted">MED</b><i /><b className="muted">SAVER</b></div>
+      <div className="loader-performance"><span>PERFORMANCE TIER</span><b className="active">HIGH</b><b>MED</b><b>SAVER</b></div>
+      <div className="loader-music" aria-hidden="true"><span>On</span><b>MUSIC</b><span>Off</span></div>
       <div className="loader-track"><span style={{ '--load': `${progress}%` } as CSSProperties} /><b>{ready ? 'LOADED' : 'LOADING'}</b></div>
-      <div className="loader-system"><span>{ready ? 'SYSTEM_READY' : 'INITIALIZING_ENGINE'}</span><i className={ready ? 'ready' : ''} /></div>
+      <div className="loader-system"><i className={ready ? 'ready' : ''} /><span>{ready ? 'SYSTEM_READY' : 'INITIALIZING_ENGINE'}</span><em>{Math.round(progress)}%</em></div>
     </section>
   );
 }
@@ -85,22 +90,22 @@ export default function Home() {
   useEffect(() => {
     const handleKey = (event: KeyboardEvent) => {
       if (event.key === 'Escape') setPanel(null);
-      if (event.key === 'Enter' && displayProgress >= 100 && !entered) {
+      if (event.key === 'Enter' && displayProgress >= 100 && !entered && !leaving) {
         setLeaving(true);
-        window.setTimeout(() => setEntered(true), motion ? 820 : 0);
+        window.setTimeout(() => setEntered(true), motion ? 930 : 0);
       }
     };
     window.addEventListener('keydown', handleKey);
     return () => window.removeEventListener('keydown', handleKey);
-  }, [displayProgress, entered, motion]);
+  }, [displayProgress, entered, leaving, motion]);
 
   const handleSceneProgress = useCallback((progress: number) => setAssetProgress(progress), []);
   const handleSceneReady = useCallback(() => setModelReady(true), []);
 
   const enterPortfolio = () => {
-    if (displayProgress < 100) return;
+    if (displayProgress < 100 || leaving) return;
     setLeaving(true);
-    window.setTimeout(() => setEntered(true), motion ? 820 : 0);
+    window.setTimeout(() => setEntered(true), motion ? 930 : 0);
   };
 
   const handlePointer = (event: ReactPointerEvent<HTMLElement>) => {
