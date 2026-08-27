@@ -14,6 +14,7 @@ export const portfolio: PortfolioProfile = {
       status: 'unverified',
     },
   ],
+  github: 'https://github.com/TayabGhafor',
   skills: [
     'React',
     'Next.js',
@@ -47,7 +48,6 @@ export const unverifiedProfileFields = [
   'email',
   'location',
   'LinkedIn URL',
-  'GitHub URL',
   'education',
   'SoftAccess dates',
   'availability status',

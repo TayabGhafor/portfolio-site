@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useRef, useState, type CSSProperties } from 'react';
+import { useEffect, useRef, useState, type CSSProperties, type MouseEvent as ReactMouseEvent } from 'react';
 import {
   CursorClickIcon,
   FileTextIcon,
@@ -16,7 +16,7 @@ import {
 export type ControlPanel = 'menu' | 'settings' | null;
 export type PerformanceTier = 'high' | 'balanced' | 'saver';
 
-type PageKey = 'home' | 'about' | 'projects' | 'contact';
+export type PageKey = 'home' | 'about' | 'projects' | 'contact';
 
 interface SiteControlsProps {
   currentPage: PageKey;
@@ -132,14 +132,26 @@ function UtilityLink({ href, eyebrow, label, icon, open, motion, delay, external
   );
 }
 
-function MenuLink({ page, open, motion, delay }: { page: (typeof pages)[number]; open: boolean; motion: boolean; delay: number }) {
+function MenuLink({ page, open, motion, delay, onNavigate }: {
+  page: (typeof pages)[number];
+  open: boolean;
+  motion: boolean;
+  delay: number;
+  onNavigate: (href: string) => void;
+}) {
   const [run, setRun] = useState(0);
   const animate = () => {
     if (open && motion) setRun((value) => value + 1);
   };
 
+  const navigate = (event: ReactMouseEvent<HTMLAnchorElement>) => {
+    if (event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
+    event.preventDefault();
+    onNavigate(page.href);
+  };
+
   return (
-    <a className="icon-hover-scope" href={page.href} onPointerEnter={animate} onFocus={animate}>
+    <a className="icon-hover-scope" href={page.href} aria-label={`Open ${page.label} page`} onClick={navigate} onPointerEnter={animate} onFocus={animate}>
       <small>[{page.index}]</small>
       <strong><ScrambleText text={page.label} run={run} enabled={open && motion} delay={run === 0 ? delay : 0} /></strong>
       <span className="menu-link-icon"><MorphIcon icon={page.icon} size={17} /></span>
@@ -156,6 +168,10 @@ export function SiteControls({ currentPage, panel, motion, tier, onPanelChange, 
   const dock = settingsOpen
     ? { index: 'SYS', label: 'Settings', icon: GearSixIcon }
     : current;
+  const navigateTo = (href: string) => {
+    onPanelChange(null);
+    window.location.assign(href);
+  };
 
   return (
     <div className="site-controls">
@@ -182,7 +198,7 @@ export function SiteControls({ currentPage, panel, motion, tier, onPanelChange, 
 
         <nav aria-label="Primary navigation">
           {pages.filter((page) => page.key !== currentPage).map((page, index) => (
-            <MenuLink page={page} open={menuOpen} motion={motion} delay={210 + index * 65} key={page.key} />
+            <MenuLink page={page} open={menuOpen} motion={motion} delay={210 + index * 65} onNavigate={navigateTo} key={page.key} />
           ))}
         </nav>
 

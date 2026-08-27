@@ -1,11 +1,15 @@
 'use client';
 
-import { lazy, Suspense, useCallback, useEffect, useRef, useState, type CSSProperties, type PointerEvent as ReactPointerEvent } from 'react';
+import { useCallback, useEffect, useRef, useState, type CSSProperties, type PointerEvent as ReactPointerEvent } from 'react';
+import dynamic from 'next/dynamic';
 import { ScrambleText, SiteControls, type ControlPanel, type PerformanceTier } from '../src/components/SiteControls';
 import { projects } from '../src/content/projects';
 import { readSitePreferences } from '../src/lib/sitePreferences';
 
-const ParticlePortrait = lazy(() => import('../src/components/ParticlePortrait').then((module) => ({ default: module.ParticlePortrait })));
+const ParticlePortrait = dynamic(
+  () => import('../src/components/ParticlePortrait').then((module) => module.ParticlePortrait),
+  { ssr: false, loading: () => <div className="face-scene face-fallback" aria-hidden="true" /> },
+);
 
 function Loader({ progress, ready, leaving, onEnter }: { progress: number; ready: boolean; leaving: boolean; onEnter: () => void }) {
   return (
@@ -32,12 +36,14 @@ export default function Home() {
   const [assetProgress, setAssetProgress] = useState(0);
   const [displayProgress, setDisplayProgress] = useState(0);
   const [modelReady, setModelReady] = useState(false);
+  const [sceneFallbackReady, setSceneFallbackReady] = useState(false);
   const [entered, setEntered] = useState(false);
   const [leaving, setLeaving] = useState(false);
   const [roleRun, setRoleRun] = useState(0);
 
   useEffect(() => {
     loadStartRef.current = performance.now();
+    const sceneFallback = window.setTimeout(() => setSceneFallbackReady(true), 4500);
     window.queueMicrotask(() => {
       const preferences = readSitePreferences();
       setTier(preferences.tier);
@@ -49,7 +55,10 @@ export default function Home() {
     }).format(new Date()));
     update();
     const timer = window.setInterval(update, 1000);
-    return () => window.clearInterval(timer);
+    return () => {
+      window.clearInterval(timer);
+      window.clearTimeout(sceneFallback);
+    };
   }, []);
 
   useEffect(() => {
@@ -57,10 +66,11 @@ export default function Home() {
     const tick = (now: number) => {
       const elapsed = now - loadStartRef.current;
       const revealCurve = Math.min(99, 100 * (1 - Math.exp(-elapsed / 520)));
-      const available = modelReady ? 99 : Math.min(assetProgress, 99);
+      const sceneCanEnter = modelReady || sceneFallbackReady;
+      const available = sceneCanEnter ? 99 : Math.min(assetProgress, 99);
       const next = Math.min(revealCurve, available);
 
-      if (modelReady && elapsed >= 1650) {
+      if (sceneCanEnter && elapsed >= 1650) {
         setDisplayProgress(100);
         return;
       }
@@ -70,7 +80,7 @@ export default function Home() {
     };
     frame = window.requestAnimationFrame(tick);
     return () => window.cancelAnimationFrame(frame);
-  }, [assetProgress, modelReady]);
+  }, [assetProgress, modelReady, sceneFallbackReady]);
 
   useEffect(() => {
     const handleKey = (event: KeyboardEvent) => {
@@ -113,7 +123,7 @@ export default function Home() {
     window.localStorage.setItem('tm-motion', next ? 'full' : 'reduced');
   };
 
-  const ready = modelReady && displayProgress >= 100;
+  const ready = (modelReady || sceneFallbackReady) && displayProgress >= 100;
 
   return (
     <main
@@ -162,9 +172,7 @@ export default function Home() {
 
         <section className="face-stage">
           <div className="portrait-aura" aria-hidden="true" />
-          <Suspense fallback={<div className="face-scene face-fallback" aria-hidden="true" />}>
-            <ParticlePortrait motion={motion} tier={tier} onProgress={handleSceneProgress} onReady={handleSceneReady} />
-          </Suspense>
+          <ParticlePortrait motion={motion} tier={tier} onProgress={handleSceneProgress} onReady={handleSceneReady} />
           <div className="face-scanline" aria-hidden="true" />
           <span className="face-coordinate coordinate-left">OBJ_01 // ACTIVE</span>
           <span className="face-coordinate coordinate-right">POINTER_REACTIVE</span>
