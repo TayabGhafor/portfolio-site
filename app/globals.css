@@ -15,6 +15,12 @@
   --pointer-y: 50vh;
   --portrait-shift-x: 0px;
   --portrait-shift-y: 0px;
+  --font-denominary: var(--font-display);
+  --font-csgenio: var(--font-mono);
+  --type-display-title: 96px;
+  --type-display-section: 72px;
+  --type-copy: 18px;
+  --type-chrome: 16px;
 }
 
 * { box-sizing: border-box; }
@@ -806,10 +812,35 @@ button { -webkit-tap-highlight-color: transparent; }
 .contact-socials { display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: clamp(30px, 4vw, 64px); }.contact-socials a { color: rgba(255,255,255,.62); font: 13px var(--font-mono); letter-spacing: .17em; text-decoration: none; text-transform: uppercase; transition: color .22s ease, transform .22s ease; }.contact-socials a:hover, .contact-socials a:focus-visible { color: #fff; transform: translateY(-2px); outline: none; }
 .contact-scramble { position: relative; display: inline-block; min-height: 1.25em; cursor: crosshair; outline: none; }.contact-scramble-static { display: inline-block; transition: opacity .12s ease; }.contact-scramble-live { position: absolute; inset: 0; display: block; opacity: 0; transition: opacity .12s ease; }.contact-scramble:hover .contact-scramble-static, .contact-scramble:focus-visible .contact-scramble-static { opacity: 0; }.contact-scramble:hover .contact-scramble-live, .contact-scramble:focus-visible .contact-scramble-live { opacity: 1; }.contact-scramble:focus-visible { outline: 1px solid rgba(255,255,255,.7); outline-offset: 7px; }
 
+/* Shared interior type scale: keep the display, reading, and chrome layers
+   consistent across About, Contact, Projects, and future sections. */
+.about-redesign h1, .about-redesign h2, .about-redesign h3,
+.about-corner-title, .contact-corner-title { font-family: var(--font-denominary), system-ui, sans-serif; }
+.about-redesign h2 { font-size: var(--type-display-section); line-height: .92; }
+.about-redesign .about-body-copy { font: 400 var(--type-copy)/1.7 var(--font-csgenio), monospace; letter-spacing: -.01em; }
+.about-redesign .core-direction-panel { display: grid; grid-template-columns: 160px minmax(0, 1fr); gap: 42px; min-height: 310px; padding: 20px 0; overflow: visible; border: 0 !important; border-radius: 0 !important; background: transparent !important; box-shadow: none !important; }
+.about-redesign .core-direction-panel:hover { border-color: transparent !important; }
+.about-redesign .core-direction-panel .core-direction-art { min-height: 250px; }
+.about-redesign .core-direction-panel .feature-copy h2 { max-width: 650px; margin: 12px 0 22px; }
+.about-corner-title { gap: 20px; font-size: var(--type-display-title); line-height: .8; }
+.about-shell > .about-corner-title { top: 62px !important; right: 42px !important; }
+.about-header > a strong, .about-header > a span,
+.about-footer span, .about-footer strong { font-family: var(--font-csgenio), monospace; font-size: var(--type-chrome); line-height: 1.2; }
+.about-header > a { gap: 6px; }
+.about-footer { gap: 88px; }
+
 @media (max-width: 760px) {
   .contact-corner-title { top: 68px; right: 16px; font-size: clamp(34px, 11vw, 52px); }
   .interior-wide .about-content.contact-reference { width: calc(100% - 34px); padding-bottom: 142px; }
   .contact-reference-rail { margin-top: 210px; }.contact-reference-rule { margin: 31px 0 25px; }
   .contact-primary { font-size: clamp(19px, 5.35vw, 28px); letter-spacing: .015em; }.contact-phone { font-size: clamp(23px, 6vw, 31px); }
   .contact-copyright { margin: 36px 0 31px; font-size: 9px; }.contact-socials { gap: 20px 28px; }.contact-socials a { font-size: 11px; letter-spacing: .12em; }
+  .about-redesign h2 { font-size: clamp(42px, 11vw, var(--type-display-section)); }
+  .about-redesign .core-direction-panel { grid-template-columns: 1fr; gap: 8px; padding: 0; }
+  .about-redesign .about-body-copy { font-size: 16px; }
+  .about-corner-title { gap: 7px; font-size: clamp(28px, 9vw, 44px); }
+  .about-shell > .about-corner-title { top: 66px !important; right: 15px !important; }
+  .about-header > a strong, .about-header > a span,
+  .about-footer span, .about-footer strong { font-size: 11px; }
+  .about-footer { gap: 28px; }
 }

@@ -94,7 +94,7 @@ function AboutPortraitRail() {
   return <><aside ref={ref} className="about-portrait-rail" aria-label="Tayab Malik particle portrait">
     <div className="about-portrait-art"><Image src="/portrait/tayab-about-portrait-hero-transparent.png" alt="Particle portrait of Tayab Malik" fill priority sizes="(max-width: 760px) 220px, 400px" /></div>
     <div className="about-portrait-readout"><span>[ PROFILE_SIGNAL ]</span><b>TM_02</b><small>SUBJECT / TAYAB_MALIK</small><small>STATUS / ACTIVE</small></div>
-  </aside><div className="about-corner-title" aria-hidden="true"><span>MEET</span><span>TAYAB MALIK</span></div></>;
+  </aside><div className="about-corner-title" aria-hidden="true"><span>MEET</span><span>TAYAB</span></div></>;
 }
 
 function SkillItem({ name, description, index, active, onActive }: { name: string; description: string; index: string; active: boolean; onActive: () => void }) {
