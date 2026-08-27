@@ -23,10 +23,11 @@ export default function ContactPage() {
       <h1 className="contact-seo-title">Contact Tayab Malik</h1>
       <section className="contact-reference-rail" aria-label="Contact Tayab Malik">
         <span className="contact-reference-prompt">WANNA SAY HELLO?</span>
-        <div className="contact-reference-rule" />
+        <div className="contact-reference-rule contact-rule-before-email" />
         <a className="contact-primary contact-email" href="mailto:tayabghafor@gmail.com"><HoverScramble text="TAYABGHAFOR@GMAIL.COM" /></a>
-        <div className="contact-reference-rule" />
+        <div className="contact-reference-rule contact-rule-before-phone" />
         <a className="contact-primary contact-phone" href="tel:+92146209702"><HoverScramble text="+92 146209702" /></a>
+        <div className="contact-reference-rule contact-rule-after-phone" />
         <p className="contact-copyright">© 2026 TAYAB MALIK</p>
         <nav className="contact-socials" aria-label="Social links">{socials.map((social) => <a key={social.label} href={social.href} target="_blank" rel="noreferrer"><HoverScramble text={social.label.toUpperCase()} /></a>)}</nav>
       </section>
