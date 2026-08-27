@@ -92,15 +92,22 @@ function AboutPortraitRail() {
     return () => { node.removeEventListener('pointermove', move); node.removeEventListener('pointerleave', reset); };
   }, []);
   return <aside ref={ref} className="about-portrait-rail" aria-label="Tayab Malik particle portrait">
-    <div className="about-portrait-art"><Image src="/portrait/tayab-about-particle-v2-transparent.png" alt="Particle portrait of Tayab Malik" fill priority sizes="(max-width: 760px) 220px, 400px" /></div>
+    <div className="about-portrait-art"><Image src="/portrait/tayab-about-portrait-hero-transparent.png" alt="Particle portrait of Tayab Malik" fill priority sizes="(max-width: 760px) 220px, 400px" /></div>
     <div className="about-portrait-readout"><span>[ PROFILE_SIGNAL ]</span><b>TM_02</b><small>SUBJECT / TAYAB_MALIK</small><small>STATUS / ACTIVE</small></div>
   </aside>;
 }
 
 function SkillItem({ name, description, index, active, onActive }: { name: string; description: string; index: string; active: boolean; onActive: () => void }) {
   const [run, setRun] = useState(0);
-  const activate = () => { onActive(); setRun((value) => value + 1); };
-  return <button className={`skill-item ${active ? 'is-active' : ''}`} type="button" onPointerEnter={activate} onFocus={activate} onClick={activate} aria-pressed={active} title={description}><small>{index}</small><strong><ScrambleText text={name} run={run} enabled={run > 0} /></strong><i aria-hidden="true"><ArrowUpRightIcon size={14} weight="light" /></i></button>;
+  const [scrambling, setScrambling] = useState(false);
+  const timer = useRef<number | null>(null);
+  useEffect(() => () => { if (timer.current) window.clearTimeout(timer.current); }, []);
+  const activate = () => {
+    onActive(); setRun((value) => value + 1); setScrambling(true);
+    if (timer.current) window.clearTimeout(timer.current);
+    timer.current = window.setTimeout(() => setScrambling(false), 840);
+  };
+  return <button className={`skill-item ${active ? 'is-active' : ''} ${scrambling ? 'is-scrambling' : ''}`} type="button" onPointerEnter={activate} onFocus={activate} onClick={activate} aria-pressed={active} title={description}><small>{index}</small><strong className="skill-name"><span>{name}</span><span className="skill-name-scramble" aria-hidden="true"><ScrambleText text={name} run={run} enabled={run > 0} /></span></strong><i aria-hidden="true"><ArrowUpRightIcon size={14} weight="light" /></i></button>;
 }
 
 function SkillSector({ sector, open, onToggle }: { sector: (typeof skillSectors)[number]; open: boolean; onToggle: () => void }) {

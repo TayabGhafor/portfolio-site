@@ -727,3 +727,31 @@ button { -webkit-tap-highlight-color: transparent; }
   .about-redesign h2 { font-size: clamp(36px, 9.2vw, 55px); }
   .interior-wide .about-content.about-redesign { width: calc(100% - 28px); max-width: 560px; margin: 0 auto; padding: 330px 0 150px; }
 }
+
+/* The content rail is intentionally compact; these proportions keep every
+   section readable instead of letting its visual column squeeze the copy. */
+.about-redesign .about-feature-panel { grid-template-columns: minmax(170px, .72fr) minmax(0, 1.28fr); gap: clamp(18px, 2.6vw, 34px); min-height: 336px; padding: 30px clamp(22px, 3vw, 38px); background: linear-gradient(120deg, rgba(255,255,255,.045), rgba(255,255,255,.012) 52%, rgba(255,255,255,.026)); }
+.about-redesign .core-direction-art, .about-redesign .experience-art, .about-redesign .cta-art { min-height: 240px; }
+.about-redesign .experience-panel .feature-copy h2, .about-redesign .cta-panel .feature-copy h2 { font-size: clamp(39px, 3.5vw, 54px); }
+.about-redesign .experience-panel .about-body-copy, .about-redesign .cta-panel .about-body-copy { font-size: 15px; line-height: 1.68; }
+.about-redesign .experience-record { grid-template-columns: 58px minmax(0, 1fr); gap: 9px; margin: 20px 0; padding: 12px 0; }
+.about-redesign .experience-record a, .about-redesign .experience-record small { grid-column: 2; }
+.about-redesign .technical-arsenal .about-section-heading { margin-bottom: 26px; }
+.about-redesign .skill-sector { border-color: rgba(255,255,255,.1); background: linear-gradient(100deg, rgba(255,255,255,.026), rgba(255,255,255,.009)); }
+.about-redesign .sector-toggle { min-height: 118px; grid-template-columns: 112px minmax(0, 1fr) 32px; gap: 17px; padding: 14px 20px; }
+.about-redesign .sector-visual-wrap { width: 104px; height: 84px; }
+.about-redesign .sector-heading { gap: 7px; }.about-redesign .sector-heading strong { font-size: clamp(25px, 2.25vw, 34px); line-height: .94; }
+.about-redesign .sector-body { grid-template-columns: minmax(0, 1fr) 154px; gap: 14px; padding: 0 20px 20px; }
+.about-redesign .sector-skills { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
+.about-redesign .skill-item { min-height: 52px; grid-template-columns: 38px 1fr 20px; gap: 8px; padding: 9px 12px; border-color: rgba(255,255,255,.11); background: rgba(255,255,255,.025); }
+.about-redesign .skill-item small { font-size: 8px; }.about-redesign .skill-item strong { font-size: 12px; line-height: 1.14; letter-spacing: .015em; text-overflow: clip; white-space: normal; }.about-redesign .skill-item > i { color: rgba(255,255,255,.52); }
+.about-redesign .skill-name { position: relative; display: block; min-height: 1.25em; overflow: hidden; }.about-redesign .skill-name > span:first-child { display: block; transition: opacity .14s ease; }.about-redesign .skill-name-scramble { position: absolute; inset: 0; display: block; opacity: 0; transition: opacity .12s ease; }.about-redesign .skill-item.is-scrambling .skill-name > span:first-child { opacity: 0; }.about-redesign .skill-item.is-scrambling .skill-name-scramble { opacity: 1; }
+.about-redesign .sector-detail { min-height: 104px; padding: 12px 0 12px 14px; }.about-redesign .sector-detail span { font-size: 11px; }.about-redesign .sector-detail p { font-size: 12px; line-height: 1.55; }
+
+@media (max-width: 760px) {
+  .about-redesign .about-feature-panel { padding: 20px 16px 26px; }
+  .about-redesign .experience-panel .feature-copy h2, .about-redesign .cta-panel .feature-copy h2 { font-size: clamp(36px, 9.2vw, 52px); }
+  .about-redesign .sector-toggle { grid-template-columns: 78px minmax(0, 1fr) 20px; min-height: 96px; padding: 9px 11px; gap: 12px; }
+  .about-redesign .sector-visual-wrap { width: 76px; height: 72px; }.about-redesign .sector-heading strong { font-size: 24px; }
+  .about-redesign .skill-item { min-height: 48px; grid-template-columns: 30px 1fr; padding: 8px 9px; }.about-redesign .skill-item small { font-size: 7px; }.about-redesign .skill-item strong { font-size: 11px; }
+}
