@@ -73,7 +73,7 @@ export function InteriorChrome({ currentPage, index, label, wide = false, aside,
   return (
     <div
       ref={shellRef}
-      className={`about-shell ${wide ? 'interior-wide' : ''} ${motion ? 'motion-full' : 'motion-reduced'} tier-${tier}`}
+      className={`about-shell ${wide ? 'interior-wide' : ''} ${motion ? 'motion-full' : 'motion-reduced'} tier-${tier} ${scroll > .015 ? 'about-has-scrolled' : ''}`}
       onPointerMove={handlePointer}
     >
       <div className="about-grid" aria-hidden="true" />
