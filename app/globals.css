@@ -674,3 +674,65 @@ button { -webkit-tap-highlight-color: transparent; }
 @media (max-width: 390px) {
   .about-redesign { width: calc(100% - 22px); }.about-redesign h1 { font-size: 53px; }.about-redesign h2 { font-size: 34px; }.about-hero-art-wrap { min-height: 330px; }.about-principles { gap: 8px; }.about-principles b { font-size: 6px; letter-spacing: .05em; }.capability-card { min-height: 190px; }.capability-card h3 { font-size: 14px; }.sector-heading strong { font-size: 21px; }.sector-skills { grid-template-columns: 1fr; }.cta-panel .about-cta-row { grid-template-columns: 1fr; }.cta-panel .about-cta-row a:last-child { grid-column: auto; }
 }
+
+/* Reference-style About composition: a fixed portrait rail and an unboxed editorial column. */
+.about-reference-portrait { position: fixed; z-index: 12; left: 40px; top: 50%; width: 390px; height: 560px; transform: translateY(-50%); pointer-events: none; }
+.about-reference-portrait-frame { position: absolute; inset: 0; display: block; overflow: hidden; background: transparent; }
+.about-reference-portrait-frame img { object-fit: contain; filter: grayscale(1) contrast(1.16) brightness(.92); mix-blend-mode: normal; opacity: .76; }
+.about-reference-portrait-scan { position: absolute; left: 2%; right: 2%; top: 46%; height: 1px; display: block; background: linear-gradient(90deg, transparent, rgba(255,255,255,.4), transparent); box-shadow: 0 0 13px rgba(255,255,255,.18); animation: aboutFrameScan 5.2s ease-in-out infinite; }
+.about-reference-portrait > small { position: absolute; left: 0; bottom: -18px; color: rgba(255,255,255,.26); font: 7px var(--font-mono); letter-spacing: .16em; }
+.about-redesign { width: min(700px, calc(100vw - 600px)); margin-left: 28vw; margin-right: 0; padding: 132px 0 210px; }
+.about-hero-redesign { display: block; min-height: 650px; }
+.about-hero-copy { max-width: 700px; padding: 94px 0 70px; }
+.about-hero-art-wrap { display: none; }
+.about-meta-grid { grid-template-columns: repeat(3, 1fr); gap: 28px; margin-top: 42px; }
+.about-meta-grid > div { min-height: 0; padding: 0; border: 0; border-radius: 0; background: transparent; }
+.about-meta-grid > div:hover { transform: none; border-color: transparent; background: transparent; }
+.about-principles { gap: 25px; margin-top: 30px; }
+.about-feature-panel, .about-capabilities, .technical-arsenal { border: 0; border-radius: 0; background: transparent; box-shadow: none; }
+.about-feature-panel { display: block; min-height: 0; padding: 0; overflow: visible; }
+.about-feature-panel .about-visual { display: none; }
+.feature-copy { max-width: 700px; }
+.about-redesign .about-block, .experience-panel, .cta-panel { margin-top: 154px; }
+.about-section-heading { align-items: baseline; margin-bottom: 42px; }
+.about-section-heading > p { max-width: 280px; }
+.capability-grid { grid-template-columns: repeat(2, 1fr); gap: 24px 34px; }
+.capability-card { min-height: 0; padding: 0 0 20px; border: 0; border-bottom: 1px solid rgba(255,255,255,.12); border-radius: 0; background: transparent; }
+.capability-card:hover { transform: none; border-color: rgba(255,255,255,.35); background: transparent; }
+.skill-sector-list { gap: 62px; }
+.skill-sector { border: 0; border-radius: 0; background: transparent; overflow: visible; }
+.skill-sector:hover { border-color: transparent; background: transparent; }
+.sector-toggle { min-height: 0; grid-template-columns: 1fr; gap: 8px; padding: 0 0 14px; border-bottom: 1px solid rgba(255,255,255,.11); }
+.sector-visual-wrap, .sector-icon, .sector-plus { display: none; }
+.sector-heading { display: flex; align-items: baseline; gap: 18px; }
+.sector-heading strong { font-size: clamp(24px, 2.2vw, 36px); }
+.sector-body { grid-template-columns: 1fr; padding: 18px 0 0; }
+.sector-detail { display: none; }
+.experience-record { grid-template-columns: 70px 1.4fr 1fr; margin-top: 30px; }
+.cta-panel .cta-art { display: none; }
+.cta-panel .about-cta-row a { min-width: 150px; }
+
+@media (max-width: 1100px) {
+  .about-reference-portrait { left: 30px; width: 300px; transform: translateY(-50%) scale(.86); transform-origin: left center; }
+  .about-redesign { width: calc(100% - 400px); margin-left: 360px; padding-right: 36px; }
+}
+
+@media (max-width: 760px) {
+  .about-reference-portrait { left: auto; right: -36px; top: 82px; width: 330px; height: 300px; transform: scale(.72); transform-origin: top right; opacity: .6; }
+  .about-reference-portrait > small { display: none; }
+  .about-redesign { width: min(100% - 28px, 560px); margin: 0 auto; padding: 102px 0 170px; }
+  .about-hero-redesign { min-height: 0; }
+  .about-hero-copy { padding: 238px 0 24px; }
+  .about-redesign .about-block, .experience-panel, .cta-panel { margin-top: 98px; }
+  .about-meta-grid { grid-template-columns: 1fr; gap: 14px; margin-top: 28px; }
+  .about-principles { gap: 12px; }
+  .about-section-heading { display: block; margin-bottom: 28px; }
+  .about-section-heading > p { max-width: 100%; margin-top: 12px; text-align: left; }
+  .capability-grid { grid-template-columns: 1fr; gap: 18px; }
+  .skill-sector-list { gap: 44px; }
+  .sector-toggle { grid-template-columns: 1fr 20px; padding: 0 0 12px; }
+  .sector-plus { display: block; grid-column: 2; grid-row: 1; justify-self: end; }
+  .sector-heading { grid-column: 1; }
+  .sector-body { padding-left: 0; }
+  .experience-record { grid-template-columns: 55px 1fr; }
+}
