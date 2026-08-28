@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useRef, useState, type CSSProperties, type PointerEvent as ReactPointerEvent } from 'react';
 import dynamic from 'next/dynamic';
+import { IdentityMark } from '../src/components/IdentityMark';
 import { ScrambleText, SiteControls, type ControlPanel, type PerformanceTier } from '../src/components/SiteControls';
 import { projects } from '../src/content/projects';
 import { readSitePreferences } from '../src/lib/sitePreferences';
@@ -147,8 +148,7 @@ export default function Home() {
         <div className="grain" aria-hidden="true" />
 
         <header className="identity-block">
-          <strong>Tayab&apos;s Portfolio</strong>
-          <span>Build / 2026</span>
+          <IdentityMark />
         </header>
 
         <div className="status-stream" aria-label="Portfolio system status">

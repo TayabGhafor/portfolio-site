@@ -2,6 +2,7 @@
 
 import Link from 'next/link';
 import { useEffect, useRef, useState, type PointerEvent as ReactPointerEvent, type ReactNode, type UIEvent } from 'react';
+import { IdentityMark } from './IdentityMark';
 import { SiteControls, type ControlPanel, type PerformanceTier, type PageKey } from './SiteControls';
 import { readSitePreferences } from '../lib/sitePreferences';
 
@@ -83,7 +84,7 @@ export function InteriorChrome({ currentPage, index, label, wide = false, aside,
       <div className="about-bottom-fade" aria-hidden="true" />
 
       <header className="about-header">
-        <Link href="/" aria-label="Tayab Malik - Home"><strong>Tayab Malik</strong><span>Portfolio / 2026</span></Link>
+        <IdentityMark />
         <div className="about-breadcrumb"><Link href="/">HOME</Link><i>/</i><b>{showIndex ? `[${index}] ` : ''}{label}</b></div>
       </header>
 
