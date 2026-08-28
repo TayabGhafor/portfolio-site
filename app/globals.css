@@ -806,6 +806,22 @@ button { -webkit-tap-highlight-color: transparent; }
 /* Contact reference layout */
 .contact-corner-title { position: fixed; z-index: 30; top: 62px; right: 40px; color: #fff; font: 400 120px/.78 var(--font-denominary), system-ui, sans-serif; letter-spacing: .015em; text-transform: uppercase; pointer-events: auto; transform: scaleX(.6); transform-origin: 100% 0; text-shadow: 0 0 18px rgba(255,255,255,.06); }
 .contact-corner-title .contact-scramble { min-height: 0; }
+.projects-corner-title { position: fixed; z-index: 30; top: 53px; right: 40px; color: #fff; font: 400 120px/.78 var(--font-denominary), system-ui, sans-serif; letter-spacing: .015em; text-transform: uppercase; transform: scaleX(.645); transform-origin: 100% 0; text-shadow: 0 0 18px rgba(255,255,255,.06); }
+.interior-wide .about-content.projects-reference { width: min(960px, calc(100vw - 560px)); margin: 0 0 0 clamp(320px, 20vw, 384px); padding: 128px 0 190px; }
+.project-reference-list { display: grid; }
+.project-reference-row { display: grid; grid-template-columns: 54px minmax(0, 1fr) 176px; min-height: 180px; margin-bottom: 36px; border-bottom: 1px solid rgba(255,255,255,.12); }
+.project-reference-row:last-child { margin-bottom: 0; }
+.project-reference-number { align-self: start; margin-top: 58px; color: rgba(255,255,255,.2); font: 400 25px/1 var(--font-denominary), system-ui, sans-serif; }
+.project-reference-copy { min-width: 0; padding: 0 34px 30px 0; }
+.project-reference-title { display: block; width: max-content; max-width: 100%; color: rgba(255,255,255,.97); font: 400 54px/.92 var(--font-denominary), system-ui, sans-serif; letter-spacing: .008em; text-decoration: none; text-transform: uppercase; transition: color .25s ease, transform .42s cubic-bezier(.18,.8,.2,1), letter-spacing .42s ease; }
+.project-reference-title:hover, .project-reference-title:focus-visible { color: #fff; letter-spacing: .02em; outline: none; transform: translateX(5px); }
+.project-reference-tags { display: flex; flex-wrap: wrap; gap: 8px; margin: 14px 0 15px; }
+.project-reference-tags span { min-height: 34px; display: inline-flex; align-items: center; padding: 0 13px; border: 1px solid rgba(255,255,255,.43); border-radius: 5px; color: rgba(255,255,255,.83); font: 10px var(--font-csgenio), monospace; letter-spacing: .1em; text-transform: uppercase; }
+.projects-reference .project-reference-copy p { max-width: 650px; margin: 0; color: rgba(255,255,255,.48); font: 400 11px/1.5 var(--font-csgenio), monospace; letter-spacing: .07em; text-align: left; text-transform: uppercase; }
+.project-reference-preview { position: relative; width: 176px; height: 142px; display: block; align-self: start; overflow: hidden; border-radius: 4px; background: #151515; box-shadow: inset 0 0 0 1px rgba(255,255,255,.025); transition: background .3s ease, transform .45s cubic-bezier(.18,.8,.2,1), box-shadow .3s ease; }
+.project-reference-preview img { object-fit: contain; padding: 19px; filter: saturate(.82) brightness(.82); transition: filter .35s ease, transform .6s cubic-bezier(.18,.8,.2,1); }
+.project-reference-row:hover .project-reference-preview { transform: translateY(-3px); background: #1a1a1a; box-shadow: 0 16px 38px rgba(0,0,0,.3), inset 0 0 0 1px rgba(255,255,255,.07); }
+.project-reference-row:hover .project-reference-preview img { filter: saturate(1) brightness(1); transform: scale(1.035); }
 .interior-wide .about-content.contact-reference { width: min(620px, calc(100% - 64px)); margin: 0 auto; padding: 1px 0 190px; }
 .contact-seo-title { position: absolute; width: 1px; height: 1px; margin: -1px; overflow: hidden; clip: rect(0 0 0 0); clip-path: inset(50%); white-space: nowrap; }
 .contact-reference-rail { display: flex; flex-direction: column; align-items: center; width: 100%; margin-top: clamp(210px, 27.5vh, 260px); text-align: center; }
@@ -862,6 +878,17 @@ button { -webkit-tap-highlight-color: transparent; }
   .page-contact .about-header { top: 27px; right: clamp(16px, 6.45vw, 40px); }
   .page-contact .about-breadcrumb { gap: 11px; font-size: 10px; }
   .contact-corner-title { top: 62px; right: clamp(16px, 6.45vw, 40px); font-size: clamp(76px, 19.35vw, 120px); }
+  .projects-corner-title { top: 68px; right: 16px; font-size: clamp(70px, 19vw, 92px); }
+  .interior-wide .about-content.projects-reference { width: calc(100% - 34px); margin: 0 auto; padding: 190px 0 150px; }
+  .project-reference-row { grid-template-columns: 38px minmax(0, 1fr) 112px; min-height: 154px; margin-bottom: 28px; }
+  .project-reference-number { margin-top: 42px; font-size: 20px; }
+  .project-reference-copy { padding: 0 16px 24px 0; }
+  .project-reference-title { font-size: clamp(31px, 8.5vw, 43px); }
+  .project-reference-tags { gap: 5px; margin: 10px 0 11px; }
+  .project-reference-tags span { min-height: 27px; padding: 0 8px; font-size: 8px; }
+  .projects-reference .project-reference-copy p { display: none; }
+  .project-reference-preview { width: 112px; height: 92px; }
+  .project-reference-preview img { padding: 11px; }
   .interior-wide .about-content.contact-reference { width: calc(100% - 34px); padding-bottom: 142px; }
   .contact-reference-rail { margin-top: 210px; }.contact-reference-rule { width: min(500px, 100%); }.contact-rule-before-email { margin: clamp(31px, 6vw, 38px) 0 clamp(25px, 4.85vw, 30px); }.contact-rule-before-phone { margin: clamp(28px, 5.8vw, 36px) 0 clamp(25px, 4.85vw, 30px); }.contact-rule-after-phone { margin: clamp(26px, 4.7vw, 29px) 0 0; }
   .contact-primary { font-size: clamp(21px, 5.35vw, 32px); letter-spacing: .015em; }.contact-phone { font-size: clamp(26px, 6vw, 38px); }

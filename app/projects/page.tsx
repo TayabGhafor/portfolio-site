@@ -4,37 +4,43 @@ import Image from 'next/image';
 import { InteriorChrome } from '../../src/components/InteriorChrome';
 import { projects } from '../../src/content/projects';
 
+function getProjectTags(category: string) {
+  const tags = category.split(' / ').slice(0, 2);
+  return tags.length > 1 ? tags : [tags[0], 'Design & Development'];
+}
+
 export default function ProjectsPage() {
   return (
-    <InteriorChrome currentPage="projects" index="03" label="PROJECTS" wide>
-      <main className="about-content">
-        <section className="about-intro about-block">
-          <span className="about-section-id">[ ARCHIVE / 03 ]</span>
-          <h1>Selected work</h1>
-          <p className="about-lede">Nine live product interfaces</p>
-          <h2>built for SaaS, commerce, and social products</h2>
-          <p>Each case is a shipped frontend: responsive layouts, operational workflows, and product storytelling. Open a live build to inspect the actual interface.</p>
-        </section>
-
-        <section className="about-block project-index" aria-label="Project archive">
-          {projects.map((project) => (
-            <article className="project-card" key={project.id}>
-              <a className="project-card-media" href={project.liveUrl} target="_blank" rel="noreferrer">
+    <InteriorChrome
+      currentPage="projects"
+      index="03"
+      label="PROJECTS"
+      wide
+      showIndex={false}
+      aside={<div className="projects-corner-title" aria-hidden="true">PROJECTS</div>}
+    >
+      <main className="about-content projects-reference">
+        <h1 className="contact-seo-title">Projects by Tayab Malik</h1>
+        <section className="project-reference-list" aria-label="Project archive">
+          {projects.map((project, index) => (
+            <article className="project-reference-row" key={project.id}>
+              <span className="project-reference-number">{project.id}</span>
+              <div className="project-reference-copy">
+                <a className="project-reference-title" href={project.liveUrl} target="_blank" rel="noreferrer">{project.name}</a>
+                <div className="project-reference-tags">
+                  {getProjectTags(project.category).map((tag) => <span key={tag}>{tag}</span>)}
+                </div>
+                <p>{project.summary}</p>
+              </div>
+              <a className="project-reference-preview" href={project.liveUrl} target="_blank" rel="noreferrer" aria-label={`Open ${project.name} live website`}>
                 <Image
                   src={project.assets.cover}
                   alt={`${project.name} desktop interface`}
-                  width={1440}
-                  height={900}
-                  sizes="(max-width: 800px) 100vw, 42vw"
+                  fill
+                  sizes="176px"
+                  priority={index < 4}
                 />
               </a>
-              <div className="project-card-copy">
-                <span>[{project.id}] TIER_{project.tier}</span>
-                <h3>{project.name}</h3>
-                <small>{project.category}</small>
-                <p>{project.summary}</p>
-                <a href={project.liveUrl} target="_blank" rel="noreferrer">Open live build ↗</a>
-              </div>
             </article>
           ))}
         </section>
