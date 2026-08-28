@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useRef, useState, type CSSProperties, type PointerEvent as ReactPointerEvent } from 'react';
 import dynamic from 'next/dynamic';
 import { IdentityMark } from '../src/components/IdentityMark';
+import { SharedFooterContent } from '../src/components/SharedFooterContent';
 import { ScrambleText, SiteControls, type ControlPanel, type PerformanceTier } from '../src/components/SiteControls';
 import { projects } from '../src/content/projects';
 import { readSitePreferences } from '../src/lib/sitePreferences';
@@ -148,7 +149,7 @@ export default function Home() {
         <div className="grain" aria-hidden="true" />
 
         <header className="identity-block">
-          <IdentityMark />
+          <IdentityMark motion={motion} />
         </header>
 
         <div className="status-stream" aria-label="Portfolio system status">
@@ -191,8 +192,7 @@ export default function Home() {
         </section>
 
         <footer className="shell-footer">
-          <a href="mailto:tayabghafor@gmail.com"><span>Wanna say Hello?</span><strong>tayabghafor@gmail.com</strong></a>
-          <div><span>Local Time</span><strong>Pakistan / PKT&nbsp; {time}</strong></div>
+          <SharedFooterContent time={time} motion={motion} />
         </footer>
 
         <SiteControls currentPage="home" panel={panel} motion={motion} tier={tier} onPanelChange={setPanel} onToggleMotion={toggleMotion} onTierChange={chooseTier} />

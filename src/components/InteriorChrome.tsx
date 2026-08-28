@@ -3,6 +3,7 @@
 import Link from 'next/link';
 import { useEffect, useRef, useState, type PointerEvent as ReactPointerEvent, type ReactNode, type UIEvent } from 'react';
 import { IdentityMark } from './IdentityMark';
+import { SharedFooterContent } from './SharedFooterContent';
 import { SiteControls, type ControlPanel, type PerformanceTier, type PageKey } from './SiteControls';
 import { readSitePreferences } from '../lib/sitePreferences';
 
@@ -84,7 +85,7 @@ export function InteriorChrome({ currentPage, index, label, wide = false, aside,
       <div className="about-bottom-fade" aria-hidden="true" />
 
       <header className="about-header">
-        <IdentityMark />
+        <IdentityMark motion={motion} />
         <div className="about-breadcrumb"><Link href="/">HOME</Link><i>/</i><b>{showIndex ? `[${index}] ` : ''}{label}</b></div>
       </header>
 
@@ -95,14 +96,7 @@ export function InteriorChrome({ currentPage, index, label, wide = false, aside,
       </div>
 
       <footer className="about-footer">
-        <a href="mailto:tayabghafor@gmail.com">
-          <span>Wanna say Hello?</span>
-          <strong>tayabghafor@gmail.com</strong>
-        </a>
-        <div>
-          <span>Local Time</span>
-          <strong>Pakistan / PKT&nbsp; {time}</strong>
-        </div>
+        <SharedFooterContent time={time} motion={motion} />
       </footer>
 
       <div className="about-scroll-progress" aria-hidden="true">

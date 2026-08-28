@@ -77,6 +77,8 @@ button { -webkit-tap-highlight-color: transparent; }
 .identity-name { align-items: flex-end; text-align: right; }
 .identity-meta { align-items: flex-start; text-align: left; }
 .identity-mark > i { width: 1px; margin-top: 3px; background: rgba(255,255,255,.46); }
+.identity-mark:focus-visible, .footer-scramble-scope:focus-visible { outline: 1px solid rgba(255,255,255,.65); outline-offset: 7px; }
+.footer-scramble-scope { cursor: crosshair; outline: none; }
 
 .status-stream { position: absolute; z-index: 6; top: 4.2vh; right: 3.2vw; width: 49%; display: flex; justify-content: space-between; gap: 20px; overflow: hidden; white-space: nowrap; }
 .status-stream span { position: relative; padding: 6px 0; color: #aaa6a6; font: 7px/1 var(--font-mono); letter-spacing: .08em; transition: color .25s ease, transform .25s ease; }
