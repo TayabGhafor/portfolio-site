@@ -22,7 +22,6 @@ export default function ContactPage() {
     index="04"
     label="CONTACT"
     wide
-    footerNote="Available for frontend work"
     showIndex={false}
     aside={<div className="contact-corner-title" aria-hidden="true"><HoverScramble text="CONTACT" /></div>}
   >

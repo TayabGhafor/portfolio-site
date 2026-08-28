@@ -11,12 +11,11 @@ interface InteriorChromeProps {
   label: string;
   wide?: boolean;
   aside?: ReactNode;
-  footerNote?: string;
   showIndex?: boolean;
   children: ReactNode;
 }
 
-export function InteriorChrome({ currentPage, index, label, wide = false, aside, footerNote, showIndex = true, children }: InteriorChromeProps) {
+export function InteriorChrome({ currentPage, index, label, wide = false, aside, showIndex = true, children }: InteriorChromeProps) {
   const shellRef = useRef<HTMLDivElement>(null);
   const [panel, setPanel] = useState<ControlPanel>(null);
   const [motion, setMotion] = useState(true);
@@ -95,10 +94,10 @@ export function InteriorChrome({ currentPage, index, label, wide = false, aside,
       </div>
 
       <footer className="about-footer">
-        <div>
-          <span>Wanna work together?</span>
-          <strong>{footerNote ?? 'Open to frontend opportunities'}</strong>
-        </div>
+        <a href="mailto:tayabghafor@gmail.com">
+          <span>Wanna say Hello?</span>
+          <strong>tayabghafor@gmail.com</strong>
+        </a>
         <div>
           <span>Local Time</span>
           <strong>Pakistan / PKT&nbsp; {time}</strong>

@@ -380,7 +380,8 @@ button { -webkit-tap-highlight-color: transparent; }
 .about-portrait-readout span { color: rgba(255,255,255,.24); }
 .about-portrait-readout b { color: rgba(255,255,255,.58); font-weight: 400; }
 .about-footer { position: fixed; z-index: 31; left: 40px; bottom: 32px; display: flex; gap: 62px; mix-blend-mode: difference; }
-.about-footer div { display: flex; flex-direction: column; gap: 5px; }
+.about-footer > * { display: flex; flex-direction: column; gap: 5px; }
+.about-footer > a { text-decoration: none; }
 .about-footer span { color: rgba(255,255,255,.42); font: 7px var(--font-mono); }
 .about-footer strong { color: rgba(255,255,255,.75); font: 400 8px var(--font-mono); }
 .about-scroll-progress { position: fixed; z-index: 31; left: 50%; bottom: 38px; display: flex; align-items: center; gap: 12px; transform: translateX(-50%); pointer-events: none; color: rgba(255,255,255,.2); font: 7px var(--font-mono); letter-spacing: .12em; }

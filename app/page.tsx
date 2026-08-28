@@ -191,7 +191,7 @@ export default function Home() {
         </section>
 
         <footer className="shell-footer">
-          <a href="/Tayab-Malik.pdf" target="_blank" rel="noreferrer"><span>View my profile</span><strong>Resume / Open ↗</strong></a>
+          <a href="mailto:tayabghafor@gmail.com"><span>Wanna say Hello?</span><strong>tayabghafor@gmail.com</strong></a>
           <div><span>Local Time</span><strong>Pakistan / PKT&nbsp; {time}</strong></div>
         </footer>
 

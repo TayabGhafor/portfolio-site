@@ -6,7 +6,7 @@ import { projects } from '../../src/content/projects';
 
 export default function ProjectsPage() {
   return (
-    <InteriorChrome currentPage="projects" index="03" label="PROJECTS" wide footerNote="Selected product interfaces">
+    <InteriorChrome currentPage="projects" index="03" label="PROJECTS" wide>
       <main className="about-content">
         <section className="about-intro about-block">
           <span className="about-section-id">[ ARCHIVE / 03 ]</span>

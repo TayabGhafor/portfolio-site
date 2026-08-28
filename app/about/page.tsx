@@ -155,7 +155,7 @@ export default function AboutPage() {
     return () => media.removeEventListener('change', update);
   }, []);
 
-  return <InteriorChrome currentPage="about" index="02" label="ABOUT" wide aside={<AboutPortraitRail />} footerNote="Open to frontend opportunities">
+  return <InteriorChrome currentPage="about" index="02" label="ABOUT" wide aside={<AboutPortraitRail />}>
     <main className="about-content about-redesign">
       <Reveal className="about-hero-redesign">
         <div className="about-hero-copy"><span className="about-section-id">[ PROFILE / 02 ]</span><p className="about-eyebrow">A FRONTEND DEVELOPER</p><h1 className="about-seo-title" hidden>Meet Tayab Malik</h1><h2><RevealHeading text="ENGINEERING POLISHED" run={heroRun} /><br /><RevealHeading text="WEB EXPERIENCES" run={heroRun} /></h2><p className="about-body-copy">I craft functional, responsive, and visually refined interfaces. My work combines frontend architecture, thoughtful interaction, accessibility, performance, and product thinking.</p><div className="about-meta-grid"><div><small>LOCATION</small><strong>Pakistan / PKT</strong></div><div><small>EXPERIENCE</small><strong>Frontend Developer Intern <em>SoftAccess</em></strong></div><div><small>AVAILABILITY</small><strong>Open for opportunities</strong></div></div><div className="about-principles" aria-label="Frontend principles">{principles.map(({ label, icon: PrincipleIcon }) => <span key={label}><i><PrincipleIcon size={15} weight="light" /></i><b>{label}</b></span>)}</div></div>
