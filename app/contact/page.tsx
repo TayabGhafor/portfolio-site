@@ -17,8 +17,15 @@ function HoverScramble({ text, className = '' }: { text: string; className?: str
 }
 
 export default function ContactPage() {
-  return <InteriorChrome currentPage="contact" index="04" label="CONTACT" wide footerNote="Available for frontend work">
-    <div className="contact-corner-title" aria-hidden="true"><HoverScramble text="CONTACT" /></div>
+  return <InteriorChrome
+    currentPage="contact"
+    index="04"
+    label="CONTACT"
+    wide
+    footerNote="Available for frontend work"
+    showIndex={false}
+    aside={<div className="contact-corner-title" aria-hidden="true"><HoverScramble text="CONTACT" /></div>}
+  >
     <main className="about-content contact-reference">
       <h1 className="contact-seo-title">Contact Tayab Malik</h1>
       <section className="contact-reference-rail" aria-label="Contact Tayab Malik">

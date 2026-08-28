@@ -15,8 +15,6 @@
   --pointer-y: 50vh;
   --portrait-shift-x: 0px;
   --portrait-shift-y: 0px;
-  --font-denominary: var(--font-display);
-  --font-csgenio: var(--font-mono);
   --type-display-title: 96px;
   --type-display-section: 72px;
   --type-copy: 18px;
@@ -25,7 +23,11 @@
 
 * { box-sizing: border-box; }
 html, body { margin: 0; min-height: 100%; background: var(--bg); color: var(--white); font-family: var(--font-sans), sans-serif; }
-body { overflow: hidden; }
+body {
+  --font-denominary: var(--font-display);
+  --font-csgenio: var(--font-mono);
+  overflow: hidden;
+}
 button, a { color: inherit; font: inherit; }
 button { -webkit-tap-highlight-color: transparent; }
 .skip-link { position: fixed; z-index: 100; left: 16px; top: -60px; padding: 11px 16px; background: #fff; color: #050505; text-decoration: none; }
@@ -800,7 +802,8 @@ button { -webkit-tap-highlight-color: transparent; }
 }
 
 /* Contact reference layout */
-.contact-corner-title { position: fixed; z-index: 14; top: clamp(52px, 4.2vw, 68px); right: clamp(38px, 4vw, 82px); color: #f5f5f5; font: 400 clamp(58px, 6.1vw, 106px)/.78 var(--font-display); letter-spacing: .015em; text-transform: uppercase; pointer-events: auto; }
+.contact-corner-title { position: fixed; z-index: 30; top: 62px; right: 40px; color: #fff; font: 400 120px/.78 var(--font-denominary), system-ui, sans-serif; letter-spacing: .015em; text-transform: uppercase; pointer-events: auto; transform: scaleX(.6); transform-origin: 100% 0; text-shadow: 0 0 18px rgba(255,255,255,.06); }
+.contact-corner-title .contact-scramble { min-height: 0; }
 .interior-wide .about-content.contact-reference { width: min(620px, calc(100% - 64px)); margin: 0 auto; padding: 1px 0 190px; }
 .contact-seo-title { position: absolute; width: 1px; height: 1px; margin: -1px; overflow: hidden; clip: rect(0 0 0 0); clip-path: inset(50%); white-space: nowrap; }
 .contact-reference-rail { display: flex; flex-direction: column; align-items: center; width: 100%; margin-top: clamp(210px, 27.5vh, 260px); text-align: center; }
@@ -856,7 +859,9 @@ button { -webkit-tap-highlight-color: transparent; }
 .about-portrait-art::before, .about-portrait-art::after { display: none; }
 
 @media (max-width: 760px) {
-  .contact-corner-title { top: 68px; right: 16px; font-size: clamp(34px, 11vw, 52px); }
+  .page-contact .about-header { top: 27px; right: clamp(16px, 6.45vw, 40px); }
+  .page-contact .about-breadcrumb { gap: 11px; font-size: 10px; }
+  .contact-corner-title { top: 62px; right: clamp(16px, 6.45vw, 40px); font-size: clamp(76px, 19.35vw, 120px); }
   .interior-wide .about-content.contact-reference { width: calc(100% - 34px); padding-bottom: 142px; }
   .contact-reference-rail { margin-top: 210px; }.contact-reference-rule { width: min(500px, 100%); }.contact-rule-before-email { margin: clamp(31px, 6vw, 38px) 0 clamp(25px, 4.85vw, 30px); }.contact-rule-before-phone { margin: clamp(28px, 5.8vw, 36px) 0 clamp(25px, 4.85vw, 30px); }.contact-rule-after-phone { margin: clamp(26px, 4.7vw, 29px) 0 0; }
   .contact-primary { font-size: clamp(21px, 5.35vw, 32px); letter-spacing: .015em; }.contact-phone { font-size: clamp(26px, 6vw, 38px); }

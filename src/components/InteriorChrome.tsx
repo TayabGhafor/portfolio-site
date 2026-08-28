@@ -12,10 +12,11 @@ interface InteriorChromeProps {
   wide?: boolean;
   aside?: ReactNode;
   footerNote?: string;
+  showIndex?: boolean;
   children: ReactNode;
 }
 
-export function InteriorChrome({ currentPage, index, label, wide = false, aside, footerNote, children }: InteriorChromeProps) {
+export function InteriorChrome({ currentPage, index, label, wide = false, aside, footerNote, showIndex = true, children }: InteriorChromeProps) {
   const shellRef = useRef<HTMLDivElement>(null);
   const [panel, setPanel] = useState<ControlPanel>(null);
   const [motion, setMotion] = useState(true);
@@ -73,7 +74,7 @@ export function InteriorChrome({ currentPage, index, label, wide = false, aside,
   return (
     <div
       ref={shellRef}
-      className={`about-shell ${wide ? 'interior-wide' : ''} ${motion ? 'motion-full' : 'motion-reduced'} tier-${tier} ${scroll > .015 ? 'about-has-scrolled' : ''}`}
+      className={`about-shell page-${currentPage} ${wide ? 'interior-wide' : ''} ${motion ? 'motion-full' : 'motion-reduced'} tier-${tier} ${scroll > .015 ? 'about-has-scrolled' : ''}`}
       onPointerMove={handlePointer}
     >
       <div className="about-grid" aria-hidden="true" />
@@ -84,7 +85,7 @@ export function InteriorChrome({ currentPage, index, label, wide = false, aside,
 
       <header className="about-header">
         <Link href="/" aria-label="Tayab Malik - Home"><strong>Tayab Malik</strong><span>Portfolio / 2026</span></Link>
-        <div className="about-breadcrumb"><Link href="/">HOME</Link><i>/</i><b>[{index}] {label}</b></div>
+        <div className="about-breadcrumb"><Link href="/">HOME</Link><i>/</i><b>{showIndex ? `[${index}] ` : ''}{label}</b></div>
       </header>
 
       {aside}
