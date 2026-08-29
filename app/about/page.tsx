@@ -2,174 +2,227 @@
 
 import Image from 'next/image';
 import Link from 'next/link';
-import { useEffect, useRef, useState, type ReactNode } from 'react';
-import { ArrowUpRightIcon, BracketsCurlyIcon, ChartLineUpIcon, CodeIcon, DatabaseIcon, GaugeIcon, GitBranchIcon, InfinityIcon, LightningIcon, SquaresFourIcon, StackIcon, UserFocusIcon } from '@phosphor-icons/react';
+import { useEffect, useRef, useState, type CSSProperties, type ReactNode } from 'react';
+import {
+  ArrowUpRightIcon, BookOpenIcon, BracketsCurlyIcon, CheckCircleIcon, CodeIcon,
+  CrosshairIcon, EnvelopeSimpleIcon, FileTextIcon, GaugeIcon, GithubLogoIcon,
+  HandshakeIcon, LightningIcon, LinkedinLogoIcon, MapPinIcon, RocketLaunchIcon,
+  SquaresFourIcon, StackIcon, UserFocusIcon, UsersThreeIcon,
+} from '@phosphor-icons/react';
 import { InteriorChrome } from '../../src/components/InteriorChrome';
 import { ScrambleText } from '../../src/components/SiteControls';
 
 type Icon = typeof CodeIcon;
 
-const capabilities: Array<{ index: string; title: string; body: string; icon: Icon }> = [
-  { index: '01', title: 'Frontend development', body: 'Reusable React and Next.js interfaces that stay clear, responsive, and maintainable.', icon: CodeIcon },
-  { index: '02', title: 'UI / UX engineering', body: 'Interaction systems that turn product intent into useful, confident user flows.', icon: SquaresFourIcon },
-  { index: '03', title: 'Product focused', body: 'A practical bridge between visual direction, technical constraints, and shipping.', icon: UserFocusIcon },
-  { index: '04', title: 'Performance driven', body: 'Fast-loading surfaces with deliberate motion, accessible structure, and resilient states.', icon: GaugeIcon },
-];
-
-const principles: Array<{ label: string; icon: Icon }> = [
-  { label: 'CLEAN CODE', icon: BracketsCurlyIcon },
-  { label: 'ACCESSIBILITY', icon: UserFocusIcon },
-  { label: 'PERFORMANCE', icon: LightningIcon },
-  { label: 'PRODUCT THINKING', icon: ChartLineUpIcon },
-];
-
-const experienceTimeline = [
-  {
-    period: 'DEC 2025 - PRESENT',
-    company: 'Tallysis',
-    role: 'SQA Analyst',
-    location: 'Lahore, Pakistan',
-    summary: 'Contributing to software quality through structured web testing, issue discovery, and usability-focused QA.',
-    highlights: ['Manual web testing and test-case execution', 'UI and usability testing', 'API response testing with Postman', 'Bug reporting, re-testing, and developer collaboration'],
-  },
-  {
-    period: 'AUG 2025 - NOV 2025',
-    company: 'CodeAlpha',
-    role: 'Frontend Development Intern',
-    location: '4 MONTHS',
-    summary: 'Completed a frontend development internship, building practical experience during a four-month placement.',
-    highlights: [],
-  },
+const aboutSections = [
+  { id: 'profile', number: '01', title: 'Profile', shortTitle: 'Profile' },
+  { id: 'build', number: '02', title: 'What I Build', shortTitle: 'Build' },
+  { id: 'weapons', number: '03', title: 'My Weapons', shortTitle: 'Weapons' },
+  { id: 'learning', number: '04', title: 'Learning by Building', shortTitle: 'Learning' },
+  { id: 'connect', number: '05', title: 'Have a Project in Mind?', shortTitle: 'Connect' },
 ] as const;
 
-const skillSectors = [
-  { id: '01', title: 'Core & Frameworks', illustration: '/about-page-illustrations/skills/Core-frameworks-transparent.png', icon: StackIcon, skills: [['JavaScript', 'The language layer behind expressive browser experiences.'], ['TypeScript', 'Safer interfaces through explicit, scalable contracts.'], ['React', 'Component architecture for interactive product surfaces.'], ['Next.js', 'Production-minded routing, rendering, and delivery.'], ['Tailwind CSS', 'Composable styling for fast, consistent iteration.']] },
-  { id: '02', title: 'Interface Engineering', illustration: '/about-page-illustrations/skills/interface-engineering-transparent.png', icon: SquaresFourIcon, skills: [['Responsive UI', 'Layouts that remain intentional from phone to desktop.'], ['Frontend Architecture', 'Systems that keep complex interfaces understandable.'], ['GSAP', 'Narrative motion used with restraint and purpose.'], ['ShadCN UI', 'Flexible primitives for polished product workflows.'], ['Radix UI', 'Accessible behavior underneath custom visual systems.']] },
-  { id: '03', title: 'State & Data', illustration: '/about-page-illustrations/skills/states-Data-transparent.png', icon: DatabaseIcon, skills: [['Redux Toolkit', 'Predictable shared state for growing product flows.'], ['TanStack Query', 'Reliable server-state fetching and synchronization.'], ['Axios', 'Clear request layers between interfaces and APIs.'], ['React Hook Form', 'Performant, focused form experiences.'], ['Recharts', 'Data made legible through purposeful visual summaries.']] },
-  { id: '04', title: 'Backend & Systems', illustration: '/about-page-illustrations/skills/Backend-transparent.png', icon: InfinityIcon, skills: [['Node.js', 'JavaScript runtime foundations for full-stack work.'], ['Express', 'Focused routing and service composition.'], ['PostgreSQL', 'Structured data foundations for dependable products.'], ['Supabase', 'Practical hosted primitives for shipping quickly.'], ['Prisma', 'Typed database access that keeps models coherent.'], ['REST APIs', 'Stable contracts between product surfaces and services.']] },
-  { id: '05', title: 'Tooling & Delivery', illustration: '/about-page-illustrations/skills/tools-transparent.png', icon: GitBranchIcon, skills: [['Git', 'A clear history for collaborative, reversible delivery.'], ['Docker', 'Repeatable environments from local work to production.'], ['API Integration', 'Connecting real workflows without hiding failure states.'], ['Production UI', 'The last mile where polish meets reliability.']] },
-] as const;
+const buildItems: Array<{ title: string; detail: string; icon: Icon }> = [
+  { title: 'Responsive interfaces', detail: 'Pixel-perfect across all devices.', icon: SquaresFourIcon },
+  { title: 'Scalable components', detail: 'Reusable, modular, maintainable.', icon: StackIcon },
+  { title: 'Fast & real performance', detail: 'Optimized for speed and UX.', icon: GaugeIcon },
+  { title: 'API & system integration', detail: 'Connecting data with purpose.', icon: LightningIcon },
+  { title: 'Accessibility first', detail: 'Inclusive, usable, thoughtful.', icon: UserFocusIcon },
+];
 
-function Reveal({ children, className = '', id }: { children: ReactNode; className?: string; id?: string }) {
-  const ref = useRef<HTMLDivElement>(null);
-  const [visible, setVisible] = useState(true);
-  useEffect(() => {
-    const node = ref.current;
-    if (!node || typeof IntersectionObserver === 'undefined') { setVisible(true); return; }
-    const observer = new IntersectionObserver(([entry]) => { if (entry.isIntersecting) { setVisible(true); observer.disconnect(); } }, { root: node.closest('.about-scroll'), threshold: 0.16 });
-    observer.observe(node);
-    return () => observer.disconnect();
-  }, []);
-  return <div ref={ref} id={id} className={`about-reveal ${visible ? 'is-visible' : ''} ${className}`}>{children}</div>;
-}
+const approachItems: Array<{ title: string; detail: string; icon: Icon }> = [
+  { title: 'Understand', detail: 'Discover problems worth solving.', icon: CrosshairIcon },
+  { title: 'Design', detail: 'Plan experiences with clarity.', icon: SquaresFourIcon },
+  { title: 'Build', detail: 'Write clean, efficient code.', icon: CodeIcon },
+  { title: 'Optimize', detail: 'Refine for performance and quality.', icon: GaugeIcon },
+  { title: 'Deliver', detail: 'Ship value, iterate, improve.', icon: RocketLaunchIcon },
+];
 
-function FloatingVisual({ src, alt, className = '', priority = false }: { src: string; alt: string; className?: string; priority?: boolean }) {
-  const ref = useRef<HTMLDivElement>(null);
-  useEffect(() => {
-    const node = ref.current;
-    if (!node || !window.matchMedia('(pointer: fine)').matches || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
-    let targetX = 0; let targetY = 0; let currentX = 0; let currentY = 0; let frame = 0;
-    const handleMove = (event: PointerEvent) => {
-      const rect = node.getBoundingClientRect();
-      targetX = Math.max(-1, Math.min(1, (event.clientX - rect.left) / rect.width * 2 - 1));
-      targetY = Math.max(-1, Math.min(1, (event.clientY - rect.top) / rect.height * 2 - 1));
-    };
-    const handleLeave = () => { targetX = 0; targetY = 0; };
-    const tick = () => {
-      currentX += (targetX - currentX) * 0.055; currentY += (targetY - currentY) * 0.055;
-      node.style.setProperty('--visual-x', `${currentX * 8}px`); node.style.setProperty('--visual-y', `${currentY * 6}px`);
-      node.style.setProperty('--visual-rx', `${currentY * -1.5}deg`); node.style.setProperty('--visual-ry', `${currentX * 2}deg`);
-      frame = window.requestAnimationFrame(tick);
-    };
-    node.addEventListener('pointermove', handleMove, { passive: true }); node.addEventListener('pointerleave', handleLeave); frame = window.requestAnimationFrame(tick);
-    return () => { window.cancelAnimationFrame(frame); node.removeEventListener('pointermove', handleMove); node.removeEventListener('pointerleave', handleLeave); };
-  }, []);
-  return <div ref={ref} className={`about-visual ${className}`}><span className="about-visual-grid" aria-hidden="true" /><span className="about-visual-scan" aria-hidden="true" /><Image src={src} alt={alt} fill sizes="(max-width: 760px) 92vw, 52vw" priority={priority} /></div>;
-}
+const frontendSkills = ['JavaScript', 'TypeScript', 'React', 'Next.js', 'Tailwind CSS', 'HTML5', 'CSS3'];
+const dataSkills = ['Redux Toolkit', 'TanStack Query', 'Axios', 'React Hook Form', 'Recharts'];
+const backendSkills = ['Node.js', 'Express', 'PostgreSQL', 'Supabase', 'Prisma', 'REST APIs'];
+const toolingSkills = ['Git', 'Docker', 'GSAP', 'ShadCN UI', 'Radix UI', 'Production UI'];
 
-function RevealHeading({ text, run }: { text: string; run: number }) {
+const learningItems = [
+  'Building responsive and accessible interfaces',
+  'Developing reusable components and UI systems',
+  'Integrating REST APIs',
+  'Collaborating with engineering teams',
+  'Writing clean, maintainable frontend code',
+];
+
+const focusItems: Array<{ title: string; icon: Icon }> = [
+  { title: 'Solve real problems', icon: CrosshairIcon },
+  { title: 'Build with purpose', icon: BracketsCurlyIcon },
+  { title: 'Keep learning', icon: BookOpenIcon },
+  { title: 'Collaborate & grow', icon: UsersThreeIcon },
+  { title: 'Ship quality work that creates impact', icon: CheckCircleIcon },
+];
+
+const particles = Array.from({ length: 18 }, (_, index) => ({
+  left: `${51 + (index * 13) % 18}%`, top: `${14 + (index * 19) % 67}%`,
+  delay: `${-(index % 7) * .64}s`, duration: `${5.2 + (index % 5) * .7}s`,
+  size: `${2 + (index % 3)}px`, tone: index % 3 === 0 ? 'blue' : 'red',
+}));
+
+function InteractiveScramble({ text, run = 0, active = true, className = '' }: { text: string; run?: number; active?: boolean; className?: string }) {
   const [hoverRun, setHoverRun] = useState(0);
-  const nextRun = Math.max(run, hoverRun);
-  return <span className="about-scramble-line" onPointerEnter={() => setHoverRun((value) => Math.max(value, run) + 1)} onFocus={() => setHoverRun((value) => Math.max(value, run) + 1)} tabIndex={0}><ScrambleText text={text} run={nextRun} enabled={nextRun > 0} delay={nextRun === 1 ? 90 : 0} /></span>;
+  const animate = () => active && setHoverRun((value) => value + 1);
+  return <span className={`cinematic-scramble ${className}`} tabIndex={0} onPointerEnter={animate} onFocus={animate}><ScrambleText text={text} run={run + hoverRun} enabled={active && run + hoverRun > 0} /></span>;
 }
 
-function AboutPortraitRail() {
-  const ref = useRef<HTMLElement>(null);
-  useEffect(() => {
-    const node = ref.current;
-    if (!node || !window.matchMedia('(pointer: fine)').matches || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
-    const move = (event: PointerEvent) => {
-      const rect = node.getBoundingClientRect();
-      const x = ((event.clientX - rect.left) / rect.width - .5) * 2;
-      const y = ((event.clientY - rect.top) / rect.height - .5) * 2;
-      node.style.setProperty('--portrait-x', `${x * 9}px`);
-      node.style.setProperty('--portrait-y', `${y * 7}px`);
-    };
-    const reset = () => { node.style.setProperty('--portrait-x', '0px'); node.style.setProperty('--portrait-y', '0px'); };
-    node.addEventListener('pointermove', move, { passive: true });
-    node.addEventListener('pointerleave', reset);
-    return () => { node.removeEventListener('pointermove', move); node.removeEventListener('pointerleave', reset); };
-  }, []);
-  return <><aside ref={ref} className="about-portrait-rail" aria-label="Tayab Malik particle portrait">
-    <div className="about-portrait-art"><Image src="/portrait/tayab-about-portrait-hero-transparent.png" alt="Particle portrait of Tayab Malik" fill priority sizes="(max-width: 760px) 220px, 400px" /></div>
-    <div className="about-portrait-readout"><span>[ PROFILE_SIGNAL ]</span><b>TM_02</b><small>SUBJECT / TAYAB_MALIK</small><small>STATUS / ACTIVE</small></div>
-  </aside><div className="about-corner-title" aria-hidden="true"><span>MEET</span><span>TAYAB</span></div></>;
+function HudPanel({ label, run, active, className = '', children }: { label: string; run: number; active: boolean; className?: string; children: ReactNode }) {
+  return <section className={`cinematic-hud-panel ${className}`}><header><InteractiveScramble text={`/ ${label}`} run={run} active={active} /><i aria-hidden="true" /></header>{children}</section>;
 }
 
-function SkillItem({ name, description, index, active, onActive }: { name: string; description: string; index: string; active: boolean; onActive: () => void }) {
+function HudRows({ items, active }: { items: Array<{ title: string; detail?: string; icon: Icon }>; active: boolean }) {
+  return <div className="cinematic-hud-rows">{items.map(({ title, detail, icon: ItemIcon }, index) => <div className="cinematic-hud-row" key={title}><span className="cinematic-row-icon"><ItemIcon size={17} weight="light" /></span><span><InteractiveScramble text={title} active={active} /><small>{detail}</small></span><i aria-hidden="true">{String(index + 1).padStart(2, '0')}</i></div>)}</div>;
+}
+
+function SkillCell({ name, index, active }: { name: string; index: number; active: boolean }) {
   const [run, setRun] = useState(0);
-  const [scrambling, setScrambling] = useState(false);
-  const timer = useRef<number | null>(null);
-  useEffect(() => () => { if (timer.current) window.clearTimeout(timer.current); }, []);
-  const activate = () => {
-    onActive(); setRun((value) => value + 1); setScrambling(true);
-    if (timer.current) window.clearTimeout(timer.current);
-    timer.current = window.setTimeout(() => setScrambling(false), 840);
-  };
-  return <button className={`skill-item ${active ? 'is-active' : ''} ${scrambling ? 'is-scrambling' : ''}`} type="button" onPointerEnter={activate} onFocus={activate} onClick={activate} aria-pressed={active} title={description}><small>{index}</small><strong className="skill-name"><span>{name}</span><span className="skill-name-scramble" aria-hidden="true"><ScrambleText text={name} run={run} enabled={run > 0} /></span></strong><i aria-hidden="true"><ArrowUpRightIcon size={14} weight="light" /></i></button>;
+  const animate = () => active && setRun((value) => value + 1);
+  return <button className="cinematic-skill-cell" type="button" onPointerEnter={animate} onFocus={animate}><small>{String(index + 1).padStart(2, '0')}</small><strong><ScrambleText text={name} run={run} enabled={active && run > 0} /></strong><i aria-hidden="true" /></button>;
 }
 
-function SkillSector({ sector, open, onToggle }: { sector: (typeof skillSectors)[number]; open: boolean; onToggle: () => void }) {
-  const [activeSkill, setActiveSkill] = useState<string>(sector.skills[0][0]);
-  const ActiveIcon = sector.icon;
-  const activeDescription = sector.skills.find(([name]) => name === activeSkill)?.[1];
-  return <article className={`skill-sector ${open ? 'is-open' : ''}`}>
-    <button className="sector-toggle" type="button" onClick={onToggle} aria-expanded={open}>
-      <span className="sector-visual-wrap"><Image src={sector.illustration} alt="" fill sizes="(max-width: 760px) 72px, 190px" /><span className="sector-visual-sheen" aria-hidden="true" /></span>
-      <span className="sector-heading"><small>SECTOR_{sector.id}</small><strong>{sector.title}</strong></span><span className="sector-icon"><ActiveIcon size={22} weight="light" /></span><span className="sector-plus" aria-hidden="true" />
-    </button>
-    <div className="sector-body"><div className="sector-skills">{sector.skills.map(([name, description], index) => <SkillItem key={name} name={name} description={description} index={`0x${(Number(sector.id) * 5 + index).toString(16).padStart(2, '0')}`} active={activeSkill === name} onActive={() => setActiveSkill(name)} />)}</div><div className="sector-detail" aria-live="polite"><span>{activeSkill}</span><p>{activeDescription}</p></div></div>
-  </article>;
+function SkillGroup({ title, skills, offset, active }: { title: string; skills: readonly string[]; offset: number; active: boolean }) {
+  return <div className="cinematic-skill-group"><h3>/ {title}</h3><div className="cinematic-skill-grid">{skills.map((skill, index) => <SkillCell key={skill} name={skill} index={offset + index} active={active} />)}</div></div>;
+}
+
+function SectionHeading({ title, run, active }: { title: string; run: number; active: boolean }) {
+  return <h2><InteractiveScramble text={title} run={run} active={active} /></h2>;
+}
+
+function SectionContent({ id, run, active }: { id: (typeof aboutSections)[number]['id']; run: number; active: boolean }) {
+  if (id === 'profile') return <>
+    <aside className="cinematic-side cinematic-side-left">
+      <HudPanel label="PROFILE" run={run} active={active} className="cinematic-profile-card"><strong className="cinematic-section-number">01</strong><h2>Frontend Developer</h2><p>I engineer responsive, accessible and high-performance web experiences with clean code and thoughtful interactions.</p></HudPanel>
+      <HudPanel label="LOCATION" run={run} active={active}><div className="cinematic-single-line"><MapPinIcon size={16} /><strong>Pakistan / PKT</strong></div></HudPanel>
+      <HudPanel label="STATUS" run={run} active={active}><div className="cinematic-single-line"><i className="cinematic-status-dot" /><strong>Open for opportunities</strong></div></HudPanel>
+    </aside>
+    <aside className="cinematic-side cinematic-side-right">
+      <HudPanel label="CORE PHILOSOPHY" run={run} active={active} className="cinematic-philosophy"><p>Code is <b>design.</b><br />Design is <b>solution.</b></p><span className="cinematic-data-bar" aria-hidden="true" /></HudPanel>
+      <HudPanel label="FOCUS" run={run} active={active}><ul className="cinematic-focus-list"><li>Clean Code</li><li>Performance</li><li>Accessibility</li><li>User Experience</li><li>Product Thinking</li></ul></HudPanel>
+      <HudPanel label="CURRENT ROLE" run={run} active={active}><div className="cinematic-role"><strong>Frontend Developer Intern</strong><span>SoftAccess</span><small>May 2026 → July 2026</small></div></HudPanel>
+    </aside>
+  </>;
+
+  if (id === 'build') return <>
+    <aside className="cinematic-side cinematic-side-left"><HudPanel label="MODULE 02" run={run} active={active}><SectionHeading title="What I Build" run={run} active={active} /><p>Crafting interfaces that are fast, intuitive and built for scale.</p><HudRows items={buildItems} active={active} /></HudPanel></aside>
+    <aside className="cinematic-side cinematic-side-right"><HudPanel label="APPROACH" run={run} active={active}><HudRows items={approachItems} active={active} /></HudPanel></aside>
+  </>;
+
+  if (id === 'weapons') return <>
+    <aside className="cinematic-side cinematic-side-left"><HudPanel label="CAPABILITY INDEX" run={run} active={active}><SectionHeading title="My Weapons" run={run} active={active} /><p className="cinematic-red-copy">Technical Arsenal</p><SkillGroup title="Frontend" skills={frontendSkills} offset={0} active={active} /><SkillGroup title="State & Data" skills={dataSkills} offset={frontendSkills.length} active={active} /></HudPanel></aside>
+    <aside className="cinematic-side cinematic-side-right cinematic-side-wide"><HudPanel label="BACKEND & SYSTEMS" run={run} active={active}><SkillGroup title="Backend & Systems" skills={backendSkills} offset={12} active={active} /></HudPanel><HudPanel label="TOOLS & UI" run={run} active={active}><SkillGroup title="Tooling & UI" skills={toolingSkills} offset={18} active={active} /></HudPanel></aside>
+  </>;
+
+  if (id === 'learning') return <>
+    <aside className="cinematic-side cinematic-side-left"><HudPanel label="EXPERIENCE LOG" run={run} active={active}><SectionHeading title="Learning by Building" run={run} active={active} /><div className="cinematic-role cinematic-role-large"><strong>Frontend Developer Intern</strong><span>SoftAccess</span><small>May 2026 → July 2026</small></div><ul className="cinematic-bullet-list">{learningItems.map((item) => <li key={item}>{item}</li>)}</ul></HudPanel></aside>
+    <aside className="cinematic-side cinematic-side-right"><HudPanel label="WHAT I FOCUS ON" run={run} active={active}><HudRows items={focusItems} active={active} /></HudPanel></aside>
+  </>;
+
+  return <>
+    <aside className="cinematic-side cinematic-side-left"><HudPanel label="NEXT CONNECTION" run={run} active={active}><SectionHeading title="Have a Project in Mind?" run={run} active={active} /><p>Let&apos;s build something meaningful together. I&apos;m open to new opportunities, collaborations and interesting frontend products.</p><div className="cinematic-availability"><span>/ AVAILABILITY</span><strong><i /> Available for work</strong><b aria-hidden="true"><em /><em /><em /><em /><em /><em /><em /></b></div></HudPanel></aside>
+    <aside className="cinematic-side cinematic-side-right"><HudPanel label="LET'S CONNECT" run={run} active={active}><nav className="cinematic-connect-links" aria-label="Contact and portfolio links"><a href="mailto:tayabghafor@gmail.com"><EnvelopeSimpleIcon size={18} /><span><small>Email me</small><strong>tayabghafor@gmail.com</strong></span><ArrowUpRightIcon size={14} /></a><a href="/Tayab-Malik.pdf" target="_blank" rel="noreferrer"><FileTextIcon size={18} /><span><small>Open resume</small><strong>Profile / PDF</strong></span><ArrowUpRightIcon size={14} /></a><Link href="/projects"><CodeIcon size={18} /><span><small>View projects</small><strong>Selected work</strong></span><ArrowUpRightIcon size={14} /></Link></nav><div className="cinematic-socials"><span>/ LET&apos;S CHAT</span><div><a href="https://github.com/TayabGhafor" target="_blank" rel="noreferrer" aria-label="GitHub"><GithubLogoIcon size={19} /></a><a href="https://www.linkedin.com/in/tayabmalik" target="_blank" rel="noreferrer" aria-label="LinkedIn"><LinkedinLogoIcon size={19} /></a><a href="mailto:tayabghafor@gmail.com" aria-label="Email"><EnvelopeSimpleIcon size={19} /></a><a href="/contact" aria-label="Contact page"><HandshakeIcon size={19} /></a></div></div></HudPanel></aside>
+  </>;
 }
 
 export default function AboutPage() {
-  const [heroRun, setHeroRun] = useState(0);
-  const [openSector, setOpenSector] = useState('01');
-  const [isMobile, setIsMobile] = useState(false);
-  useEffect(() => { const timer = window.setTimeout(() => setHeroRun(1), 260); return () => window.clearTimeout(timer); }, []);
+  const trackRef = useRef<HTMLElement>(null);
+  const stageRef = useRef<HTMLDivElement>(null);
+  const scrollerRef = useRef<HTMLDivElement | null>(null);
+  const [activeIndex, setActiveIndex] = useState(0);
+  const [nameGlitch, setNameGlitch] = useState(false);
+  const [pageHidden, setPageHidden] = useState(false);
+
   useEffect(() => {
-    const media = window.matchMedia('(max-width: 760px)');
-    const update = () => setIsMobile(media.matches);
+    const track = trackRef.current;
+    const scroller = track?.closest('.about-scroll') as HTMLDivElement | null;
+    if (!track || !scroller) return;
+    scrollerRef.current = scroller;
+    let frame = 0;
+    const update = () => {
+      frame = 0;
+      const available = Math.max(1, track.offsetHeight - scroller.clientHeight);
+      const progress = Math.max(0, Math.min(1, scroller.scrollTop / available));
+      track.style.setProperty('--scene-progress', `${progress}`);
+      setActiveIndex((current) => {
+        const next = Math.min(aboutSections.length - 1, Math.floor(progress * aboutSections.length + .0001));
+        return current === next ? current : next;
+      });
+    };
+    const onScroll = () => { if (!frame) frame = window.requestAnimationFrame(update); };
     update();
-    media.addEventListener('change', update);
-    return () => media.removeEventListener('change', update);
+    scroller.addEventListener('scroll', onScroll, { passive: true });
+    return () => { scroller.removeEventListener('scroll', onScroll); window.cancelAnimationFrame(frame); };
   }, []);
 
-  return <InteriorChrome currentPage="about" index="02" label="ABOUT" wide aside={<AboutPortraitRail />}>
-    <main className="about-content about-redesign">
-      <Reveal className="about-hero-redesign">
-        <div className="about-hero-copy"><span className="about-section-id">[ PROFILE / 02 ]</span><p className="about-eyebrow">A FRONTEND DEVELOPER</p><h1 className="about-seo-title" hidden>Meet Tayab Malik</h1><h2><RevealHeading text="ENGINEERING POLISHED" run={heroRun} /><br /><RevealHeading text="WEB EXPERIENCES" run={heroRun} /></h2><p className="about-body-copy">I craft functional, responsive, and visually refined interfaces. My work combines frontend architecture, thoughtful interaction, accessibility, performance, and product thinking.</p><div className="about-meta-grid"><div><small>LOCATION</small><strong>Pakistan / PKT</strong></div><div><small>EXPERIENCE</small><strong>Frontend Developer Intern <em>SoftAccess</em></strong></div><div><small>AVAILABILITY</small><strong>Open for opportunities</strong></div></div><div className="about-principles" aria-label="Frontend principles">{principles.map(({ label, icon: PrincipleIcon }) => <span key={label}><i><PrincipleIcon size={15} weight="light" /></i><b>{label}</b></span>)}</div></div>
-      </Reveal>
+  useEffect(() => {
+    const stage = stageRef.current;
+    if (!stage || !window.matchMedia('(pointer: fine)').matches || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    let frame = 0; let targetX = 0; let targetY = 0; let currentX = 0; let currentY = 0;
+    const move = (event: PointerEvent) => {
+      if (stage.closest('.motion-reduced')) return;
+      targetX = (event.clientX / window.innerWidth - .5) * 2;
+      targetY = (event.clientY / window.innerHeight - .5) * 2;
+    };
+    const tick = () => {
+      currentX += (targetX - currentX) * .055; currentY += (targetY - currentY) * .055;
+      stage.style.setProperty('--cinematic-x', `${currentX * 4}px`);
+      stage.style.setProperty('--cinematic-y', `${currentY * 3}px`);
+      frame = window.requestAnimationFrame(tick);
+    };
+    stage.addEventListener('pointermove', move, { passive: true });
+    frame = window.requestAnimationFrame(tick);
+    return () => { stage.removeEventListener('pointermove', move); window.cancelAnimationFrame(frame); };
+  }, []);
 
-      <Reveal className="about-feature-panel core-direction-panel"><FloatingVisual src="/about-page-illustrations/modren-product-interface-transparent.png" alt="Transparent glass cube representing product architecture" className="core-direction-art" /><div className="feature-copy"><span className="about-section-id">[ CORE_DIRECTION ]</span><p className="about-eyebrow">FOCUSED ON</p><h2><RevealHeading text="MODERN PRODUCT" run={heroRun} /><br /><RevealHeading text="INTERFACES" run={heroRun} /></h2><p className="about-body-copy">I work across React, Next.js, TypeScript, state management, API integration, and full-stack foundations. The goal is always the same: create responsive products that are technically reliable and enjoyable to use.</p></div></Reveal>
+  useEffect(() => {
+    let eventTimer = 0; let clearTimer = 0; let disposed = false;
+    const schedule = () => {
+      eventTimer = window.setTimeout(() => {
+        if (!disposed && !document.hidden && !stageRef.current?.closest('.motion-reduced')) {
+          setNameGlitch(true);
+          clearTimer = window.setTimeout(() => setNameGlitch(false), 150);
+        }
+        if (!disposed) schedule();
+      }, 3000 + Math.random() * 4000);
+    };
+    schedule();
+    return () => { disposed = true; window.clearTimeout(eventTimer); window.clearTimeout(clearTimer); };
+  }, []);
 
-      <Reveal className="about-block about-capabilities"><div className="about-section-heading"><div><span className="about-section-id">[ WHAT_I_DO ]</span><h2><RevealHeading text="WHAT I DO" run={heroRun} /></h2></div><p>Frontend engineering with a product point of view.</p></div><div className="capability-grid">{capabilities.map(({ index, title, body, icon: IconComponent }) => <article className="capability-card" key={index}><span className="capability-index">{index}</span><i><IconComponent size={24} weight="light" /></i><h3>{title}</h3><p>{body}</p><span className="capability-line" /></article>)}</div></Reveal>
+  useEffect(() => {
+    const startTimer = window.setTimeout(() => setNameGlitch(true), 0);
+    const endTimer = window.setTimeout(() => setNameGlitch(false), 190);
+    return () => { window.clearTimeout(startTimer); window.clearTimeout(endTimer); };
+  }, [activeIndex]);
 
-      <Reveal className="about-block technical-arsenal"><div className="about-section-heading"><div><span className="about-section-id">[ CAPABILITY_INDEX ]</span><h2><RevealHeading text="TECHNICAL ARSENAL" run={heroRun} /></h2></div><p>Hover a capability to inspect the system.</p></div><div className="skill-sector-list">{skillSectors.map((sector) => <SkillSector key={sector.id} sector={sector} open={isMobile ? openSector === sector.id : true} onToggle={() => setOpenSector(openSector === sector.id ? '' : sector.id)} />)}</div></Reveal>
+  useEffect(() => {
+    const update = () => setPageHidden(document.hidden);
+    document.addEventListener('visibilitychange', update);
+    return () => document.removeEventListener('visibilitychange', update);
+  }, []);
 
-      <Reveal id="experience" className="about-block experience-timeline"><div className="experience-timeline-heading"><div><span className="about-section-id">[ EXPERIENCE_LOG ]</span><p className="about-eyebrow">PROFESSIONAL FOUNDATION</p><h2><RevealHeading text="EXPERIENCE" run={heroRun} /><br /><RevealHeading text="TIMELINE" run={heroRun} /></h2></div><p>Quality assurance and frontend development experience, ordered from current to earliest.</p></div><ol className="experience-timeline-list">{experienceTimeline.map((entry, index) => <li key={entry.company} className="experience-timeline-item"><div className="experience-timeline-marker" aria-hidden="true"><i /><span>{String(index + 1).padStart(2, '0')}</span></div><article><div className="experience-timeline-meta"><span>{entry.period}</span><span>{entry.location}</span></div><h3>{entry.company}</h3><h4>{entry.role}</h4><p>{entry.summary}</p>{entry.highlights.length > 0 && <ul>{entry.highlights.map((highlight) => <li key={highlight}>{highlight}</li>)}</ul>}</article></li>)}</ol></Reveal>
+  const jumpTo = (index: number) => {
+    const scroller = scrollerRef.current; const track = trackRef.current;
+    if (!scroller || !track) return;
+    const available = track.offsetHeight - scroller.clientHeight;
+    scroller.scrollTo({ top: available * Math.min(.99, index / aboutSections.length + .015), behavior: 'smooth' });
+  };
 
-      <Reveal id="contact-cta" className="about-feature-panel cta-panel"><FloatingVisual src="/about-page-illustrations/turn-into-reality-transparent.png" alt="Concentric orbital radar illustration" className="cta-art" /><div className="feature-copy"><span className="about-section-id">[ NEXT_ACTION ]</span><p className="about-eyebrow">HAVE A PRODUCT CONCEPT?</p><h2><RevealHeading text="LET'S TURN IT INTO" run={heroRun} /><br /><RevealHeading text="REALITY" run={heroRun} /></h2><p className="about-body-copy">Bring the idea. I&apos;ll bring frontend engineering, thoughtful interaction, and the persistence required to ship it properly.</p><div className="about-cta-row"><Link href="/contact">Contact <ArrowUpRightIcon size={15} /></Link></div></div></Reveal>
+  return <InteriorChrome currentPage="about" index="02" label="ABOUT" wide>
+    <main ref={trackRef} className="about-cinematic-track">
+      <div ref={stageRef} className={`about-cinematic-stage ${pageHidden ? 'is-paused' : ''}`}>
+        <div className="cinematic-environment" aria-hidden="true"><Image src="/about-cinematic-hero-v1.webp" alt="" fill priority sizes="100vw" /><span className="cinematic-environment-shade" /><span className="cinematic-red-matrix" /><span className="cinematic-blue-haze" /></div>
+        <h1 className={`cinematic-name ${nameGlitch ? 'is-glitching' : ''}`} data-text="TAYAB MALIK">TAYAB MALIK</h1>
+        <div className="cinematic-character" aria-hidden="true"><Image src="/about-cinematic-character-transparent-v1.webp" alt="" fill priority sizes="100vw" /><span className="cinematic-eye-glow" /></div>
+        <div className="cinematic-particles" aria-hidden="true">{particles.map((particle, index) => <i key={index} className={`is-${particle.tone}`} style={{ '--particle-left': particle.left, '--particle-top': particle.top, '--particle-delay': particle.delay, '--particle-duration': particle.duration, '--particle-size': particle.size } as CSSProperties} />)}</div>
+        <nav className="cinematic-section-progress" aria-label="About sections"><span className="cinematic-progress-line"><i /></span>{aboutSections.map((section, index) => <button key={section.id} className={index === activeIndex ? 'is-active' : ''} onClick={() => jumpTo(index)} aria-current={index === activeIndex ? 'step' : undefined}><b>{section.number}</b><span>{section.shortTitle}</span><i /></button>)}</nav>
+        <div className="cinematic-states">{aboutSections.map((section, index) => <div key={section.id} className={`cinematic-state ${index === activeIndex ? 'is-active' : index < activeIndex ? 'is-before' : 'is-after'}`} aria-hidden={index !== activeIndex}><SectionContent id={section.id} run={activeIndex + 1} active={index === activeIndex} /></div>)}</div>
+        <div className="cinematic-state-readout" aria-live="polite"><span>MODULE</span><strong>{aboutSections[activeIndex].number}</strong><i /><b>{aboutSections[activeIndex].title}</b></div>
+      </div>
     </main>
   </InteriorChrome>;
 }
