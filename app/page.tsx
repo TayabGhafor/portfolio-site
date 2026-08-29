@@ -13,6 +13,13 @@ const ParticlePortrait = dynamic(
   { ssr: false, loading: () => <div className="face-scene face-fallback" aria-hidden="true" /> },
 );
 
+const homeStatusItems = [
+  ['[ ROLE ]', 'FRONTEND DEVELOPER'],
+  ['[ MODE ]', 'CREATIVE ENGINEERING'],
+  ['[ SYS ]', 'REACT / NEXT.JS'],
+  ['[ STATUS ]', 'AVAILABLE'],
+] as const;
+
 function Loader({ progress, ready, leaving, onEnter }: { progress: number; ready: boolean; leaving: boolean; onEnter: () => void }) {
   return (
     <section className={`loader-screen ${ready ? 'is-ready' : ''} ${leaving ? 'is-leaving' : ''}`} aria-label="Portfolio introduction" aria-live="polite">
@@ -153,10 +160,13 @@ export default function Home() {
         </header>
 
         <div className="status-stream" aria-label="Portfolio system status">
-          <span><b>[ ROLE ]</b> FRONTEND DEVELOPER</span>
-          <span><b>[ MODE ]</b> CREATIVE ENGINEERING</span>
-          <span><b>[ SYS ]</b> REACT / NEXT.JS</span>
-          <span><b>[ STATUS ]</b> AVAILABLE</span>
+          <div className="status-stream-track">
+            {[false, true].map((duplicate) => (
+              <div className="status-stream-group" aria-hidden={duplicate || undefined} key={String(duplicate)}>
+                {homeStatusItems.map(([label, value]) => <span key={label}><b>{label}</b> {value}</span>)}
+              </div>
+            ))}
+          </div>
         </div>
 
         <section id="content" className="hero-copy">

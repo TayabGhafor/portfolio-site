@@ -80,8 +80,13 @@ button { -webkit-tap-highlight-color: transparent; }
 .identity-mark:focus-visible, .footer-scramble-scope:focus-visible { outline: 1px solid rgba(255,255,255,.65); outline-offset: 7px; }
 .footer-scramble-scope { cursor: crosshair; outline: none; }
 
-.status-stream { position: absolute; z-index: 6; top: 4.2vh; right: 3.2vw; width: 49%; display: flex; justify-content: space-between; gap: 20px; overflow: hidden; white-space: nowrap; }
-.status-stream span { position: relative; padding: 6px 0; color: #aaa6a6; font: 7px/1 var(--font-mono); letter-spacing: .08em; transition: color .25s ease, transform .25s ease; }
+.status-stream { --status-stream-width: 49vw; position: absolute; z-index: 6; top: 4.2vh; right: 3.2vw; width: var(--status-stream-width); overflow: hidden; padding-bottom: 4px; white-space: nowrap; mask-image: linear-gradient(90deg, transparent, #000 4%, #000 96%, transparent); }
+.status-stream::after { content: ''; position: absolute; right: 0; bottom: 0; left: 0; height: 1px; background: rgba(255,255,255,.08); }
+.status-stream::before { content: ''; position: absolute; z-index: 2; bottom: 0; left: 0; width: 28%; height: 1px; opacity: 0; background: linear-gradient(90deg, transparent, rgba(255,255,255,.65) 50%, transparent); box-shadow: 0 0 7px rgba(255,255,255,.18); animation: statusLineSweep 4.8s ease-in-out infinite; }
+.status-stream-track { display: flex; width: max-content; will-change: transform; animation: statusStreamLoop 18s linear infinite; }
+.status-stream-group { width: var(--status-stream-width); flex: 0 0 var(--status-stream-width); display: flex; align-items: center; justify-content: space-between; gap: 24px; padding-right: 24px; }
+.status-stream:hover .status-stream-track { animation-play-state: paused; }
+.status-stream span { position: relative; padding: 7px 0; color: #bcb8b8; font: clamp(9px, .6vw, 12px)/1.1 var(--font-mono); letter-spacing: .08em; transition: color .25s ease, transform .25s ease; }
 .status-stream span::after { content: ""; position: absolute; left: 0; right: 100%; bottom: 0; height: 1px; background: var(--red-bright); transition: right .28s ease; }
 .status-stream span:hover { color: #fff; transform: translateY(-2px); }
 .status-stream span:hover::after { right: 0; }
@@ -126,10 +131,10 @@ button { -webkit-tap-highlight-color: transparent; }
 .developer-stats > p { margin: 30px 0 0; color: #504d4d; font: 6px/1.85 var(--font-mono); letter-spacing: .06em; transition: color .25s ease; }
 .developer-stats:hover > p { color: #858080; }
 
-.shell-footer { position: absolute; z-index: 6; left: 3.2vw; bottom: 4vh; display: flex; gap: 80px; }
-.shell-footer > * { display: flex; flex-direction: column; gap: 5px; text-decoration: none; }
-.shell-footer span { color: #777373; font: 7px var(--font-mono); }
-.shell-footer strong { color: #c6c2c2; font: 400 8px var(--font-mono); transition: color .25s ease, transform .25s ease; }
+.shell-footer { position: absolute; z-index: 6; left: 3.2vw; bottom: 4vh; display: flex; gap: 88px; }
+.shell-footer > * { display: flex; flex-direction: column; gap: 7px; text-decoration: none; }
+.shell-footer span { color: #918c8c; font: 14px/1.2 var(--font-mono); }
+.shell-footer strong { color: #dedada; font: 400 16px/1.2 var(--font-mono); transition: color .25s ease, transform .25s ease; }
 .shell-footer a:hover strong { color: #fff; transform: translateX(3px); }
 
 .settings-trigger { position: absolute; z-index: 12; right: 0; top: 48%; width: 40px; height: 40px; display: grid; place-items: center; padding: 5px; cursor: pointer; border: 1px solid rgba(29,29,29,.6); border-right: 0; border-radius: 8px 0 0 8px; background: rgba(253,255,255,.05); backdrop-filter: blur(15px); transition: width .28s ease, border-color .28s ease; }
@@ -245,6 +250,8 @@ button { -webkit-tap-highlight-color: transparent; }
 @keyframes faceScan { 0%,100% { transform: translateY(0); opacity: .08; } 50% { transform: translateY(410px); opacity: .3; } }
 @keyframes infoPulse { 50% { transform: translateX(28px); } }
 @keyframes statusPulse { 50% { opacity: .4; box-shadow: 0 0 2px var(--red); } }
+@keyframes statusStreamLoop { to { transform: translateX(-50%); } }
+@keyframes statusLineSweep { 0% { opacity: 0; transform: translateX(360%); } 12%, 82% { opacity: .7; } 100% { opacity: 0; transform: translateX(-100%); } }
 @keyframes statLoad { from { transform: scaleX(0); } }
 @keyframes wave { 0%,100% { height: 4px; } 50% { height: 18px; } }
 @keyframes enterBreathe { 50% { transform: translate(-50%, -50%) scale(1.025); } }
@@ -262,8 +269,9 @@ button { -webkit-tap-highlight-color: transparent; }
   .pointer-field { mask-image: radial-gradient(170px circle at var(--pointer-x) var(--pointer-y), #000, transparent 75%); }
   .identity-block { left: 20px; top: 22px; }
   .identity-mark { grid-template-columns: 66px 1px max-content; column-gap: 8px; font-size: 12px; }
-  .status-stream { left: 170px; right: auto; top: 21px; width: 410px; gap: 26px; }
-  .status-stream span { font-size: 6px; }
+  .status-stream { --status-stream-width: calc(100vw - 40px); left: 20px; right: auto; top: 68px; width: var(--status-stream-width); }
+  .status-stream-group { width: max-content; flex-basis: auto; gap: 28px; padding-right: 28px; }
+  .status-stream span { font-size: 8px; }
   .hero-copy { left: auto; right: 22px; top: auto; bottom: 196px; width: 210px; text-align: right; }
   .hero-kicker { justify-content: flex-end; margin-right: 2px; }
   .hero-copy h1 { font-size: 44px; }
@@ -920,4 +928,6 @@ button { -webkit-tap-highlight-color: transparent; }
 
 @media (prefers-reduced-motion: reduce) {
   .project-reference-row:hover .project-reference-preview::after, .project-reference-row:focus-within .project-reference-preview::after { animation: none; }
+  .status-stream-track, .status-stream::before { animation: none; }
+  .status-stream::before { display: none; }
 }
