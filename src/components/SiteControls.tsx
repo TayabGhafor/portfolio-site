@@ -123,10 +123,6 @@ function MenuGlyph({ open }: { open: boolean }) {
   return <span className={`menu-glyph ${open ? 'is-open' : ''}`} aria-hidden="true"><i /><i /><i /></span>;
 }
 
-function ControlDrawBorder() {
-  return <span className="control-draw-border" aria-hidden="true"><i /><i /><i /><i /></span>;
-}
-
 function UtilityLink({ href, eyebrow, label, icon, open, motion, delay, external = false }: {
   href: string;
   eyebrow: string;
@@ -291,7 +287,7 @@ export function SiteControls({ currentPage, panel, onPanelChange }: SiteControls
   return (
     <div className="site-controls" ref={controlsRef}>
       <button
-        className={`settings-trigger border-draw-host ${isSettingsDragging ? 'is-dragging' : ''}`}
+        className={`settings-trigger ${isSettingsDragging ? 'is-dragging' : ''}`}
         style={settingsTop === null ? undefined : { '--settings-trigger-top': `${settingsTop}px` } as CSSProperties}
         onClick={toggleSettings}
         onPointerDown={startSettingsDrag}
@@ -303,12 +299,10 @@ export function SiteControls({ currentPage, panel, onPanelChange }: SiteControls
         aria-label="Open system configuration"
         title="Drag vertically to reposition settings"
       >
-        <ControlDrawBorder />
         <span className="settings-trigger-core icon-hover-scope"><MorphIcon icon={GearSixIcon} size={17} /></span>
       </button>
 
-      <aside id="global-menu-panel" className={`control-panel menu-panel border-draw-host ${menuOpen ? 'is-open' : ''}`} aria-hidden={!menuOpen}>
-        <ControlDrawBorder />
+      <aside id="global-menu-panel" className={`control-panel menu-panel ${menuOpen ? 'is-open' : ''}`} aria-hidden={!menuOpen}>
         <div className="panel-head">
           <div><h2><ScrambleText text="Menu" run={0} enabled={menuOpen && motion} delay={35} /></h2><span>GLOBAL NAVIGATION</span></div>
           <b><i /> DIR</b>
@@ -328,8 +322,7 @@ export function SiteControls({ currentPage, panel, onPanelChange }: SiteControls
         <div className="panel-foot"><span><i /> INTERFACE READY</span><b>TM / 2026</b></div>
       </aside>
 
-      <aside id="global-settings-panel" className={`control-panel settings-panel border-draw-host ${settingsOpen ? 'is-open' : ''}`} aria-hidden={!settingsOpen}>
-        <ControlDrawBorder />
+      <aside id="global-settings-panel" className={`control-panel settings-panel ${settingsOpen ? 'is-open' : ''}`} aria-hidden={!settingsOpen}>
         <div className="panel-head">
           <div><h2>System</h2><span>GLOBAL CONFIGURATION</span></div>
           <b><i /> SET</b>
@@ -394,7 +387,7 @@ export function SiteControls({ currentPage, panel, onPanelChange }: SiteControls
       <div className="nav-dock">
         <span className="wave" aria-hidden="true"><i /><i /><i /><i /><i /></span>
         <button
-          className={`icon-hover-scope ${menuOpen ? 'menu-cluster-dock' : 'border-draw-host'}`}
+          className="icon-hover-scope"
           onClick={() => onPanelChange(dockExpanded ? null : 'menu')}
           onPointerEnter={() => motion && setDockRun((value) => value + 1)}
           onFocus={() => motion && setDockRun((value) => value + 1)}
@@ -402,7 +395,6 @@ export function SiteControls({ currentPage, panel, onPanelChange }: SiteControls
           aria-controls={settingsOpen ? 'global-settings-panel' : 'global-menu-panel'}
           aria-label={dockExpanded ? 'Close current panel' : 'Open menu'}
         >
-          {!menuOpen && <ControlDrawBorder />}
           <small>[{dock.index}]</small>
           <span className="dock-page-icon"><MorphIcon icon={dock.icon} size={17} /></span>
           <strong><ScrambleText text={dock.label} run={dockRun} enabled={motion && dockRun > 0} /></strong>

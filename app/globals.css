@@ -251,9 +251,13 @@ button { -webkit-tap-highlight-color: transparent; }
 .loader-music b { color: rgba(255,255,255,.54); font: var(--loader-micro-type) var(--font-mono); font-weight: 400; letter-spacing: .2em; }
 .loader-music span:first-child { color: #fff; }
 .loader-track { position: absolute; z-index: 2; right: 2.1vw; bottom: 3.5vh; width: min(320px, 34vw); height: 56px; overflow: hidden; border: 1px solid rgba(255,255,255,.3); border-radius: 8px; background: rgba(255,255,255,.035); }
-.loader-track > span { position: absolute; inset: 0; width: 100%; transform: scaleX(var(--load, 0)); transform-origin: left center; background: #f1efef; transition: none; will-change: transform; }
-.loader-track b { position: absolute; z-index: 1; left: 50%; top: 50%; min-height: 24px; display: grid; place-items: center; padding: 0 11px; border: 1px solid rgba(255,255,255,.14); border-radius: 4px; background: rgba(4,4,4,.84); color: #fff; font: var(--loader-label-type) var(--font-mono); letter-spacing: .2em; text-shadow: 0 1px 3px rgba(0,0,0,.75); transform: translate(-50%, -50%); }
-.loader-track b.is-loaded { inset: 0; min-height: 0; padding: 0; border: 0; border-radius: 0; background: transparent; color: #080808; font-weight: 800; text-shadow: none; transform: none; }
+.loader-track > span { position: absolute; inset: 0; width: 100%; transform: scaleX(var(--load, 0)); transform-origin: left center; background: #f1efef; transition: transform .18s cubic-bezier(.2,.8,.2,1); will-change: transform; }
+.loader-track b { position: absolute; inset: 0; z-index: 1; display: grid; place-items: center; overflow: hidden; color: #fff; font: var(--loader-label-type) var(--font-mono); letter-spacing: .2em; text-shadow: 0 1px 3px rgba(0,0,0,.75); }
+.loader-track b > span { grid-area: 1 / 1; transition: opacity .3s ease, transform .42s cubic-bezier(.2,.8,.2,1), color .3s ease; }
+.loader-track b > span:first-child { mix-blend-mode: difference; }
+.loader-track b > span:last-child { opacity: 0; color: #080808; font-weight: 800; text-shadow: none; transform: translateY(8px); }
+.loader-track.is-ready b > span:first-child { opacity: 0; transform: translateY(-8px); }
+.loader-track.is-ready b > span:last-child { opacity: 1; transform: translateY(0); }
 .loader-screen.is-ready .loader-track { background: #f1efef; border-color: #f1efef; }
 .loader-system { position: absolute; z-index: 2; right: 2.1vw; bottom: calc(3.5vh + 70px); display: flex; align-items: center; gap: 10px; color: #aaa5a5; font: var(--loader-micro-type) var(--font-mono); letter-spacing: .13em; }
 .loader-system i { width: 4px; height: 4px; border-radius: 50%; background: #746f6f; }
@@ -526,36 +530,6 @@ button { -webkit-tap-highlight-color: transparent; }
 /* Shared premium navigation and system controls */
 .site-controls { position: fixed; inset: 0; z-index: 44; pointer-events: none; }
 .site-controls > * { pointer-events: auto; }
-.site-controls .border-draw-host { position: relative; isolation: isolate; --border-step: .7s; --border-delay-1: .7s; --border-delay-2: 1.4s; --border-delay-3: 2.1s; --border-duration: 2.8s; }
-.site-controls .settings-trigger.border-draw-host { --border-step: .65s; --border-delay-1: .65s; --border-delay-2: 1.3s; --border-delay-3: 1.95s; --border-duration: 2.6s; }
-.site-controls .nav-dock > .border-draw-host { --border-step: .775s; --border-delay-1: .775s; --border-delay-2: 1.55s; --border-delay-3: 2.325s; --border-duration: 3.1s; }
-.site-controls .control-panel.border-draw-host { --border-step: .875s; --border-delay-1: .875s; --border-delay-2: 1.75s; --border-delay-3: 2.625s; --border-duration: 3.5s; }
-.site-controls .control-draw-border { position: absolute; inset: 0; z-index: 6; overflow: hidden; pointer-events: none; border-radius: inherit; }
-.site-controls .control-draw-border > i { position: absolute; display: block; margin: 0; border: 0; border-radius: 0; opacity: 0; background: var(--accent); box-shadow: 0 0 10px rgba(var(--theme-rgb),.52); transition-property: transform, opacity; transition-duration: var(--border-step), .01s; transition-timing-function: cubic-bezier(.3,.72,.18,1), linear; will-change: transform, opacity; }
-.site-controls .control-draw-border > i:nth-child(1), .site-controls .control-draw-border > i:nth-child(3) { width: 100%; height: 3px; transform: scaleX(0); }
-.site-controls .control-draw-border > i:nth-child(1) { left: 0; top: 0; transform-origin: left center; transition-delay: var(--border-delay-3), var(--border-duration); }
-.site-controls .control-draw-border > i:nth-child(2), .site-controls .control-draw-border > i:nth-child(4) { width: 3px; height: 100%; transform: scaleY(0); }
-.site-controls .control-draw-border > i:nth-child(2) { right: 0; top: 0; transform-origin: center top; transition-delay: var(--border-delay-2), var(--border-delay-3); }
-.site-controls .control-draw-border > i:nth-child(3) { right: 0; bottom: 0; transform-origin: right center; transition-delay: var(--border-delay-1), var(--border-delay-2); }
-.site-controls .control-draw-border > i:nth-child(4) { left: 0; bottom: 0; transform-origin: center bottom; transition-delay: 0s, var(--border-delay-1); }
-.site-controls .border-draw-host:is(:hover, :focus-visible, :focus-within) > .control-draw-border > i { opacity: 1; transform: none; }
-.site-controls .border-draw-host:is(:hover, :focus-visible, :focus-within) > .control-draw-border > i:nth-child(1) { transition-delay: 0s, 0s; }
-.site-controls .border-draw-host:is(:hover, :focus-visible, :focus-within) > .control-draw-border > i:nth-child(2) { transition-delay: var(--border-delay-1), var(--border-delay-1); }
-.site-controls .border-draw-host:is(:hover, :focus-visible, :focus-within) > .control-draw-border > i:nth-child(3) { transition-delay: var(--border-delay-2), var(--border-delay-2); }
-.site-controls .border-draw-host:is(:hover, :focus-visible, :focus-within) > .control-draw-border > i:nth-child(4) { transition-delay: var(--border-delay-3), var(--border-delay-3); }
-/* The expanded menu and its dock are a single connected control. Its circuit starts
-   at the modal's top-left edge and traces one continuous perimeter through the dock. */
-.site-controls:has(.menu-panel.is-open) .menu-panel.is-open { overflow: visible; clip-path: none; border-bottom-color: transparent; }
-.site-controls:has(.menu-panel.is-open) .menu-panel.is-open > .control-draw-border { inset: 0 0 -58px; border-radius: 10px 10px 8px 8px; }
-.site-controls:has(.menu-panel.is-open) .menu-panel.is-open > .control-draw-border > i { opacity: 0 !important; transform: scale(0) !important; }
-.site-controls:has(.menu-panel.is-open) .menu-panel.is-open > .control-draw-border > i:nth-child(1), .site-controls:has(.menu-panel.is-open) .menu-panel.is-open > .control-draw-border > i:nth-child(3) { transform: scaleX(0) !important; }
-.site-controls:has(.menu-panel.is-open) .menu-panel.is-open > .control-draw-border > i:nth-child(2), .site-controls:has(.menu-panel.is-open) .menu-panel.is-open > .control-draw-border > i:nth-child(4) { transform: scaleY(0) !important; }
-.site-controls:has(.menu-panel.is-open):is(:has(.menu-panel:hover), :has(.menu-panel:focus-within), :has(.menu-cluster-dock:hover), :has(.menu-cluster-dock:focus-visible)) .menu-panel.is-open > .control-draw-border > i { opacity: 1 !important; transform: none !important; }
-.site-controls:has(.menu-panel.is-open):is(:has(.menu-panel:hover), :has(.menu-panel:focus-within), :has(.menu-cluster-dock:hover), :has(.menu-cluster-dock:focus-visible)) .menu-panel.is-open > .control-draw-border > i:nth-child(1) { transition-delay: 0s, 0s; }
-.site-controls:has(.menu-panel.is-open):is(:has(.menu-panel:hover), :has(.menu-panel:focus-within), :has(.menu-cluster-dock:hover), :has(.menu-cluster-dock:focus-visible)) .menu-panel.is-open > .control-draw-border > i:nth-child(2) { transition-delay: var(--border-delay-1), var(--border-delay-1); }
-.site-controls:has(.menu-panel.is-open):is(:has(.menu-panel:hover), :has(.menu-panel:focus-within), :has(.menu-cluster-dock:hover), :has(.menu-cluster-dock:focus-visible)) .menu-panel.is-open > .control-draw-border > i:nth-child(3) { transition-delay: var(--border-delay-2), var(--border-delay-2); }
-.site-controls:has(.menu-panel.is-open):is(:has(.menu-panel:hover), :has(.menu-panel:focus-within), :has(.menu-cluster-dock:hover), :has(.menu-cluster-dock:focus-visible)) .menu-panel.is-open > .control-draw-border > i:nth-child(4) { transition-delay: var(--border-delay-3), var(--border-delay-3); }
-.site-controls:has(.menu-panel.is-open) .menu-cluster-dock { border-top-color: transparent; border-radius: 0 0 8px 8px; }
 .site-controls .settings-trigger { position: fixed; z-index: 48; right: 0; top: var(--settings-trigger-top, 48%); display: grid; width: 48px; height: 48px; place-items: center; padding: 7px; overflow: hidden; cursor: grab; touch-action: none; user-select: none; border: 1px solid rgba(255,255,255,.12); border-right: 0; border-radius: 9px 0 0 9px; background: rgba(8,8,8,.72); box-shadow: -16px 12px 42px rgba(0,0,0,.42), inset 0 1px rgba(255,255,255,.04); backdrop-filter: blur(22px) saturate(115%); color: #fff; transition: top .18s ease-out, border-color .3s ease, background .3s ease, box-shadow .45s ease; }
 .site-controls .settings-trigger.is-dragging { cursor: grabbing; transition: border-color .3s ease, background .3s ease, box-shadow .45s ease; }
 .site-controls .settings-trigger:hover, .site-controls .settings-trigger:focus-visible, .site-controls .settings-trigger[aria-expanded="true"] { width: 48px; border-color: rgba(255,255,255,.27); background: rgba(15,15,15,.9); outline: none; }

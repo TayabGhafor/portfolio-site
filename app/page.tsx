@@ -38,7 +38,13 @@ function Loader({ progress, ready, leaving, audioEnabled, tier, onToggleAudio, o
         <button className={`loader-music ${audioEnabled ? 'is-on' : 'is-off'}`} onClick={onToggleAudio} aria-pressed={audioEnabled} aria-label={`Turn background music ${audioEnabled ? 'off' : 'on'}`}>
           <span>On</span><b>MUSIC</b><span>Off</span>
         </button>
-        <div className="loader-track"><span style={{ '--load': `${loadPercent / 100}` } as CSSProperties} /><b className={ready ? 'is-loaded' : ''}>{ready ? 'LOADED' : 'LOADING'}</b></div>
+        <div className={`loader-track ${ready ? 'is-ready' : ''}`}>
+          <span style={{ '--load': `${Math.min(100, progress) / 100}` } as CSSProperties} />
+          <b aria-label={ready ? 'Loaded' : 'Loading'}>
+            <span aria-hidden="true">LOADING</span>
+            <span aria-hidden="true">LOADED</span>
+          </b>
+        </div>
         <div className="loader-system"><i className={ready ? 'ready' : ''} /><span>{ready ? 'SYSTEM_READY' : 'INITIALIZING_ENGINE'}</span><em>{loadPercent}%</em></div>
       </div>
       <div className="loader-singularity" aria-hidden="true"><i /></div>
