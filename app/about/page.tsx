@@ -42,6 +42,48 @@ const dataSkills = ['Redux Toolkit', 'TanStack Query', 'Axios', 'React Hook Form
 const backendSkills = ['Node.js', 'Express', 'PostgreSQL', 'Supabase', 'Prisma', 'REST APIs'];
 const toolingSkills = ['Git', 'Docker', 'GSAP', 'ShadCN UI', 'Radix UI', 'Production UI'];
 
+const skillDescriptions: Record<string, string> = {
+  JavaScript: 'Builds responsive browser logic, rich interactions, and reliable application behavior.',
+  TypeScript: 'Adds strong contracts and safer refactoring to complex frontend systems.',
+  React: 'Creates component-driven interfaces with predictable state and reusable UI patterns.',
+  'Next.js': 'Delivers production React applications with routing, rendering, and performance built in.',
+  'Tailwind CSS': 'Turns design systems into consistent, responsive interfaces at implementation speed.',
+  HTML5: 'Provides semantic, accessible structure for robust web experiences.',
+  CSS3: 'Shapes responsive layouts, visual systems, and motion with precise control.',
+  'Redux Toolkit': 'Organizes shared application state with clear, maintainable data flows.',
+  'TanStack Query': 'Coordinates server state, caching, synchronization, and resilient data fetching.',
+  Axios: 'Handles structured API communication, interceptors, and dependable request flows.',
+  'React Hook Form': 'Builds performant forms with clean validation and minimal re-rendering.',
+  Recharts: 'Transforms product data into clear, responsive visual stories.',
+  'Node.js': 'Runs scalable JavaScript services and backend workflows outside the browser.',
+  Express: 'Creates focused HTTP services, middleware pipelines, and REST endpoints.',
+  PostgreSQL: 'Models dependable relational data with powerful querying and integrity.',
+  Supabase: 'Accelerates products with hosted data, authentication, storage, and realtime features.',
+  Prisma: 'Provides type-safe database access and readable application data models.',
+  'REST APIs': 'Connects products through predictable resources, contracts, and status-driven responses.',
+  Git: 'Keeps delivery collaborative, traceable, reviewable, and reversible.',
+  Docker: 'Packages applications into consistent environments from development to deployment.',
+  GSAP: 'Produces precise, high-performance motion sequences and scroll-based interactions.',
+  'ShadCN UI': 'Supplies accessible component foundations that remain fully customizable.',
+  'Radix UI': 'Provides robust accessible primitives for advanced interface behavior.',
+  'Production UI': 'Balances visual polish, accessibility, responsiveness, and maintainable code.',
+};
+
+type SkillPreview = {
+  name: string;
+  category: string;
+  detail: string;
+  side: 'left' | 'right';
+  sourceX: number;
+  sourceY: number;
+  targetX: number;
+  targetY: number;
+  stageWidth: number;
+  stageHeight: number;
+  cardWidth: number;
+  token: number;
+};
+
 const learningItems = [
   'Building responsive and accessible interfaces',
   'Developing reusable components and UI systems',
@@ -78,18 +120,86 @@ function HudRows({ items, active }: { items: Array<{ title: string; detail?: str
   return <div className="cinematic-hud-rows">{items.map(({ title, detail, icon: ItemIcon }, index) => <div className="cinematic-hud-row" key={title}><span className="cinematic-row-icon"><ItemIcon size={17} weight="light" /></span><span><InteractiveScramble text={title} active={active} /><small>{detail}</small></span><i aria-hidden="true">{String(index + 1).padStart(2, '0')}</i></div>)}</div>;
 }
 
-function SkillCell({ name, index, active }: { name: string; index: number; active: boolean }) {
+function SkillCell({ name, category, index, active, onPreview, onPreviewEnd }: { name: string; category: string; index: number; active: boolean; onPreview?: (name: string, category: string, target: HTMLButtonElement) => void; onPreviewEnd?: () => void }) {
   const [run, setRun] = useState(0);
   const animate = () => active && setRun((value) => value + 1);
-  return <button className="cinematic-skill-cell" type="button" onPointerEnter={animate} onFocus={animate}><small>{String(index + 1).padStart(2, '0')}</small><strong><ScrambleText text={name} run={run} enabled={active && run > 0} /></strong><i aria-hidden="true" /></button>;
+  const reveal = (target: HTMLButtonElement) => { animate(); onPreview?.(name, category, target); };
+  return <button className="cinematic-skill-cell" type="button" onPointerEnter={(event) => reveal(event.currentTarget)} onPointerLeave={onPreviewEnd} onFocus={(event) => reveal(event.currentTarget)} onBlur={onPreviewEnd}><small>{String(index + 1).padStart(2, '0')}</small><strong><ScrambleText text={name} run={run} enabled={active && run > 0} /></strong><i aria-hidden="true" /></button>;
 }
 
-function SkillGroup({ title, skills, offset, active }: { title: string; skills: readonly string[]; offset: number; active: boolean }) {
-  return <div className="cinematic-skill-group"><h3>/ {title}</h3><div className="cinematic-skill-grid">{skills.map((skill, index) => <SkillCell key={skill} name={skill} index={offset + index} active={active} />)}</div></div>;
+function SkillGroup({ title, skills, offset, active, onPreview, onPreviewEnd }: { title: string; skills: readonly string[]; offset: number; active: boolean; onPreview?: (name: string, category: string, target: HTMLButtonElement) => void; onPreviewEnd?: () => void }) {
+  return <div className="cinematic-skill-group"><h3>/ {title}</h3><div className="cinematic-skill-grid">{skills.map((skill, index) => <SkillCell key={skill} name={skill} category={title} index={offset + index} active={active} onPreview={onPreview} onPreviewEnd={onPreviewEnd} />)}</div></div>;
 }
 
 function SectionHeading({ title, run, active }: { title: string; run: number; active: boolean }) {
   return <h2><InteractiveScramble text={title} run={run} active={active} /></h2>;
+}
+
+function WeaponsSection({ run, active }: { run: number; active: boolean }) {
+  const [preview, setPreview] = useState<SkillPreview | null>(null);
+  const [typedText, setTypedText] = useState('');
+  const [closing, setClosing] = useState(false);
+  const closeTimer = useRef<number | null>(null);
+
+  const showPreview = (name: string, category: string, target: HTMLButtonElement) => {
+    if (!active || window.innerWidth <= 760) return;
+    if (closeTimer.current) window.clearTimeout(closeTimer.current);
+    setClosing(false);
+    setTypedText('');
+    const stage = target.closest('.about-cinematic-stage') as HTMLElement | null;
+    if (!stage) return;
+    const stageRect = stage.getBoundingClientRect();
+    const targetRect = target.getBoundingClientRect();
+    const cardWidth = Math.min(340, Math.max(280, stageRect.width * .2));
+    const side = targetRect.left + targetRect.width / 2 < stageRect.left + stageRect.width / 2 ? 'left' : 'right';
+    const sourceX = (side === 'left' ? targetRect.right : targetRect.left) - stageRect.left;
+    const sourceY = targetRect.top + targetRect.height / 2 - stageRect.top;
+    const targetX = stageRect.width / 2 + (side === 'left' ? -cardWidth / 2 : cardWidth / 2);
+    const targetY = stageRect.height * .54;
+    setPreview({ name, category, detail: skillDescriptions[name], side, sourceX, sourceY, targetX, targetY, stageWidth: stageRect.width, stageHeight: stageRect.height, cardWidth, token: Date.now() });
+  };
+
+  const hidePreview = () => {
+    if (closeTimer.current) window.clearTimeout(closeTimer.current);
+    setClosing(true);
+    closeTimer.current = window.setTimeout(() => { setPreview(null); setTypedText(''); setClosing(false); }, 240);
+  };
+
+  useEffect(() => {
+    if (!preview) return;
+    const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    let index = 0;
+    let typingTimer = 0;
+    const revealTimer = window.setTimeout(() => {
+      if (reducedMotion) { setTypedText(preview.detail); return; }
+      typingTimer = window.setInterval(() => {
+        index += 1;
+        setTypedText(preview.detail.slice(0, index));
+        if (index >= preview.detail.length) window.clearInterval(typingTimer);
+      }, 18);
+    }, reducedMotion ? 0 : 900);
+    return () => { window.clearTimeout(revealTimer); window.clearInterval(typingTimer); };
+  }, [preview]);
+
+  useEffect(() => {
+    if (active) return;
+    const resetTimer = window.setTimeout(() => { setPreview(null); setTypedText(''); setClosing(false); }, 0);
+    return () => window.clearTimeout(resetTimer);
+  }, [active]);
+
+  useEffect(() => () => { if (closeTimer.current) window.clearTimeout(closeTimer.current); }, []);
+
+  return <>
+    <aside className="cinematic-side cinematic-side-left cinematic-side-skills"><HudPanel label="CAPABILITY INDEX" run={run} active={active}><SectionHeading title="My Weapons" run={run} active={active} /><p className="cinematic-red-copy">Technical Arsenal</p><SkillGroup title="Frontend" skills={frontendSkills} offset={0} active={active} onPreview={showPreview} onPreviewEnd={hidePreview} /><SkillGroup title="State & Data" skills={dataSkills} offset={frontendSkills.length} active={active} onPreview={showPreview} onPreviewEnd={hidePreview} /></HudPanel></aside>
+    <aside className="cinematic-side cinematic-side-right cinematic-side-wide cinematic-side-skills"><HudPanel label="BACKEND & SYSTEMS" run={run} active={active}><SkillGroup title="Backend & Systems" skills={backendSkills} offset={12} active={active} onPreview={showPreview} onPreviewEnd={hidePreview} /></HudPanel><HudPanel label="TOOLS & UI" run={run} active={active}><SkillGroup title="Tooling & UI" skills={toolingSkills} offset={18} active={active} onPreview={showPreview} onPreviewEnd={hidePreview} /></HudPanel></aside>
+    {preview && active && <div key={preview.token} className={`cinematic-skill-intel is-${preview.side} ${closing ? 'is-closing' : ''}`} aria-live="polite">
+      <svg className="skill-intel-connector" viewBox={`0 0 ${preview.stageWidth} ${preview.stageHeight}`} preserveAspectRatio="none" aria-hidden="true"><line className="skill-intel-line skill-intel-line-glow" x1={preview.sourceX} y1={preview.sourceY} x2={preview.targetX} y2={preview.targetY} pathLength="1" /><line className="skill-intel-line" x1={preview.sourceX} y1={preview.sourceY} x2={preview.targetX} y2={preview.targetY} pathLength="1" /></svg>
+      <article className="skill-intel-card" style={{ '--intel-width': `${preview.cardWidth}px`, '--intel-y': `${preview.targetY}px` } as CSSProperties}>
+        <i className="skill-intel-border is-top" aria-hidden="true" /><i className="skill-intel-border is-right" aria-hidden="true" /><i className="skill-intel-border is-bottom" aria-hidden="true" /><i className="skill-intel-border is-left" aria-hidden="true" />
+        <div className="skill-intel-content"><span>/ {preview.category}</span><h3>{preview.name}</h3><p>{typedText}<i aria-hidden="true" /></p></div>
+      </article>
+    </div>}
+  </>;
 }
 
 function SectionContent({ id, run, active }: { id: (typeof aboutSections)[number]['id']; run: number; active: boolean }) {
@@ -111,10 +221,7 @@ function SectionContent({ id, run, active }: { id: (typeof aboutSections)[number
     <aside className="cinematic-side cinematic-side-right"><HudPanel label="APPROACH" run={run} active={active}><HudRows items={approachItems} active={active} /></HudPanel></aside>
   </>;
 
-  if (id === 'weapons') return <>
-    <aside className="cinematic-side cinematic-side-left cinematic-side-skills"><HudPanel label="CAPABILITY INDEX" run={run} active={active}><SectionHeading title="My Weapons" run={run} active={active} /><p className="cinematic-red-copy">Technical Arsenal</p><SkillGroup title="Frontend" skills={frontendSkills} offset={0} active={active} /><SkillGroup title="State & Data" skills={dataSkills} offset={frontendSkills.length} active={active} /></HudPanel></aside>
-    <aside className="cinematic-side cinematic-side-right cinematic-side-wide cinematic-side-skills"><HudPanel label="BACKEND & SYSTEMS" run={run} active={active}><SkillGroup title="Backend & Systems" skills={backendSkills} offset={12} active={active} /></HudPanel><HudPanel label="TOOLS & UI" run={run} active={active}><SkillGroup title="Tooling & UI" skills={toolingSkills} offset={18} active={active} /></HudPanel></aside>
-  </>;
+  if (id === 'weapons') return <WeaponsSection run={run} active={active} />;
 
   if (id === 'learning') return <>
     <aside className="cinematic-side cinematic-side-left"><HudPanel label="EXPERIENCE LOG" run={run} active={active}><SectionHeading title="Learning by Building" run={run} active={active} /><div className="cinematic-role cinematic-role-large"><strong>Frontend Developer Intern</strong><span>SoftAccess</span><small>May 2026 → July 2026</small></div><ul className="cinematic-bullet-list">{learningItems.map((item) => <li key={item}>{item}</li>)}</ul></HudPanel></aside>
