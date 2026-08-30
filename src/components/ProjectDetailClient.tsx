@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import Image from 'next/image';
-import { ArrowLeftIcon, ArrowUpRightIcon, CaretLeftIcon, CaretRightIcon } from '@phosphor-icons/react';
+import { ArrowUUpLeftIcon, ArrowUpRightIcon, CaretLeftIcon, CaretRightIcon, CaretUpIcon } from '@phosphor-icons/react';
 import { useRouter } from 'next/navigation';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { InteriorChrome } from './InteriorChrome';
@@ -71,7 +71,7 @@ export function ProjectDetailClient({ project }: { project: Project }) {
       <main className={`project-detail ${isNavigating ? 'is-navigating' : ''}`}>
         <section className="project-detail-hero" aria-labelledby="project-detail-title">
           <div className="project-detail-heading">
-            <Link href="/projects" className="project-detail-back" aria-label="Back to all projects"><ArrowLeftIcon size={23} weight="light" /></Link>
+            <Link href="/projects" className="project-detail-back" aria-label="Back to all projects"><ArrowUUpLeftIcon size={22} weight="light" /></Link>
             <h1 id="project-detail-title">{project.name}</h1>
           </div>
 
@@ -109,8 +109,11 @@ export function ProjectDetailClient({ project }: { project: Project }) {
         </section>
 
         <div className="project-detail-keyboard" aria-label="Browse project details">
-          <button onClick={() => navigate(previous)} disabled={isNavigating} aria-label={`Previous project: ${previous.name}`}><CaretLeftIcon size={14} weight="bold" /><span>PREV</span></button>
-          <button onClick={() => navigate(next)} disabled={isNavigating} aria-label={`Next project: ${next.name}`}><span>NEXT</span><CaretRightIcon size={14} weight="bold" /></button>
+          <i className="project-detail-key-up" aria-hidden="true"><CaretUpIcon size={10} weight="bold" /></i>
+          <div>
+            <button onClick={() => navigate(previous)} disabled={isNavigating} aria-label={`Previous project: ${previous.name}`}><CaretLeftIcon size={11} weight="bold" /></button>
+            <button onClick={() => navigate(next)} disabled={isNavigating} aria-label={`Next project: ${next.name}`}><CaretRightIcon size={11} weight="bold" /></button>
+          </div>
         </div>
 
         <ProjectTicker name={project.name} />
