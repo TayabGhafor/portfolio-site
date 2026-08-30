@@ -20,22 +20,29 @@ const homeStatusItems = [
   ['[ STATUS ]', 'AVAILABLE'],
 ] as const;
 
+const loaderExitDuration = 1320;
+
 function Loader({ progress, ready, leaving, onEnter }: { progress: number; ready: boolean; leaving: boolean; onEnter: () => void }) {
   return (
     <section className={`loader-screen ${ready ? 'is-ready' : ''} ${leaving ? 'is-leaving' : ''}`} aria-label="Portfolio introduction" aria-live="polite">
-      <div className="loader-grid" aria-hidden="true"><i /><i /><i /><i /></div>
-      <div className="loader-grid-labels" aria-hidden="true">
-        <span>GRID_L1_R1</span><span>GRID_L2_R1</span><span>GRID_RIGHT_SIMPLE</span>
-        <span>GRID_L1_R2</span><span>GRID_L2_MASTER</span><span>GRID_L1_R3</span><span>GRID_L2_R4</span>
+      <div className="loader-collapse-field">
+        <div className="loader-grid" aria-hidden="true"><i /><i /><i /><i /></div>
+        <div className="loader-grid-labels" aria-hidden="true">
+          <span>GRID_L1_R1</span><span>GRID_L2_R1</span><span>GRID_RIGHT_SIMPLE</span>
+          <span>GRID_L1_R2</span><span>GRID_L2_MASTER</span><span>GRID_L1_R3</span><span>GRID_L2_R4</span>
+        </div>
+        <div className="loader-counter">{String(Math.round(progress)).padStart(2, '0')}%</div>
+        <div className="loader-performance"><span>PERFORMANCE TIER</span><b className="active">HIGH</b><b>MED</b><b>SAVER</b></div>
+        <div className="loader-music" aria-hidden="true"><span>On</span><b>MUSIC</b><span>Off</span></div>
+        <div className="loader-track"><span style={{ '--load': `${progress}%` } as CSSProperties} /><b>{ready ? 'LOADED' : 'LOADING'}</b></div>
+        <div className="loader-system"><i className={ready ? 'ready' : ''} /><span>{ready ? 'SYSTEM_READY' : 'INITIALIZING_ENGINE'}</span><em>{Math.round(progress)}%</em></div>
       </div>
-      <div className="loader-counter">{String(Math.round(progress)).padStart(2, '0')}%</div>
+      <div className="loader-singularity" aria-hidden="true"><i /></div>
       <button className="loader-enter" disabled={!ready} onClick={onEnter}>
-        <strong>{ready ? 'CLICK' : 'WAIT'}</strong><span>{ready ? 'TO ENTER' : 'INITIALIZING'}</span>
+        <strong className="loader-enter-click">{ready ? 'CLICK' : 'WAIT'}</strong>
+        <i className="loader-enter-divider" aria-hidden="true" />
+        <span className="loader-enter-action">{ready ? 'TO ENTER' : 'INITIALIZING'}</span>
       </button>
-      <div className="loader-performance"><span>PERFORMANCE TIER</span><b className="active">HIGH</b><b>MED</b><b>SAVER</b></div>
-      <div className="loader-music" aria-hidden="true"><span>On</span><b>MUSIC</b><span>Off</span></div>
-      <div className="loader-track"><span style={{ '--load': `${progress}%` } as CSSProperties} /><b>{ready ? 'LOADED' : 'LOADING'}</b></div>
-      <div className="loader-system"><i className={ready ? 'ready' : ''} /><span>{ready ? 'SYSTEM_READY' : 'INITIALIZING_ENGINE'}</span><em>{Math.round(progress)}%</em></div>
     </section>
   );
 }
@@ -101,7 +108,7 @@ export default function Home() {
       if (event.key === 'Escape') setPanel(null);
       if (event.key === 'Enter' && displayProgress >= 100 && !entered && !leaving) {
         setLeaving(true);
-        window.setTimeout(() => setEntered(true), motion ? 930 : 0);
+        window.setTimeout(() => setEntered(true), motion ? loaderExitDuration : 0);
       }
     };
     window.addEventListener('keydown', handleKey);
@@ -114,7 +121,7 @@ export default function Home() {
   const enterPortfolio = () => {
     if (displayProgress < 100 || leaving) return;
     setLeaving(true);
-    window.setTimeout(() => setEntered(true), motion ? 930 : 0);
+    window.setTimeout(() => setEntered(true), motion ? loaderExitDuration : 0);
   };
 
   const handlePointer = (event: ReactPointerEvent<HTMLElement>) => {
