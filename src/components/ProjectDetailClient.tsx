@@ -90,9 +90,9 @@ export function ProjectDetailClient({ project }: { project: Project }) {
             <aside className="project-detail-facts" aria-label={`${project.name} project facts`}>
               <dl>
                 <div><dt>PROJECT_TYPE</dt><dd>{getProjectType(project.category)}</dd></div>
-                <div><dt>ENTRY_YEAR</dt><dd>2026</dd></div>
-                <div><dt>TARGET_PLATFORM</dt><dd>WEB</dd></div>
-                <div><dt>PRIMARY_ROLE</dt><dd>DESIGN &amp; DEVELOPMENT</dd></div>
+                <div><dt>ENTRY_YEAR</dt><dd>{project.entryYear ?? '2026'}</dd></div>
+                <div><dt>TARGET_PLATFORM</dt><dd>{project.targetPlatform ?? 'WEB'}</dd></div>
+                <div><dt>PRIMARY_ROLE</dt><dd>{project.primaryRole ?? 'DESIGN & DEVELOPMENT'}</dd></div>
               </dl>
               <section>
                 <h2>{project.verifiedTechnologies.length ? 'DEPLOYED_TECHNOLOGIES' : 'PROJECT_CAPABILITIES'}</h2>

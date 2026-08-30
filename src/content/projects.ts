@@ -103,6 +103,24 @@ export const projects: Project[] = [
     assets: { cover: '/projects/vibeio/cover.webp', mobile: '/projects/vibeio/mobile.webp' },
     palette: ['#09111f', '#7d49ee', '#20c7c9', '#f8fafc'],
   },
+  {
+    id: '10',
+    slug: 'cowsense',
+    name: 'CowSense',
+    category: 'AI / IoT Livestock Health Platform',
+    tier: 'A',
+    summary: 'An AI and IoT livestock-health system that detects visible cattle diseases and monitors real-time vitals.',
+    purpose: 'Connect a YOLOv8m disease-detection workflow with CowLink, an ESP32 smart collar that streams cattle health, activity, and location data to farmer and veterinary applications.',
+    highlights: ['YOLOv8m disease detection', 'CowLink ESP32 smart collar', 'Farmer and vet Flutter apps', 'Real-time vitals and alerts'],
+    verifiedTechnologies: ['Flutter', 'Node.js', 'Express.js', 'YOLOv8m', 'ESP32', 'MongoDB', 'Roboflow', 'Hugging Face'],
+    entryYear: '2025',
+    targetPlatform: 'MOBILE / IOT',
+    primaryRole: 'AI & FULL-STACK',
+    liveUrl: 'https://huggingface.co/spaces/malikTayab/cowsense-disease-detector',
+    sourceUrl: 'https://github.com/TayabGhafor/Cowsense',
+    assets: { cover: '/projects/cowsense/cover.png', mobile: '/projects/cowsense/mobile.png' },
+    palette: ['#121a22', '#09a0bf', '#dc5149', '#f0a12e'],
+  },
 ];
 
 export const featuredProjects = projects.filter((project) => project.tier === 'A');

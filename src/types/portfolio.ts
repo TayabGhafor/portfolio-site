@@ -11,6 +11,9 @@ export type Project = {
   highlights: string[];
   verifiedTechnologies: string[];
   implementationNote?: string;
+  entryYear?: string;
+  targetPlatform?: string;
+  primaryRole?: string;
   liveUrl: string;
   sourceUrl?: string;
   assets: {
