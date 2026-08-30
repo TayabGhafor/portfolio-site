@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useRef, useState, type CSSProperties, type MouseEvent as ReactMouseEvent } from 'react';
+import { useEffect, useRef, useState, type CSSProperties, type MouseEvent as ReactMouseEvent, type PointerEvent as ReactPointerEvent } from 'react';
 import { useRouter } from 'next/navigation';
 import {
   FileTextIcon,
@@ -34,6 +34,10 @@ const pages: Array<{ key: PageKey; href: string; index: string; label: string; i
 ];
 
 const scrambleCharacters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789@#$%&';
+
+function clampSettingsPosition(top: number) {
+  return Math.min(Math.max(top, 18), Math.max(18, window.innerHeight - 66));
+}
 
 const coreThemes: Array<{ key: CoreTheme; label: string; color: string }> = [
   { key: 'mono', label: 'Mono', color: '#f5f5f5' },
@@ -183,8 +187,11 @@ export function SiteControls({ currentPage, panel, onPanelChange }: SiteControls
   const menuOpen = panel === 'menu';
   const settingsOpen = panel === 'settings';
   const controlsRef = useRef<HTMLDivElement>(null);
+  const settingsDragRef = useRef<{ pointerId: number; startY: number; startTop: number; dragged: boolean } | null>(null);
+  const suppressSettingsClickRef = useRef(false);
   const [dockRun, setDockRun] = useState(0);
   const [modalTextRuns, setModalTextRuns] = useState<Record<string, number>>({});
+  const [settingsTop, setSettingsTop] = useState<number | null>(null);
   const dockExpanded = panel !== null;
   const dock = settingsOpen
     ? { index: 'SYS', label: 'Settings', icon: GearSixIcon }
@@ -198,6 +205,59 @@ export function SiteControls({ currentPage, panel, onPanelChange }: SiteControls
     setModalTextRuns((runs) => ({ ...runs, [key]: (runs[key] ?? 0) + 1 }));
   };
   const modalTextRun = (key: string) => modalTextRuns[key] ?? 0;
+
+  useEffect(() => {
+    const savedTop = Number(window.localStorage.getItem('tm-settings-trigger-top'));
+    if (Number.isFinite(savedTop) && savedTop > 0) setSettingsTop(clampSettingsPosition(savedTop));
+
+    const keepSettingsTriggerVisible = () => {
+      setSettingsTop((current) => current === null ? current : clampSettingsPosition(current));
+    };
+    window.addEventListener('resize', keepSettingsTriggerVisible);
+    return () => window.removeEventListener('resize', keepSettingsTriggerVisible);
+  }, []);
+
+  const startSettingsDrag = (event: ReactPointerEvent<HTMLButtonElement>) => {
+    if (event.button !== 0) return;
+    const button = event.currentTarget;
+    settingsDragRef.current = {
+      pointerId: event.pointerId,
+      startY: event.clientY,
+      startTop: button.getBoundingClientRect().top,
+      dragged: false,
+    };
+    button.setPointerCapture(event.pointerId);
+  };
+
+  const moveSettingsDrag = (event: ReactPointerEvent<HTMLButtonElement>) => {
+    const drag = settingsDragRef.current;
+    if (!drag || drag.pointerId !== event.pointerId) return;
+    const distance = event.clientY - drag.startY;
+    if (Math.abs(distance) > 3) drag.dragged = true;
+    if (!drag.dragged) return;
+    setSettingsTop(clampSettingsPosition(drag.startTop + distance));
+  };
+
+  const finishSettingsDrag = (event: ReactPointerEvent<HTMLButtonElement>) => {
+    const drag = settingsDragRef.current;
+    if (!drag || drag.pointerId !== event.pointerId) return;
+    if (event.currentTarget.hasPointerCapture(event.pointerId)) event.currentTarget.releasePointerCapture(event.pointerId);
+    if (drag.dragged) {
+      const nextTop = clampSettingsPosition(drag.startTop + event.clientY - drag.startY);
+      window.localStorage.setItem('tm-settings-trigger-top', String(nextTop));
+      setSettingsTop(nextTop);
+      suppressSettingsClickRef.current = true;
+    }
+    settingsDragRef.current = null;
+  };
+
+  const toggleSettings = () => {
+    if (suppressSettingsClickRef.current) {
+      suppressSettingsClickRef.current = false;
+      return;
+    }
+    onPanelChange(settingsOpen ? null : 'settings');
+  };
 
   useEffect(() => {
     if (!panel) return;
@@ -222,11 +282,17 @@ export function SiteControls({ currentPage, panel, onPanelChange }: SiteControls
   return (
     <div className="site-controls" ref={controlsRef}>
       <button
-        className="settings-trigger border-draw-host"
-        onClick={() => onPanelChange(settingsOpen ? null : 'settings')}
+        className={`settings-trigger border-draw-host ${settingsDragRef.current?.dragged ? 'is-dragging' : ''}`}
+        style={settingsTop === null ? undefined : { '--settings-trigger-top': `${settingsTop}px` } as CSSProperties}
+        onClick={toggleSettings}
+        onPointerDown={startSettingsDrag}
+        onPointerMove={moveSettingsDrag}
+        onPointerUp={finishSettingsDrag}
+        onPointerCancel={finishSettingsDrag}
         aria-expanded={settingsOpen}
         aria-controls="global-settings-panel"
         aria-label="Open system configuration"
+        title="Drag vertically to reposition settings"
       >
         <ControlDrawBorder />
         <span className="settings-trigger-core icon-hover-scope"><MorphIcon icon={GearSixIcon} size={17} /></span>

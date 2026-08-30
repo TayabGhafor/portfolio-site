@@ -81,7 +81,10 @@ export function ProjectDetailClient({ project }: { project: Project }) {
               <i />
               <p>{project.purpose}</p>
               {project.implementationNote && <p className="project-detail-note">{project.implementationNote}</p>}
-              <a className="project-detail-live-link" href={project.liveUrl} target="_blank" rel="noreferrer">Live Site <ArrowUpRightIcon size={18} weight="regular" /></a>
+              <a className="project-detail-live-link" href={project.liveUrl} target="_blank" rel="noreferrer">
+                Live Site
+                <span className="project-detail-live-icon" aria-hidden="true"><ArrowUpRightIcon size={18} weight="regular" /></span>
+              </a>
             </div>
 
             <aside className="project-detail-facts" aria-label={`${project.name} project facts`}>
