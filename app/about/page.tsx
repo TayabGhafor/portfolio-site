@@ -1,6 +1,5 @@
 'use client';
 
-import Image from 'next/image';
 import Link from 'next/link';
 import { useEffect, useRef, useState, type CSSProperties, type ReactNode } from 'react';
 import {
@@ -215,9 +214,8 @@ export default function AboutPage() {
   return <InteriorChrome currentPage="about" index="02" label="ABOUT" wide>
     <main ref={trackRef} className="about-cinematic-track">
       <div ref={stageRef} className={`about-cinematic-stage ${pageHidden ? 'is-paused' : ''}`}>
-        <div className="cinematic-environment" aria-hidden="true"><Image src="/about-cinematic-hero-v1.webp" alt="" fill priority sizes="100vw" /><span className="cinematic-environment-shade" /><span className="cinematic-red-matrix" /><span className="cinematic-blue-haze" /></div>
+        <div className="cinematic-environment" aria-hidden="true"><video className="cinematic-background-video" autoPlay loop muted playsInline preload="auto" poster="/about-cinematic-hero-v1.webp"><source src="/about-digital-eyes-background.mp4" type="video/mp4" /></video><span className="cinematic-environment-shade" /><span className="cinematic-red-matrix" /><span className="cinematic-blue-haze" /></div>
         <h1 className={`cinematic-name ${nameGlitch ? 'is-glitching' : ''}`} data-text="TAYAB MALIK">TAYAB MALIK</h1>
-        <div className="cinematic-character" aria-hidden="true"><Image src="/about-cinematic-character-transparent-v1.webp" alt="" fill priority sizes="100vw" /><span className="cinematic-eye-glow" /></div>
         <div className="cinematic-particles" aria-hidden="true">{particles.map((particle, index) => <i key={index} className={`is-${particle.tone}`} style={{ '--particle-left': particle.left, '--particle-top': particle.top, '--particle-delay': particle.delay, '--particle-duration': particle.duration, '--particle-size': particle.size } as CSSProperties} />)}</div>
         <nav className="cinematic-section-progress" aria-label="About sections"><span className="cinematic-progress-line"><i /></span>{aboutSections.map((section, index) => <button key={section.id} className={index === activeIndex ? 'is-active' : ''} onClick={() => jumpTo(index)} aria-current={index === activeIndex ? 'step' : undefined}><b>{section.number}</b><span>{section.shortTitle}</span><i /></button>)}</nav>
         <div className="cinematic-states">{aboutSections.map((section, index) => <div key={section.id} className={`cinematic-state ${index === activeIndex ? 'is-active' : index < activeIndex ? 'is-before' : 'is-after'}`} aria-hidden={index !== activeIndex}><SectionContent id={section.id} run={activeIndex + 1} active={index === activeIndex} /></div>)}</div>
