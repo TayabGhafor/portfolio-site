@@ -2,20 +2,37 @@ import type { PortfolioProfile } from '../types/portfolio';
 
 export const portfolio: PortfolioProfile = {
   name: 'Tayab Malik',
-  primaryRole: 'Frontend Developer',
-  secondaryRole: 'Frontend Engineer / Full-Stack Capable Developer',
+  primaryRole: 'SQA Analyst',
+  secondaryRole: 'Software Testing / Quality Assurance',
   shortIntroduction:
-    'Frontend developer focused on polished, responsive interfaces, SaaS products, and production-minded user experiences.',
+    'SQA Analyst focused on manual testing, UI and usability validation, API response testing, and reliable software delivery.',
   experience: [
     {
-      role: 'Frontend Developer Intern',
-      company: 'SoftAccess',
-      companyUrl: 'https://softaccess.co.uk/',
-      status: 'unverified',
+      role: 'SQA Analyst',
+      company: 'Tallysis',
+      dates: 'December 2025 - Present',
+      status: 'active',
+    },
+    {
+      role: 'Frontend Development Intern',
+      company: 'CodeAlpha',
+      dates: 'August 2025 - November 2025',
+      status: 'completed',
     },
   ],
+  email: 'tayabghafor@gmail.com',
+  location: 'Lahore, Punjab, Pakistan',
+  linkedIn: 'https://www.linkedin.com/in/tayabmalik',
   github: 'https://github.com/TayabGhafor',
   skills: [
+    'UI Automation',
+    'Manual Testing',
+    'UI & Usability Testing',
+    'API Testing / Postman',
+    'Test Case Execution',
+    'Bug Reporting',
+    'Software Development Life Cycle (SDLC)',
+    'Software Testing Life Cycle (STLC)',
     'React',
     'Next.js',
     'JavaScript',
@@ -45,10 +62,5 @@ export const portfolio: PortfolioProfile = {
 };
 
 export const unverifiedProfileFields = [
-  'email',
-  'location',
-  'LinkedIn URL',
-  'education',
-  'SoftAccess dates',
   'availability status',
 ] as const;

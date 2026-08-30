@@ -17,7 +17,7 @@ const aboutSections = [
   { id: 'profile', number: '01', title: 'Profile', shortTitle: 'Profile' },
   { id: 'build', number: '02', title: 'What I Build', shortTitle: 'Build' },
   { id: 'weapons', number: '03', title: 'My Weapons', shortTitle: 'Weapons' },
-  { id: 'learning', number: '04', title: 'Learning by Building', shortTitle: 'Learning' },
+  { id: 'learning', number: '04', title: 'Quality in Practice', shortTitle: 'Quality' },
   { id: 'connect', number: '05', title: 'Have a Project in Mind?', shortTitle: 'Connect' },
 ] as const;
 
@@ -85,19 +85,20 @@ type SkillPreview = {
 };
 
 const learningItems = [
-  'Building responsive and accessible interfaces',
-  'Developing reusable components and UI systems',
-  'Integrating REST APIs',
-  'Collaborating with engineering teams',
-  'Writing clean, maintainable frontend code',
+  'Manual testing for web functionality and stability',
+  'Test-case execution, bug reporting, and issue tracking',
+  'UI and usability testing to improve user experience',
+  'API response testing with Postman',
+  'Fix verification and re-testing with developers',
+  'Real-world QA workflows and SDLC practice',
 ];
 
 const focusItems: Array<{ title: string; icon: Icon }> = [
-  { title: 'Solve real problems', icon: CrosshairIcon },
-  { title: 'Build with purpose', icon: BracketsCurlyIcon },
-  { title: 'Keep learning', icon: BookOpenIcon },
-  { title: 'Collaborate & grow', icon: UsersThreeIcon },
-  { title: 'Ship quality work that creates impact', icon: CheckCircleIcon },
+  { title: 'Test real product flows', icon: CrosshairIcon },
+  { title: 'Improve UI and usability', icon: BracketsCurlyIcon },
+  { title: 'Validate API responses', icon: BookOpenIcon },
+  { title: 'Verify fixes with developers', icon: UsersThreeIcon },
+  { title: 'Maintain reliable releases', icon: CheckCircleIcon },
 ];
 
 const particles = Array.from({ length: 18 }, (_, index) => ({
@@ -205,14 +206,14 @@ function WeaponsSection({ run, active }: { run: number; active: boolean }) {
 function SectionContent({ id, run, active }: { id: (typeof aboutSections)[number]['id']; run: number; active: boolean }) {
   if (id === 'profile') return <>
     <aside className="cinematic-side cinematic-side-left">
-      <HudPanel label="PROFILE" run={run} active={active} className="cinematic-profile-card"><strong className="cinematic-section-number">01</strong><h2>Frontend Developer</h2><p>I engineer responsive, accessible and high-performance web experiences with clean code and thoughtful interactions.</p></HudPanel>
+      <HudPanel label="PROFILE" run={run} active={active} className="cinematic-profile-card"><strong className="cinematic-section-number">01</strong><h2>SQA Analyst</h2><p>I help ensure software quality through manual testing, test execution, UI and usability validation, API testing, and collaborative fix verification.</p></HudPanel>
       <HudPanel label="LOCATION" run={run} active={active}><div className="cinematic-single-line"><MapPinIcon size={16} /><strong>Pakistan / PKT</strong></div></HudPanel>
       <HudPanel label="STATUS" run={run} active={active}><div className="cinematic-single-line"><i className="cinematic-status-dot" /><strong>Open for opportunities</strong></div></HudPanel>
     </aside>
     <aside className="cinematic-side cinematic-side-right">
       <HudPanel label="CORE PHILOSOPHY" run={run} active={active} className="cinematic-philosophy"><p>Code is <b>design.</b><br />Design is <b>solution.</b></p><span className="cinematic-data-bar" aria-hidden="true" /></HudPanel>
       <HudPanel label="FOCUS" run={run} active={active}><ul className="cinematic-focus-list"><li>Clean Code</li><li>Performance</li><li>Accessibility</li><li>User Experience</li><li>Product Thinking</li></ul></HudPanel>
-      <HudPanel label="CURRENT ROLE" run={run} active={active}><div className="cinematic-role"><strong>Frontend Developer Intern</strong><span>SoftAccess</span><small>May 2026 → July 2026</small></div></HudPanel>
+      <HudPanel label="CURRENT ROLE" run={run} active={active}><div className="cinematic-role"><strong>SQA Analyst</strong><span>Tallysis</span><small>December 2025 → Present</small></div></HudPanel>
     </aside>
   </>;
 
@@ -224,7 +225,7 @@ function SectionContent({ id, run, active }: { id: (typeof aboutSections)[number
   if (id === 'weapons') return <WeaponsSection run={run} active={active} />;
 
   if (id === 'learning') return <>
-    <aside className="cinematic-side cinematic-side-left"><HudPanel label="EXPERIENCE LOG" run={run} active={active}><SectionHeading title="Learning by Building" run={run} active={active} /><div className="cinematic-role cinematic-role-large"><strong>Frontend Developer Intern</strong><span>SoftAccess</span><small>May 2026 → July 2026</small></div><ul className="cinematic-bullet-list">{learningItems.map((item) => <li key={item}>{item}</li>)}</ul></HudPanel></aside>
+    <aside className="cinematic-side cinematic-side-left"><HudPanel label="EXPERIENCE LOG" run={run} active={active}><SectionHeading title="Quality in Practice" run={run} active={active} /><div className="cinematic-role cinematic-role-large"><strong>SQA Analyst</strong><span>Tallysis</span><small>December 2025 → Present</small></div><ul className="cinematic-bullet-list">{learningItems.map((item) => <li key={item}>{item}</li>)}</ul></HudPanel></aside>
     <aside className="cinematic-side cinematic-side-right"><HudPanel label="WHAT I FOCUS ON" run={run} active={active}><HudRows items={focusItems} active={active} /></HudPanel></aside>
   </>;
 

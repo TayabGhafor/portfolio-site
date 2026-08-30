@@ -31,7 +31,7 @@ export type PortfolioProfile = {
   experience: {
     role: string;
     company: string;
-    companyUrl: string;
+    companyUrl?: string;
     dates?: string;
     status: 'unverified' | 'active' | 'completed';
   }[];
