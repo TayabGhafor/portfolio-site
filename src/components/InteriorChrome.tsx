@@ -13,11 +13,12 @@ interface InteriorChromeProps {
   label: string;
   wide?: boolean;
   aside?: ReactNode;
+  breadcrumb?: ReactNode;
   showIndex?: boolean;
   children: ReactNode;
 }
 
-export function InteriorChrome({ currentPage, index, label, wide = false, aside, showIndex = true, children }: InteriorChromeProps) {
+export function InteriorChrome({ currentPage, index, label, wide = false, aside, breadcrumb, showIndex = true, children }: InteriorChromeProps) {
   const shellRef = useRef<HTMLDivElement>(null);
   const { motion, tier } = useSiteExperience();
   const [panel, setPanel] = useState<ControlPanel>(null);
@@ -68,7 +69,7 @@ export function InteriorChrome({ currentPage, index, label, wide = false, aside,
 
       <header className="about-header">
         <IdentityMark motion={motion} />
-        <div className="about-breadcrumb"><Link href="/">HOME</Link><i>/</i><b>{showIndex ? `[${index}] ` : ''}{label}</b></div>
+        <div className="about-breadcrumb">{breadcrumb ?? <><Link href="/">HOME</Link><i>/</i><b>{showIndex ? `[${index}] ` : ''}{label}</b></>}</div>
       </header>
 
       {aside}

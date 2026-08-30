@@ -1,6 +1,7 @@
 'use client';
 
 import Image from 'next/image';
+import Link from 'next/link';
 import { useState } from 'react';
 import { InteriorChrome } from '../../src/components/InteriorChrome';
 import { ScrambleText } from '../../src/components/SiteControls';
@@ -33,18 +34,18 @@ function ProjectRow({ project, index }: { project: (typeof projects)[number]; in
     <article className="project-reference-row" onPointerEnter={animate} onFocusCapture={animate}>
       <span className="project-reference-number">{project.id}</span>
       <div className="project-reference-copy">
-        <a className="project-reference-title" href={project.liveUrl} target="_blank" rel="noreferrer">
+        <Link className="project-reference-title" href={`/projects/${project.slug}`} aria-label={`View ${project.name} project details`}>
           <span className="project-scramble-static">{project.name}</span>
           <span className="project-scramble-live" aria-hidden="true">
             <ScrambleText text={project.name} run={run} enabled={run > 0} />
           </span>
-        </a>
+        </Link>
         <div className="project-reference-tags">
           {getProjectTags(project.category).map((tag) => <span key={tag}>{tag}</span>)}
         </div>
         <p>{project.summary}</p>
       </div>
-      <a className="project-reference-preview" href={project.liveUrl} target="_blank" rel="noreferrer" aria-label={`Open ${project.name} live website`}>
+      <Link className="project-reference-preview" href={`/projects/${project.slug}`} aria-label={`View ${project.name} project details`}>
         <Image
           src={project.assets.cover}
           alt={`${project.name} desktop interface`}
@@ -52,7 +53,7 @@ function ProjectRow({ project, index }: { project: (typeof projects)[number]; in
           sizes="176px"
           priority={index < 4}
         />
-      </a>
+      </Link>
     </article>
   );
 }
