@@ -527,6 +527,18 @@ button { -webkit-tap-highlight-color: transparent; }
 /* Shared premium navigation and system controls */
 .site-controls { position: fixed; inset: 0; z-index: 44; pointer-events: none; }
 .site-controls > * { pointer-events: auto; }
+.site-controls .border-draw-host { position: relative; isolation: isolate; }
+.site-controls .control-draw-border { position: absolute; inset: 0; z-index: 6; overflow: hidden; pointer-events: none; border-radius: inherit; }
+.site-controls .control-draw-border > i { position: absolute; display: block; margin: 0; border: 0; border-radius: 0; opacity: 0; background: linear-gradient(90deg, rgba(var(--theme-rgb),.48), var(--accent), rgba(var(--theme-rgb),.72)); box-shadow: 0 0 9px rgba(var(--theme-rgb),.36); will-change: transform, opacity; }
+.site-controls .control-draw-border > i:nth-child(1), .site-controls .control-draw-border > i:nth-child(3) { left: 0; width: 100%; height: 1px; transform: scaleX(0); transform-origin: left center; }
+.site-controls .control-draw-border > i:nth-child(1) { top: 0; transition: transform .28s cubic-bezier(.2,.8,.2,1) .24s, opacity .18s ease .24s; }
+.site-controls .control-draw-border > i:nth-child(3) { bottom: 0; transition: transform .28s cubic-bezier(.2,.8,.2,1), opacity .18s ease; }
+.site-controls .control-draw-border > i:nth-child(2), .site-controls .control-draw-border > i:nth-child(4) { top: 0; width: 1px; height: 100%; transform: scaleY(0); transform-origin: center top; }
+.site-controls .control-draw-border > i:nth-child(2) { right: 0; transition: transform .28s cubic-bezier(.2,.8,.2,1), opacity .18s ease; }
+.site-controls .control-draw-border > i:nth-child(4) { left: 0; transition: transform .28s cubic-bezier(.2,.8,.2,1) .24s, opacity .18s ease .24s; }
+.site-controls .border-draw-host:is(:hover, :focus-visible, :focus-within) > .control-draw-border > i { opacity: 1; transform: none; }
+.site-controls .border-draw-host:is(:hover, :focus-visible, :focus-within) > .control-draw-border > i:nth-child(1), .site-controls .border-draw-host:is(:hover, :focus-visible, :focus-within) > .control-draw-border > i:nth-child(4) { transition-delay: 0s; }
+.site-controls .border-draw-host:is(:hover, :focus-visible, :focus-within) > .control-draw-border > i:nth-child(2), .site-controls .border-draw-host:is(:hover, :focus-visible, :focus-within) > .control-draw-border > i:nth-child(3) { transition-delay: .24s; }
 .site-controls .settings-trigger { position: fixed; z-index: 48; right: 0; top: 48%; display: grid; width: 48px; height: 48px; place-items: center; padding: 7px; overflow: hidden; border: 1px solid rgba(255,255,255,.12); border-right: 0; border-radius: 9px 0 0 9px; background: rgba(8,8,8,.72); box-shadow: -16px 12px 42px rgba(0,0,0,.42), inset 0 1px rgba(255,255,255,.04); backdrop-filter: blur(22px) saturate(115%); color: #fff; transition: border-color .3s ease, background .3s ease, box-shadow .45s ease; }
 .site-controls .settings-trigger:hover, .site-controls .settings-trigger:focus-visible, .site-controls .settings-trigger[aria-expanded="true"] { width: 48px; border-color: rgba(255,255,255,.27); background: rgba(15,15,15,.9); outline: none; }
 .settings-trigger-core { width: 32px; height: 32px; display: grid; place-items: center; border-radius: 6px; background: #fff; color: #050505; box-shadow: 0 0 20px rgba(255,255,255,.09); transition: transform .62s cubic-bezier(.18,.9,.2,1), border-radius .45s ease, box-shadow .45s ease; }
@@ -599,12 +611,12 @@ button { -webkit-tap-highlight-color: transparent; }
 .motion-setting > i b { position: absolute; left: 3px; top: 3px; width: 9px; height: 9px; border-radius: 50%; background: rgba(255,255,255,.35); transition: transform .3s ease, background .3s ease, box-shadow .3s ease; }
 .motion-setting > i.is-on b { transform: translateX(15px); background: #fff; box-shadow: 0 0 8px rgba(255,255,255,.45); }
 .site-controls .tier-buttons { gap: 6px; }
-.site-controls .tier-buttons button { min-height: 48px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 7px; border-color: rgba(255,255,255,.08); border-radius: 6px; color: rgba(255,255,255,.45); background: rgba(255,255,255,.015); transition: border-color .25s ease, background .25s ease, color .25s ease, transform .25s ease; }
+.site-controls .tier-buttons button { position: relative; min-height: 48px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 7px; overflow: hidden; border-color: rgba(255,255,255,.08); border-radius: 6px; color: rgba(255,255,255,.45); background: rgba(255,255,255,.015); transition: border-color .25s ease, background .25s ease, color .25s ease, transform .25s ease; }
 .site-controls .tier-buttons button:hover, .site-controls .tier-buttons button:focus-visible { transform: translateY(-2px); border-color: rgba(255,255,255,.24); color: #fff; outline: none; }
 .site-controls .tier-buttons button span { font: 7px var(--font-mono); letter-spacing: .12em; text-transform: uppercase; }
-.site-controls .tier-buttons button i { width: 18px; height: 2px; border-radius: 99px; background: rgba(255,255,255,.16); }
+.site-controls .tier-buttons button > i { width: 18px; height: 2px; border-radius: 99px; background: rgba(255,255,255,.16); }
 .site-controls .tier-buttons button.active { color: #050505; background: #fff; border-color: #fff; }
-.site-controls .tier-buttons button.active i { background: rgba(0,0,0,.5); }
+.site-controls .tier-buttons button.active > i { background: rgba(0,0,0,.5); }
 .site-controls .system-active { position: relative; z-index: 1; display: flex; align-items: center; justify-content: center; gap: 7px; margin-top: 16px; padding-top: 13px; }
 .site-controls .system-active b { margin-left: auto; color: rgba(255,255,255,.42); font-weight: 400; }
 
@@ -623,13 +635,13 @@ button { -webkit-tap-highlight-color: transparent; }
 .theme-options button:hover, .theme-options button:focus-visible { transform: translateY(-2px) scale(1.04); background: rgba(255,255,255,.035); outline: none; }
 .theme-options button:hover::after, .theme-options button:focus-visible::after { transform: translate(-50%, 0); opacity: 1; }
 .theme-options button.active { border-color: rgba(255,255,255,.86); background: rgba(255,255,255,.075); box-shadow: inset 0 0 15px rgba(var(--theme-rgb),.1), 0 0 18px rgba(var(--theme-rgb),.08); }
-.theme-options button i { width: 15px; height: 15px; border-radius: 50%; background: var(--theme-swatch); box-shadow: 0 0 0 1px rgba(255,255,255,.08), 0 0 10px color-mix(in srgb, var(--theme-swatch) 30%, transparent); transition: transform .34s cubic-bezier(.18,.9,.2,1), box-shadow .3s ease; }
-.theme-options button:hover i, .theme-options button:focus-visible i, .theme-options button.active i { transform: scale(1.14); box-shadow: 0 0 0 1px rgba(255,255,255,.16), 0 0 15px color-mix(in srgb, var(--theme-swatch) 46%, transparent); }
+.theme-options button > i { width: 15px; height: 15px; border-radius: 50%; background: var(--theme-swatch); box-shadow: 0 0 0 1px rgba(255,255,255,.08), 0 0 10px color-mix(in srgb, var(--theme-swatch) 30%, transparent); transition: transform .34s cubic-bezier(.18,.9,.2,1), box-shadow .3s ease; }
+.theme-options button:hover > i, .theme-options button:focus-visible > i, .theme-options button.active > i { transform: scale(1.14); box-shadow: 0 0 0 1px rgba(255,255,255,.16), 0 0 15px color-mix(in srgb, var(--theme-swatch) 46%, transparent); }
 
-.audio-master { padding: 3px 0 3px 10px; cursor: pointer; border: 0; background: transparent; color: rgba(255,255,255,.28); font: 7px var(--font-mono); letter-spacing: .13em; transition: color .25s ease, text-shadow .25s ease; }
+.audio-master { position: relative; min-width: 30px; padding: 5px 4px; cursor: pointer; overflow: hidden; border: 1px solid transparent; border-radius: 3px; background: transparent; color: rgba(255,255,255,.28); font: 7px var(--font-mono); letter-spacing: .13em; transition: color .25s ease, text-shadow .25s ease; }
 .audio-master:hover, .audio-master:focus-visible, .audio-master.is-on { color: var(--accent); text-shadow: 0 0 9px var(--accent-glow); outline: none; }
 .audio-track-list { display: grid; gap: 7px; }
-.audio-track { width: 100%; min-height: 65px; display: grid; grid-template-columns: 1fr 34px; align-items: center; gap: 10px; padding: 11px 13px; cursor: pointer; overflow: hidden; border: 1px solid rgba(255,255,255,.055); border-radius: 6px; background: rgba(255,255,255,.015); color: rgba(255,255,255,.46); text-align: left; transition: transform .34s cubic-bezier(.18,.86,.2,1), border-color .3s ease, background .3s ease, color .3s ease, box-shadow .35s ease; }
+.audio-track { position: relative; width: 100%; min-height: 65px; display: grid; grid-template-columns: 1fr 34px; align-items: center; gap: 10px; padding: 11px 13px; cursor: pointer; overflow: hidden; border: 1px solid rgba(255,255,255,.055); border-radius: 6px; background: rgba(255,255,255,.015); color: rgba(255,255,255,.46); text-align: left; transition: transform .34s cubic-bezier(.18,.86,.2,1), border-color .3s ease, background .3s ease, color .3s ease, box-shadow .35s ease; }
 .audio-track:hover, .audio-track:focus-visible { transform: translateY(-2px); border-color: rgba(var(--theme-rgb),.28); background: rgba(var(--theme-rgb),.045); color: rgba(255,255,255,.82); outline: none; }
 .audio-track.active { border-color: rgba(var(--theme-rgb),.32); background: linear-gradient(110deg, rgba(var(--theme-rgb),.14), rgba(255,255,255,.07)); color: #fff; box-shadow: inset 0 1px rgba(255,255,255,.06), 0 10px 28px rgba(0,0,0,.2); }
 .audio-track > span { display: flex; min-width: 0; flex-direction: column; gap: 5px; }

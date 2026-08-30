@@ -119,6 +119,10 @@ function MenuGlyph({ open }: { open: boolean }) {
   return <span className={`menu-glyph ${open ? 'is-open' : ''}`} aria-hidden="true"><i /><i /><i /></span>;
 }
 
+function ControlDrawBorder() {
+  return <span className="control-draw-border" aria-hidden="true"><i /><i /><i /><i /></span>;
+}
+
 function UtilityLink({ href, eyebrow, label, icon, open, motion, delay, external = false }: {
   href: string;
   eyebrow: string;
@@ -135,7 +139,8 @@ function UtilityLink({ href, eyebrow, label, icon, open, motion, delay, external
   };
 
   return (
-    <a className="icon-hover-scope" href={href} target={external ? '_blank' : undefined} rel={external ? 'noreferrer' : undefined} onPointerEnter={animate} onFocus={animate}>
+    <a className="icon-hover-scope border-draw-host" href={href} target={external ? '_blank' : undefined} rel={external ? 'noreferrer' : undefined} onPointerEnter={animate} onFocus={animate}>
+      <ControlDrawBorder />
       <span className="utility-icon"><MorphIcon icon={icon} size={17} /></span>
       <small><ScrambleText text={eyebrow} run={run} enabled={open && motion} delay={run === 0 ? delay : 0} /></small>
       <strong><ScrambleText text={label} run={run} enabled={open && motion} delay={run === 0 ? delay + 35 : 0} /></strong>
@@ -162,7 +167,8 @@ function MenuLink({ page, open, motion, delay, onNavigate }: {
   };
 
   return (
-    <a className="icon-hover-scope" href={page.href} aria-label={`Open ${page.label} page`} onClick={navigate} onPointerEnter={animate} onFocus={animate}>
+    <a className="icon-hover-scope border-draw-host" href={page.href} aria-label={`Open ${page.label} page`} onClick={navigate} onPointerEnter={animate} onFocus={animate}>
+      <ControlDrawBorder />
       <small>[{page.index}]</small>
       <strong><ScrambleText text={page.label} run={run} enabled={open && motion} delay={run === 0 ? delay : 0} /></strong>
       <span className="menu-link-icon"><MorphIcon icon={page.icon} size={17} /></span>
@@ -176,6 +182,7 @@ export function SiteControls({ currentPage, panel, onPanelChange }: SiteControls
   const current = pages.find((page) => page.key === currentPage) ?? pages[3];
   const menuOpen = panel === 'menu';
   const settingsOpen = panel === 'settings';
+  const controlsRef = useRef<HTMLDivElement>(null);
   const [dockRun, setDockRun] = useState(0);
   const dockExpanded = panel !== null;
   const dock = settingsOpen
@@ -186,19 +193,41 @@ export function SiteControls({ currentPage, panel, onPanelChange }: SiteControls
     router.push(href);
   };
 
+  useEffect(() => {
+    if (!panel) return;
+
+    const closeFromOutside = (event: PointerEvent) => {
+      const target = event.target;
+      if (!(target instanceof Node) || controlsRef.current?.contains(target)) return;
+      onPanelChange(null);
+    };
+    const closeFromKeyboard = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') onPanelChange(null);
+    };
+
+    document.addEventListener('pointerdown', closeFromOutside, true);
+    document.addEventListener('keydown', closeFromKeyboard);
+    return () => {
+      document.removeEventListener('pointerdown', closeFromOutside, true);
+      document.removeEventListener('keydown', closeFromKeyboard);
+    };
+  }, [onPanelChange, panel]);
+
   return (
-    <div className="site-controls">
+    <div className="site-controls" ref={controlsRef}>
       <button
-        className="settings-trigger"
+        className="settings-trigger border-draw-host"
         onClick={() => onPanelChange(settingsOpen ? null : 'settings')}
         aria-expanded={settingsOpen}
         aria-controls="global-settings-panel"
         aria-label="Open system configuration"
       >
+        <ControlDrawBorder />
         <span className="settings-trigger-core icon-hover-scope"><MorphIcon icon={GearSixIcon} size={17} /></span>
       </button>
 
-      <aside id="global-menu-panel" className={`control-panel menu-panel ${menuOpen ? 'is-open' : ''}`} aria-hidden={!menuOpen}>
+      <aside id="global-menu-panel" className={`control-panel menu-panel border-draw-host ${menuOpen ? 'is-open' : ''}`} aria-hidden={!menuOpen}>
+        <ControlDrawBorder />
         <div className="panel-head">
           <div><h2><ScrambleText text="Menu" run={0} enabled={menuOpen && motion} delay={35} /></h2><span>GLOBAL NAVIGATION</span></div>
           <b><i /> DIR</b>
@@ -218,7 +247,8 @@ export function SiteControls({ currentPage, panel, onPanelChange }: SiteControls
         <div className="panel-foot"><span><i /> INTERFACE READY</span><b>TM / 2026</b></div>
       </aside>
 
-      <aside id="global-settings-panel" className={`control-panel settings-panel ${settingsOpen ? 'is-open' : ''}`} aria-hidden={!settingsOpen}>
+      <aside id="global-settings-panel" className={`control-panel settings-panel border-draw-host ${settingsOpen ? 'is-open' : ''}`} aria-hidden={!settingsOpen}>
+        <ControlDrawBorder />
         <div className="panel-head">
           <div><h2>System</h2><span>GLOBAL CONFIGURATION</span></div>
           <b><i /> SET</b>
@@ -229,7 +259,7 @@ export function SiteControls({ currentPage, panel, onPanelChange }: SiteControls
           <div className="theme-options" role="radiogroup" aria-label="Core color theme">
             {coreThemes.map((option) => (
               <button
-                className={theme === option.key ? 'active' : ''}
+                className={`border-draw-host ${theme === option.key ? 'active' : ''}`}
                 data-label={option.label}
                 style={{ '--theme-swatch': option.color } as CSSProperties}
                 onClick={() => setTheme(option.key)}
@@ -237,7 +267,7 @@ export function SiteControls({ currentPage, panel, onPanelChange }: SiteControls
                 aria-checked={theme === option.key}
                 aria-label={`${option.label} theme`}
                 key={option.key}
-              ><i /></button>
+              ><ControlDrawBorder /><i /></button>
             ))}
           </div>
         </section>
@@ -245,14 +275,15 @@ export function SiteControls({ currentPage, panel, onPanelChange }: SiteControls
         <section className="settings-section audio-settings-section">
           <header>
             <span>[02] AUDIO ENGINE</span>
-            <button className={audioEnabled ? 'audio-master is-on' : 'audio-master'} onClick={toggleAudio} aria-pressed={audioEnabled}>{audioEnabled ? 'ON' : 'OFF'}</button>
+            <button className={`audio-master border-draw-host ${audioEnabled ? 'is-on' : ''}`} onClick={toggleAudio} aria-pressed={audioEnabled}><ControlDrawBorder />{audioEnabled ? 'ON' : 'OFF'}</button>
           </header>
           <div className="audio-track-list">
             {audioTracks.map((track) => {
               const active = audioTrack === track.key;
               const playing = active && audioEnabled;
               return (
-                <button className={active ? 'audio-track active' : 'audio-track'} onClick={() => selectAudioTrack(track.key)} aria-pressed={playing} key={track.key}>
+                <button className={`audio-track border-draw-host ${active ? 'active' : ''}`} onClick={() => selectAudioTrack(track.key)} aria-pressed={playing} key={track.key}>
+                  <ControlDrawBorder />
                   <span><strong>{track.label}</strong><small>{track.meta}</small></span>
                   <i className={playing ? 'is-playing' : ''} aria-hidden="true"><b /><b /><b /></i>
                 </button>
@@ -265,7 +296,8 @@ export function SiteControls({ currentPage, panel, onPanelChange }: SiteControls
           <header><span>[03] PERFORMANCE TIER</span><small>SYS</small></header>
           <div className="tier-buttons">
             {(['high', 'balanced', 'saver'] as PerformanceTier[]).map((option) => (
-              <button className={tier === option ? 'active' : ''} onClick={() => setTier(option)} aria-pressed={tier === option} key={option}>
+              <button className={`border-draw-host ${tier === option ? 'active' : ''}`} onClick={() => setTier(option)} aria-pressed={tier === option} key={option}>
+                <ControlDrawBorder />
                 <span>{option === 'balanced' ? 'Medium' : option}</span><i />
               </button>
             ))}
@@ -278,7 +310,7 @@ export function SiteControls({ currentPage, panel, onPanelChange }: SiteControls
       <div className="nav-dock">
         <span className="wave" aria-hidden="true"><i /><i /><i /><i /><i /></span>
         <button
-          className="icon-hover-scope"
+          className="icon-hover-scope border-draw-host"
           onClick={() => onPanelChange(dockExpanded ? null : 'menu')}
           onPointerEnter={() => motion && setDockRun((value) => value + 1)}
           onFocus={() => motion && setDockRun((value) => value + 1)}
@@ -286,6 +318,7 @@ export function SiteControls({ currentPage, panel, onPanelChange }: SiteControls
           aria-controls={settingsOpen ? 'global-settings-panel' : 'global-menu-panel'}
           aria-label={dockExpanded ? 'Close current panel' : 'Open menu'}
         >
+          <ControlDrawBorder />
           <small>[{dock.index}]</small>
           <span className="dock-page-icon"><MorphIcon icon={dock.icon} size={17} /></span>
           <strong><ScrambleText text={dock.label} run={dockRun} enabled={motion && dockRun > 0} /></strong>
