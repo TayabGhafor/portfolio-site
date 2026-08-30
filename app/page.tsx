@@ -24,6 +24,7 @@ const homeStatusItems = [
 const loaderExitDuration = 1320;
 
 function Loader({ progress, ready, leaving, audioEnabled, tier, onToggleAudio, onTierChange, onEnter }: { progress: number; ready: boolean; leaving: boolean; audioEnabled: boolean; tier: PerformanceTier; onToggleAudio: () => void; onTierChange: (tier: PerformanceTier) => void; onEnter: () => void }) {
+  const loadPercent = Math.min(100, Math.round(progress));
   return (
     <section className={`loader-screen ${ready ? 'is-ready' : ''} ${leaving ? 'is-leaving' : ''}`} aria-label="Portfolio introduction" aria-live="polite">
       <div className="loader-collapse-field">
@@ -32,13 +33,13 @@ function Loader({ progress, ready, leaving, audioEnabled, tier, onToggleAudio, o
           <span>GRID_L1_R1</span><span>GRID_L2_R1</span><span>GRID_RIGHT_SIMPLE</span>
           <span>GRID_L1_R2</span><span>GRID_L2_MASTER</span><span>GRID_L1_R3</span><span>GRID_L2_R4</span>
         </div>
-        <div className="loader-counter">{String(Math.round(progress)).padStart(2, '0')}%</div>
+        <div className="loader-counter">{String(loadPercent).padStart(2, '0')}%</div>
         <div className="loader-performance"><span>PERFORMANCE TIER</span>{(['high', 'balanced', 'saver'] as PerformanceTier[]).map((option) => <button className={tier === option ? 'active' : ''} onClick={() => onTierChange(option)} aria-pressed={tier === option} key={option}>{option === 'balanced' ? 'MED' : option.toUpperCase()}</button>)}</div>
         <button className={`loader-music ${audioEnabled ? 'is-on' : 'is-off'}`} onClick={onToggleAudio} aria-pressed={audioEnabled} aria-label={`Turn background music ${audioEnabled ? 'off' : 'on'}`}>
           <span>On</span><b>MUSIC</b><span>Off</span>
         </button>
-        <div className="loader-track"><span style={{ '--load': `${progress}%` } as CSSProperties} /><b>{ready ? 'LOADED' : 'LOADING'}</b></div>
-        <div className="loader-system"><i className={ready ? 'ready' : ''} /><span>{ready ? 'SYSTEM_READY' : 'INITIALIZING_ENGINE'}</span><em>{Math.round(progress)}%</em></div>
+        <div className="loader-track"><span style={{ '--load': `${loadPercent / 100}` } as CSSProperties} /><b>{ready ? 'LOADED' : 'LOADING'}</b></div>
+        <div className="loader-system"><i className={ready ? 'ready' : ''} /><span>{ready ? 'SYSTEM_READY' : 'INITIALIZING_ENGINE'}</span><em>{loadPercent}%</em></div>
       </div>
       <div className="loader-singularity" aria-hidden="true"><i /></div>
       <button className="loader-enter" disabled={!ready} onClick={onEnter}>
@@ -53,6 +54,7 @@ function Loader({ progress, ready, leaving, audioEnabled, tier, onToggleAudio, o
 export default function Home() {
   const shellRef = useRef<HTMLElement>(null);
   const loadStartRef = useRef(0);
+  const displayProgressRef = useRef(0);
   const { theme, audioEnabled, toggleAudio, motion, tier, setTier } = useSiteExperience();
   const [panel, setPanel] = useState<ControlPanel>(null);
   const [time, setTime] = useState('--:--:--');
@@ -66,6 +68,7 @@ export default function Home() {
 
   useEffect(() => {
     loadStartRef.current = performance.now();
+    displayProgressRef.current = 0;
     const sceneFallback = window.setTimeout(() => setSceneFallbackReady(true), 4500);
 
     const update = () => setTime(new Intl.DateTimeFormat('en-GB', {
@@ -81,20 +84,27 @@ export default function Home() {
 
   useEffect(() => {
     let frame = 0;
+    let previousFrame = performance.now();
     const tick = (now: number) => {
+      const delta = Math.min(now - previousFrame, 64);
+      previousFrame = now;
       const elapsed = now - loadStartRef.current;
       const revealCurve = Math.min(99, 100 * (1 - Math.exp(-elapsed / 520)));
       const sceneCanEnter = modelReady || sceneFallbackReady;
       const available = sceneCanEnter ? 99 : Math.min(assetProgress, 99);
-      const next = Math.min(revealCurve, available);
+      let target = Math.min(revealCurve, available);
 
       if (sceneCanEnter && elapsed >= 1650) {
-        setDisplayProgress(100);
-        return;
+        target = 100;
       }
 
+      const current = displayProgressRef.current;
+      const next = target > current
+        ? Math.min(target, current + delta * .075)
+        : target;
+      displayProgressRef.current = next;
       setDisplayProgress(next);
-      frame = window.requestAnimationFrame(tick);
+      if (next < 100) frame = window.requestAnimationFrame(tick);
     };
     frame = window.requestAnimationFrame(tick);
     return () => window.cancelAnimationFrame(frame);

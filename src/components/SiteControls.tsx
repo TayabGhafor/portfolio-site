@@ -139,11 +139,12 @@ function UtilityLink({ href, eyebrow, label, icon, open, motion, delay, external
   };
 
   return (
-    <a className="icon-hover-scope border-draw-host" href={href} target={external ? '_blank' : undefined} rel={external ? 'noreferrer' : undefined} onPointerEnter={animate} onFocus={animate}>
-      <ControlDrawBorder />
+    <a className="icon-hover-scope" href={href} target={external ? '_blank' : undefined} rel={external ? 'noreferrer' : undefined} onPointerEnter={animate} onFocus={animate}>
       <span className="utility-icon"><MorphIcon icon={icon} size={17} /></span>
-      <small><ScrambleText text={eyebrow} run={run} enabled={open && motion} delay={run === 0 ? delay : 0} /></small>
-      <strong><ScrambleText text={label} run={run} enabled={open && motion} delay={run === 0 ? delay + 35 : 0} /></strong>
+      <span className="utility-copy">
+        <small><ScrambleText text={eyebrow} run={run} enabled={open && motion} delay={run === 0 ? delay : 0} /></small>
+        <strong><ScrambleText text={label} run={run} enabled={open && motion} delay={run === 0 ? delay + 35 : 0} /></strong>
+      </span>
     </a>
   );
 }
@@ -167,10 +168,9 @@ function MenuLink({ page, open, motion, delay, onNavigate }: {
   };
 
   return (
-    <a className="icon-hover-scope border-draw-host" href={page.href} aria-label={`Open ${page.label} page`} onClick={navigate} onPointerEnter={animate} onFocus={animate}>
-      <ControlDrawBorder />
-      <small>[{page.index}]</small>
-      <strong><ScrambleText text={page.label} run={run} enabled={open && motion} delay={run === 0 ? delay : 0} /></strong>
+    <a className="icon-hover-scope" href={page.href} aria-label={`Open ${page.label} page`} onClick={navigate} onPointerEnter={animate} onFocus={animate}>
+      <span className="menu-link-index">[{page.index}]</span>
+      <span className="menu-link-copy"><strong><ScrambleText text={page.label} run={run} enabled={open && motion} delay={run === 0 ? delay : 0} /></strong></span>
       <span className="menu-link-icon"><MorphIcon icon={page.icon} size={17} /></span>
     </a>
   );
@@ -184,6 +184,7 @@ export function SiteControls({ currentPage, panel, onPanelChange }: SiteControls
   const settingsOpen = panel === 'settings';
   const controlsRef = useRef<HTMLDivElement>(null);
   const [dockRun, setDockRun] = useState(0);
+  const [modalTextRuns, setModalTextRuns] = useState<Record<string, number>>({});
   const dockExpanded = panel !== null;
   const dock = settingsOpen
     ? { index: 'SYS', label: 'Settings', icon: GearSixIcon }
@@ -192,6 +193,11 @@ export function SiteControls({ currentPage, panel, onPanelChange }: SiteControls
     onPanelChange(null);
     router.push(href);
   };
+  const animateModalText = (key: string) => {
+    if (!motion) return;
+    setModalTextRuns((runs) => ({ ...runs, [key]: (runs[key] ?? 0) + 1 }));
+  };
+  const modalTextRun = (key: string) => modalTextRuns[key] ?? 0;
 
   useEffect(() => {
     if (!panel) return;
@@ -259,15 +265,20 @@ export function SiteControls({ currentPage, panel, onPanelChange }: SiteControls
           <div className="theme-options" role="radiogroup" aria-label="Core color theme">
             {coreThemes.map((option) => (
               <button
-                className={`border-draw-host ${theme === option.key ? 'active' : ''}`}
+                className={theme === option.key ? 'active' : ''}
                 data-label={option.label}
                 style={{ '--theme-swatch': option.color } as CSSProperties}
                 onClick={() => setTheme(option.key)}
+                onPointerEnter={() => animateModalText(`theme-${option.key}`)}
+                onFocus={() => animateModalText(`theme-${option.key}`)}
                 role="radio"
                 aria-checked={theme === option.key}
                 aria-label={`${option.label} theme`}
                 key={option.key}
-              ><ControlDrawBorder /><i /></button>
+              >
+                <span className="theme-option-tooltip"><ScrambleText text={option.label} run={modalTextRun(`theme-${option.key}`)} enabled={motion && modalTextRun(`theme-${option.key}`) > 0} /></span>
+                <i />
+              </button>
             ))}
           </div>
         </section>
@@ -275,16 +286,15 @@ export function SiteControls({ currentPage, panel, onPanelChange }: SiteControls
         <section className="settings-section audio-settings-section">
           <header>
             <span>[02] AUDIO ENGINE</span>
-            <button className={`audio-master border-draw-host ${audioEnabled ? 'is-on' : ''}`} onClick={toggleAudio} aria-pressed={audioEnabled}><ControlDrawBorder />{audioEnabled ? 'ON' : 'OFF'}</button>
+            <button className={`audio-master ${audioEnabled ? 'is-on' : ''}`} onClick={toggleAudio} onPointerEnter={() => animateModalText('audio-master')} onFocus={() => animateModalText('audio-master')} aria-pressed={audioEnabled}><ScrambleText text={audioEnabled ? 'ON' : 'OFF'} run={modalTextRun('audio-master')} enabled={motion && modalTextRun('audio-master') > 0} /></button>
           </header>
           <div className="audio-track-list">
             {audioTracks.map((track) => {
               const active = audioTrack === track.key;
               const playing = active && audioEnabled;
               return (
-                <button className={`audio-track border-draw-host ${active ? 'active' : ''}`} onClick={() => selectAudioTrack(track.key)} aria-pressed={playing} key={track.key}>
-                  <ControlDrawBorder />
-                  <span><strong>{track.label}</strong><small>{track.meta}</small></span>
+                <button className={active ? 'audio-track active' : 'audio-track'} onClick={() => selectAudioTrack(track.key)} onPointerEnter={() => animateModalText(`track-${track.key}`)} onFocus={() => animateModalText(`track-${track.key}`)} aria-pressed={playing} key={track.key}>
+                  <span><strong><ScrambleText text={track.label} run={modalTextRun(`track-${track.key}`)} enabled={motion && modalTextRun(`track-${track.key}`) > 0} /></strong><small><ScrambleText text={track.meta} run={modalTextRun(`track-${track.key}`)} enabled={motion && modalTextRun(`track-${track.key}`) > 0} delay={45} /></small></span>
                   <i className={playing ? 'is-playing' : ''} aria-hidden="true"><b /><b /><b /></i>
                 </button>
               );
@@ -296,9 +306,8 @@ export function SiteControls({ currentPage, panel, onPanelChange }: SiteControls
           <header><span>[03] PERFORMANCE TIER</span><small>SYS</small></header>
           <div className="tier-buttons">
             {(['high', 'balanced', 'saver'] as PerformanceTier[]).map((option) => (
-              <button className={`border-draw-host ${tier === option ? 'active' : ''}`} onClick={() => setTier(option)} aria-pressed={tier === option} key={option}>
-                <ControlDrawBorder />
-                <span>{option === 'balanced' ? 'Medium' : option}</span><i />
+              <button className={tier === option ? 'active' : ''} onClick={() => setTier(option)} onPointerEnter={() => animateModalText(`tier-${option}`)} onFocus={() => animateModalText(`tier-${option}`)} aria-pressed={tier === option} key={option}>
+                <span><ScrambleText text={option === 'balanced' ? 'Medium' : option} run={modalTextRun(`tier-${option}`)} enabled={motion && modalTextRun(`tier-${option}`) > 0} /></span><i />
               </button>
             ))}
           </div>
