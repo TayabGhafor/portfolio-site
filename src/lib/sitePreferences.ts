@@ -13,7 +13,7 @@ export interface SitePreferences {
 
 export const defaultSitePreferences: SitePreferences = {
   theme: 'mono',
-  audioEnabled: false,
+  audioEnabled: true,
   audioTrack: 'lofi-focus',
   tier: 'high',
 };
@@ -34,9 +34,11 @@ export function readSitePreferences(): SitePreferences {
   const themeValue = window.localStorage.getItem('tm-core-theme');
   const trackValue = window.localStorage.getItem('tm-audio-track');
   const tierValue = window.localStorage.getItem('tm-performance');
+  const audioValue = window.localStorage.getItem('tm-audio-enabled');
   const preferences: SitePreferences = {
     theme: isTheme(themeValue) ? themeValue : defaultSitePreferences.theme,
-    audioEnabled: window.localStorage.getItem('tm-audio-enabled') === 'on',
+    // A saved explicit choice always wins; new visitors begin with ambient audio enabled.
+    audioEnabled: audioValue === null ? defaultSitePreferences.audioEnabled : audioValue === 'on',
     audioTrack: isAudioTrack(trackValue) ? trackValue : defaultSitePreferences.audioTrack,
     tier: isPerformanceTier(tierValue) ? tierValue : defaultSitePreferences.tier,
   };

@@ -319,7 +319,7 @@ export function SiteControls({ currentPage, panel, onPanelChange }: SiteControls
       <div className="nav-dock">
         <span className="wave" aria-hidden="true"><i /><i /><i /><i /><i /></span>
         <button
-          className="icon-hover-scope border-draw-host"
+          className={`icon-hover-scope ${menuOpen ? 'menu-cluster-dock' : 'border-draw-host'}`}
           onClick={() => onPanelChange(dockExpanded ? null : 'menu')}
           onPointerEnter={() => motion && setDockRun((value) => value + 1)}
           onFocus={() => motion && setDockRun((value) => value + 1)}
@@ -327,7 +327,7 @@ export function SiteControls({ currentPage, panel, onPanelChange }: SiteControls
           aria-controls={settingsOpen ? 'global-settings-panel' : 'global-menu-panel'}
           aria-label={dockExpanded ? 'Close current panel' : 'Open menu'}
         >
-          <ControlDrawBorder />
+          {!menuOpen && <ControlDrawBorder />}
           <small>[{dock.index}]</small>
           <span className="dock-page-icon"><MorphIcon icon={dock.icon} size={17} /></span>
           <strong><ScrambleText text={dock.label} run={dockRun} enabled={motion && dockRun > 0} /></strong>
