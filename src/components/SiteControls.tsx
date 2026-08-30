@@ -1,8 +1,8 @@
 'use client';
 
 import { useEffect, useRef, useState, type CSSProperties, type MouseEvent as ReactMouseEvent } from 'react';
+import { useRouter } from 'next/navigation';
 import {
-  CursorClickIcon,
   FileTextIcon,
   GearSixIcon,
   HouseIcon,
@@ -12,20 +12,18 @@ import {
   UserCircleIcon,
   type Icon,
 } from '@phosphor-icons/react';
+import { useSiteExperience } from './SiteExperienceProvider';
+import type { AudioTrack, CoreTheme, PerformanceTier } from '../lib/sitePreferences';
 
 export type ControlPanel = 'menu' | 'settings' | null;
-export type PerformanceTier = 'high' | 'balanced' | 'saver';
+export type { PerformanceTier } from '../lib/sitePreferences';
 
 export type PageKey = 'home' | 'about' | 'projects' | 'contact';
 
 interface SiteControlsProps {
   currentPage: PageKey;
   panel: ControlPanel;
-  motion: boolean;
-  tier: PerformanceTier;
   onPanelChange: (panel: ControlPanel) => void;
-  onToggleMotion: () => void;
-  onTierChange: (tier: PerformanceTier) => void;
 }
 
 const pages: Array<{ key: PageKey; href: string; index: string; label: string; icon: Icon }> = [
@@ -36,6 +34,19 @@ const pages: Array<{ key: PageKey; href: string; index: string; label: string; i
 ];
 
 const scrambleCharacters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789@#$%&';
+
+const coreThemes: Array<{ key: CoreTheme; label: string; color: string }> = [
+  { key: 'mono', label: 'Mono', color: '#f5f5f5' },
+  { key: 'cyan', label: 'Cyan', color: '#22d3ee' },
+  { key: 'emerald', label: 'Emerald', color: '#2cf2a0' },
+  { key: 'solar', label: 'Solar', color: '#ffe11a' },
+  { key: 'crimson', label: 'Crimson', color: '#ff174f' },
+];
+
+const audioTracks: Array<{ key: AudioTrack; label: string; meta: string }> = [
+  { key: 'lofi-focus', label: 'Lofi Focus', meta: 'AMBIENT / DEEP WORK' },
+  { key: 'neon-nights', label: 'Neon Nights', meta: 'SYNTHWAVE / RETRO' },
+];
 
 export function ScrambleText({ text, run, enabled, delay = 0 }: { text: string; run: number; enabled: boolean; delay?: number }) {
   const textRef = useRef<HTMLSpanElement>(null);
@@ -159,7 +170,9 @@ function MenuLink({ page, open, motion, delay, onNavigate }: {
   );
 }
 
-export function SiteControls({ currentPage, panel, motion, tier, onPanelChange, onToggleMotion, onTierChange }: SiteControlsProps) {
+export function SiteControls({ currentPage, panel, onPanelChange }: SiteControlsProps) {
+  const router = useRouter();
+  const { theme, setTheme, audioEnabled, audioTrack, toggleAudio, selectAudioTrack, motion, tier, setTier } = useSiteExperience();
   const current = pages.find((page) => page.key === currentPage) ?? pages[3];
   const menuOpen = panel === 'menu';
   const settingsOpen = panel === 'settings';
@@ -170,7 +183,7 @@ export function SiteControls({ currentPage, panel, motion, tier, onPanelChange, 
     : current;
   const navigateTo = (href: string) => {
     onPanelChange(null);
-    window.location.assign(href);
+    router.push(href);
   };
 
   return (
@@ -211,21 +224,49 @@ export function SiteControls({ currentPage, panel, motion, tier, onPanelChange, 
           <b><i /> SET</b>
         </div>
 
-        <section className="settings-section">
-          <header><span>[01] MOTION SYSTEM</span><small>{motion ? 'FULL' : 'REDUCED'}</small></header>
-          <button className="motion-setting icon-hover-scope" onClick={onToggleMotion} aria-pressed={motion}>
-            <span className="setting-icon"><MorphIcon icon={CursorClickIcon} size={19} /></span>
-            <span><strong>{motion ? 'Full motion' : 'Reduced motion'}</strong><small>{motion ? 'POINTER / CORE / HOVERS' : 'ESSENTIAL STATE ONLY'}</small></span>
-            <i className={motion ? 'is-on' : ''}><b /></i>
-          </button>
+        <section className="settings-section theme-settings-section">
+          <header><span>[01] CORE THEME</span><small>V_1.0</small></header>
+          <div className="theme-options" role="radiogroup" aria-label="Core color theme">
+            {coreThemes.map((option) => (
+              <button
+                className={theme === option.key ? 'active' : ''}
+                data-label={option.label}
+                style={{ '--theme-swatch': option.color } as CSSProperties}
+                onClick={() => setTheme(option.key)}
+                role="radio"
+                aria-checked={theme === option.key}
+                aria-label={`${option.label} theme`}
+                key={option.key}
+              ><i /></button>
+            ))}
+          </div>
         </section>
 
-        <section className="settings-section">
-          <header><span>[02] PERFORMANCE TIER</span><small>RENDER</small></header>
+        <section className="settings-section audio-settings-section">
+          <header>
+            <span>[02] AUDIO ENGINE</span>
+            <button className={audioEnabled ? 'audio-master is-on' : 'audio-master'} onClick={toggleAudio} aria-pressed={audioEnabled}>{audioEnabled ? 'ON' : 'OFF'}</button>
+          </header>
+          <div className="audio-track-list">
+            {audioTracks.map((track) => {
+              const active = audioTrack === track.key;
+              const playing = active && audioEnabled;
+              return (
+                <button className={active ? 'audio-track active' : 'audio-track'} onClick={() => selectAudioTrack(track.key)} aria-pressed={playing} key={track.key}>
+                  <span><strong>{track.label}</strong><small>{track.meta}</small></span>
+                  <i className={playing ? 'is-playing' : ''} aria-hidden="true"><b /><b /><b /></i>
+                </button>
+              );
+            })}
+          </div>
+        </section>
+
+        <section className="settings-section performance-settings-section">
+          <header><span>[03] PERFORMANCE TIER</span><small>SYS</small></header>
           <div className="tier-buttons">
             {(['high', 'balanced', 'saver'] as PerformanceTier[]).map((option) => (
-              <button className={tier === option ? 'active' : ''} onClick={() => onTierChange(option)} key={option}>
-                <span>{option === 'balanced' ? 'MED' : option}</span><i />
+              <button className={tier === option ? 'active' : ''} onClick={() => setTier(option)} aria-pressed={tier === option} key={option}>
+                <span>{option === 'balanced' ? 'Medium' : option}</span><i />
               </button>
             ))}
           </div>

@@ -4,9 +4,10 @@ import { useCallback, useEffect, useRef, useState, type CSSProperties, type Poin
 import dynamic from 'next/dynamic';
 import { IdentityMark } from '../src/components/IdentityMark';
 import { SharedFooterContent } from '../src/components/SharedFooterContent';
-import { ScrambleText, SiteControls, type ControlPanel, type PerformanceTier } from '../src/components/SiteControls';
+import { ScrambleText, SiteControls, type ControlPanel } from '../src/components/SiteControls';
+import { useSiteExperience } from '../src/components/SiteExperienceProvider';
 import { projects } from '../src/content/projects';
-import { readSitePreferences } from '../src/lib/sitePreferences';
+import type { PerformanceTier } from '../src/lib/sitePreferences';
 
 const ParticlePortrait = dynamic(
   () => import('../src/components/ParticlePortrait').then((module) => module.ParticlePortrait),
@@ -22,7 +23,7 @@ const homeStatusItems = [
 
 const loaderExitDuration = 1320;
 
-function Loader({ progress, ready, leaving, onEnter }: { progress: number; ready: boolean; leaving: boolean; onEnter: () => void }) {
+function Loader({ progress, ready, leaving, audioEnabled, tier, onToggleAudio, onTierChange, onEnter }: { progress: number; ready: boolean; leaving: boolean; audioEnabled: boolean; tier: PerformanceTier; onToggleAudio: () => void; onTierChange: (tier: PerformanceTier) => void; onEnter: () => void }) {
   return (
     <section className={`loader-screen ${ready ? 'is-ready' : ''} ${leaving ? 'is-leaving' : ''}`} aria-label="Portfolio introduction" aria-live="polite">
       <div className="loader-collapse-field">
@@ -32,8 +33,10 @@ function Loader({ progress, ready, leaving, onEnter }: { progress: number; ready
           <span>GRID_L1_R2</span><span>GRID_L2_MASTER</span><span>GRID_L1_R3</span><span>GRID_L2_R4</span>
         </div>
         <div className="loader-counter">{String(Math.round(progress)).padStart(2, '0')}%</div>
-        <div className="loader-performance"><span>PERFORMANCE TIER</span><b className="active">HIGH</b><b>MED</b><b>SAVER</b></div>
-        <div className="loader-music" aria-hidden="true"><span>On</span><b>MUSIC</b><span>Off</span></div>
+        <div className="loader-performance"><span>PERFORMANCE TIER</span>{(['high', 'balanced', 'saver'] as PerformanceTier[]).map((option) => <button className={tier === option ? 'active' : ''} onClick={() => onTierChange(option)} aria-pressed={tier === option} key={option}>{option === 'balanced' ? 'MED' : option.toUpperCase()}</button>)}</div>
+        <button className={`loader-music ${audioEnabled ? 'is-on' : 'is-off'}`} onClick={onToggleAudio} aria-pressed={audioEnabled} aria-label={`Turn background music ${audioEnabled ? 'off' : 'on'}`}>
+          <span>On</span><b>MUSIC</b><span>Off</span>
+        </button>
         <div className="loader-track"><span style={{ '--load': `${progress}%` } as CSSProperties} /><b>{ready ? 'LOADED' : 'LOADING'}</b></div>
         <div className="loader-system"><i className={ready ? 'ready' : ''} /><span>{ready ? 'SYSTEM_READY' : 'INITIALIZING_ENGINE'}</span><em>{Math.round(progress)}%</em></div>
       </div>
@@ -50,10 +53,9 @@ function Loader({ progress, ready, leaving, onEnter }: { progress: number; ready
 export default function Home() {
   const shellRef = useRef<HTMLElement>(null);
   const loadStartRef = useRef(0);
+  const { theme, audioEnabled, toggleAudio, motion, tier, setTier } = useSiteExperience();
   const [panel, setPanel] = useState<ControlPanel>(null);
   const [time, setTime] = useState('--:--:--');
-  const [tier, setTier] = useState<PerformanceTier>('high');
-  const [motion, setMotion] = useState(true);
   const [assetProgress, setAssetProgress] = useState(0);
   const [displayProgress, setDisplayProgress] = useState(0);
   const [modelReady, setModelReady] = useState(false);
@@ -65,11 +67,6 @@ export default function Home() {
   useEffect(() => {
     loadStartRef.current = performance.now();
     const sceneFallback = window.setTimeout(() => setSceneFallbackReady(true), 4500);
-    window.queueMicrotask(() => {
-      const preferences = readSitePreferences();
-      setTier(preferences.tier);
-      setMotion(preferences.motion);
-    });
 
     const update = () => setTime(new Intl.DateTimeFormat('en-GB', {
       timeZone: 'Asia/Karachi', hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false,
@@ -133,17 +130,6 @@ export default function Home() {
     shell.style.setProperty('--portrait-shift-y', `${(event.clientY / window.innerHeight - 0.5) * 5}px`);
   };
 
-  const chooseTier = (next: PerformanceTier) => {
-    setTier(next);
-    window.localStorage.setItem('tm-performance', next);
-  };
-
-  const toggleMotion = () => {
-    const next = !motion;
-    setMotion(next);
-    window.localStorage.setItem('tm-motion', next ? 'full' : 'reduced');
-  };
-
   const ready = (modelReady || sceneFallbackReady) && displayProgress >= 100;
 
   return (
@@ -195,7 +181,7 @@ export default function Home() {
 
         <section className="face-stage">
           <div className="portrait-aura" aria-hidden="true" />
-          <ParticlePortrait motion={motion} tier={tier} onProgress={handleSceneProgress} onReady={handleSceneReady} />
+          <ParticlePortrait theme={theme} motion={motion} tier={tier} onProgress={handleSceneProgress} onReady={handleSceneReady} />
           <div className="face-scanline" aria-hidden="true" />
           <span className="face-coordinate coordinate-left">OBJ_01 // ACTIVE</span>
           <span className="face-coordinate coordinate-right">POINTER_REACTIVE</span>
@@ -212,10 +198,10 @@ export default function Home() {
           <SharedFooterContent time={time} motion={motion} />
         </footer>
 
-        <SiteControls currentPage="home" panel={panel} motion={motion} tier={tier} onPanelChange={setPanel} onToggleMotion={toggleMotion} onTierChange={chooseTier} />
+        <SiteControls currentPage="home" panel={panel} onPanelChange={setPanel} />
       </div>
 
-      {!entered && <Loader progress={displayProgress} ready={ready} leaving={leaving} onEnter={enterPortfolio} />}
+      {!entered && <Loader progress={displayProgress} ready={ready} leaving={leaving} audioEnabled={audioEnabled} tier={tier} onToggleAudio={toggleAudio} onTierChange={setTier} onEnter={enterPortfolio} />}
     </main>
   );
 }

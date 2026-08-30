@@ -1,10 +1,10 @@
 'use client';
 
 import { useEffect, useRef } from 'react';
-
-type PerformanceTier = 'high' | 'balanced' | 'saver';
+import type { CoreTheme, PerformanceTier } from '../lib/sitePreferences';
 
 interface ParticlePortraitProps {
+  theme: CoreTheme;
   motion: boolean;
   tier: PerformanceTier;
   onProgress: (progress: number) => void;
@@ -25,6 +25,13 @@ interface Particle {
 }
 
 const MAP_URL = '/portrait/tayab-particle-map-v2.webp';
+const themeColors: Record<CoreTheme, [number, number, number]> = {
+  mono: [244, 244, 244],
+  cyan: [34, 211, 238],
+  emerald: [44, 242, 160],
+  solar: [255, 225, 26],
+  crimson: [255, 23, 79],
+};
 
 function deterministicNoise(x: number, y: number) {
   const value = Math.sin(x * 12.9898 + y * 78.233) * 43758.5453;
@@ -94,7 +101,7 @@ function samplePortrait(image: HTMLImageElement, tier: PerformanceTier) {
   return particles;
 }
 
-export function ParticlePortrait({ motion, tier, onProgress, onReady }: ParticlePortraitProps) {
+export function ParticlePortrait({ theme, motion, tier, onProgress, onReady }: ParticlePortraitProps) {
   const hostRef = useRef<HTMLDivElement>(null);
   const onProgressRef = useRef(onProgress);
   const onReadyRef = useRef(onReady);
@@ -126,6 +133,8 @@ export function ParticlePortrait({ motion, tier, onProgress, onReady }: Particle
     let pointerY = 0;
     let pointerInside = false;
     let hoverAmount = 0;
+    const accent = themeColors[theme];
+    const accentSoft = accent.map((channel) => Math.round(channel * .72 + 255 * .28)) as [number, number, number];
 
     const image = new Image();
     image.decoding = 'async';
@@ -168,8 +177,8 @@ export function ParticlePortrait({ motion, tier, onProgress, onReady }: Particle
       const repelRadius = Math.min(width, height) * 0.16;
 
       const aura = context.createRadialGradient(centerX, centerY * 0.96, 0, centerX, centerY, portraitWidth * 0.62);
-      aura.addColorStop(0, `rgba(255, 255, 255, ${0.018 + hoverAmount * 0.018})`);
-      aura.addColorStop(0.48, `rgba(255, 255, 255, ${0.008 + hoverAmount * 0.008})`);
+      aura.addColorStop(0, `rgba(${accent.join(', ')}, ${0.026 + hoverAmount * 0.022})`);
+      aura.addColorStop(0.48, `rgba(${accent.join(', ')}, ${0.01 + hoverAmount * 0.01})`);
       aura.addColorStop(1, 'rgba(0, 0, 0, 0)');
       context.fillStyle = aura;
       context.fillRect(centerX - portraitWidth, centerY - portraitHeight * 0.55, portraitWidth * 2, portraitHeight * 1.1);
@@ -178,7 +187,7 @@ export function ParticlePortrait({ motion, tier, onProgress, onReady }: Particle
         context.save();
         context.translate(centerX, centerY);
         context.rotate(time * 0.000025);
-        context.strokeStyle = `rgba(255, 255, 255, ${0.025 + hoverAmount * 0.035})`;
+        context.strokeStyle = `rgba(${accent.join(', ')}, ${0.04 + hoverAmount * 0.05})`;
         context.lineWidth = 0.6;
         context.setLineDash([2, 13]);
         context.beginPath();
@@ -218,11 +227,11 @@ export function ParticlePortrait({ motion, tier, onProgress, onReady }: Particle
         const brightAccent = particle.accent > 0.972 && (particle.feature > 0.22 || particle.strength > 0.72);
         context.fillStyle = brightAccent
           ? `rgba(255, 255, 255, ${Math.min(1, alpha * (0.64 + hoverAmount * 0.32))})`
-          : `rgba(244, 244, 244, ${alpha})`;
+          : `rgba(${accentSoft.join(', ')}, ${alpha})`;
         context.fillRect(particle.x, particle.y, size, size);
 
         if (particle.strength + particle.feature * 0.32 > 0.8 && particle.depth > 0.74) {
-          context.fillStyle = `rgba(255, 255, 255, ${0.08 + hoverAmount * 0.08})`;
+          context.fillStyle = `rgba(${accent.join(', ')}, ${0.09 + hoverAmount * 0.09})`;
           context.beginPath();
           context.arc(particle.x, particle.y, size * 2.8, 0, Math.PI * 2);
           context.fill();
@@ -231,8 +240,8 @@ export function ParticlePortrait({ motion, tier, onProgress, onReady }: Particle
 
       if (pointerInside && motion && tier !== 'saver') {
         const cursorGlow = context.createRadialGradient(pointerX, pointerY, 0, pointerX, pointerY, repelRadius * 0.72);
-        cursorGlow.addColorStop(0, `rgba(255, 255, 255, ${0.045 * hoverAmount})`);
-        cursorGlow.addColorStop(0.25, `rgba(255, 255, 255, ${0.012 * hoverAmount})`);
+        cursorGlow.addColorStop(0, `rgba(${accent.join(', ')}, ${0.07 * hoverAmount})`);
+        cursorGlow.addColorStop(0.25, `rgba(${accent.join(', ')}, ${0.018 * hoverAmount})`);
         cursorGlow.addColorStop(1, 'rgba(0, 0, 0, 0)');
         context.fillStyle = cursorGlow;
         context.beginPath();
@@ -273,7 +282,7 @@ export function ParticlePortrait({ motion, tier, onProgress, onReady }: Particle
       window.removeEventListener('pointerleave', handlePointerLeave);
       canvas.remove();
     };
-  }, [motion, tier]);
+  }, [motion, theme, tier]);
 
   return <div ref={hostRef} className="face-scene particle-portrait" aria-label="Interactive particle portrait of Tayab Malik" role="img" />;
 }

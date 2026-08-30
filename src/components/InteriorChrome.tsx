@@ -4,8 +4,8 @@ import Link from 'next/link';
 import { useEffect, useRef, useState, type PointerEvent as ReactPointerEvent, type ReactNode, type UIEvent } from 'react';
 import { IdentityMark } from './IdentityMark';
 import { SharedFooterContent } from './SharedFooterContent';
-import { SiteControls, type ControlPanel, type PerformanceTier, type PageKey } from './SiteControls';
-import { readSitePreferences } from '../lib/sitePreferences';
+import { SiteControls, type ControlPanel, type PageKey } from './SiteControls';
+import { useSiteExperience } from './SiteExperienceProvider';
 
 interface InteriorChromeProps {
   currentPage: Exclude<PageKey, 'home'>;
@@ -19,19 +19,12 @@ interface InteriorChromeProps {
 
 export function InteriorChrome({ currentPage, index, label, wide = false, aside, showIndex = true, children }: InteriorChromeProps) {
   const shellRef = useRef<HTMLDivElement>(null);
+  const { motion, tier } = useSiteExperience();
   const [panel, setPanel] = useState<ControlPanel>(null);
-  const [motion, setMotion] = useState(true);
-  const [tier, setTier] = useState<PerformanceTier>('high');
   const [scroll, setScroll] = useState(0);
   const [time, setTime] = useState('--:--');
 
   useEffect(() => {
-    window.queueMicrotask(() => {
-      const preferences = readSitePreferences();
-      setTier(preferences.tier);
-      setMotion(preferences.motion);
-    });
-
     const updateTime = () => setTime(new Intl.DateTimeFormat('en-GB', {
       timeZone: 'Asia/Karachi', hour: '2-digit', minute: '2-digit', hour12: false,
     }).format(new Date()));
@@ -59,17 +52,6 @@ export function InteriorChrome({ currentPage, index, label, wide = false, aside,
     if (!shell) return;
     shell.style.setProperty('--pointer-x', `${event.clientX}px`);
     shell.style.setProperty('--pointer-y', `${event.clientY}px`);
-  };
-
-  const toggleMotion = () => {
-    const next = !motion;
-    setMotion(next);
-    window.localStorage.setItem('tm-motion', next ? 'full' : 'reduced');
-  };
-
-  const chooseTier = (next: PerformanceTier) => {
-    setTier(next);
-    window.localStorage.setItem('tm-performance', next);
   };
 
   return (
@@ -105,7 +87,7 @@ export function InteriorChrome({ currentPage, index, label, wide = false, aside,
         <span>100%</span>
       </div>
 
-      <SiteControls currentPage={currentPage} panel={panel} motion={motion} tier={tier} onPanelChange={setPanel} onToggleMotion={toggleMotion} onTierChange={chooseTier} />
+      <SiteControls currentPage={currentPage} panel={panel} onPanelChange={setPanel} />
     </div>
   );
 }

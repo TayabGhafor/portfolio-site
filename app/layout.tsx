@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from 'next';
 import { Geist, Geist_Mono, Oswald } from 'next/font/google';
+import { SiteExperienceProvider } from '../src/components/SiteExperienceProvider';
 import './globals.css';
 
 const geist = Geist({ variable: '--font-sans', subsets: ['latin'] });
@@ -34,10 +35,15 @@ export const metadata: Metadata = {
 
 export const viewport: Viewport = { width: 'device-width', initialScale: 1, themeColor: '#050505' };
 
+const experienceBootScript = `(function(){try{var t=localStorage.getItem('tm-core-theme');var p=localStorage.getItem('tm-performance');if(['mono','cyan','emerald','solar','crimson'].includes(t))document.documentElement.dataset.coreTheme=t;if(['high','balanced','saver'].includes(p))document.documentElement.dataset.performance=p;}catch(e){}})();`;
+
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="en">
-      <body className={`${geist.variable} ${mono.variable} ${display.variable}`}>{children}</body>
+    <html lang="en" suppressHydrationWarning>
+      <head><script dangerouslySetInnerHTML={{ __html: experienceBootScript }} /></head>
+      <body className={`${geist.variable} ${mono.variable} ${display.variable}`}>
+        <SiteExperienceProvider>{children}</SiteExperienceProvider>
+      </body>
     </html>
   );
 }
