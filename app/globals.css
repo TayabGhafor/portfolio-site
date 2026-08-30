@@ -527,18 +527,24 @@ button { -webkit-tap-highlight-color: transparent; }
 /* Shared premium navigation and system controls */
 .site-controls { position: fixed; inset: 0; z-index: 44; pointer-events: none; }
 .site-controls > * { pointer-events: auto; }
-.site-controls .border-draw-host { position: relative; isolation: isolate; }
+.site-controls .border-draw-host { position: relative; isolation: isolate; --border-step: .7s; --border-delay-1: .7s; --border-delay-2: 1.4s; --border-delay-3: 2.1s; --border-duration: 2.8s; }
+.site-controls .settings-trigger.border-draw-host { --border-step: .65s; --border-delay-1: .65s; --border-delay-2: 1.3s; --border-delay-3: 1.95s; --border-duration: 2.6s; }
+.site-controls .nav-dock > .border-draw-host { --border-step: .775s; --border-delay-1: .775s; --border-delay-2: 1.55s; --border-delay-3: 2.325s; --border-duration: 3.1s; }
+.site-controls .control-panel.border-draw-host { --border-step: .875s; --border-delay-1: .875s; --border-delay-2: 1.75s; --border-delay-3: 2.625s; --border-duration: 3.5s; }
+.site-controls :is(.theme-options button, .audio-master).border-draw-host { --border-step: .625s; --border-delay-1: .625s; --border-delay-2: 1.25s; --border-delay-3: 1.875s; --border-duration: 2.5s; }
 .site-controls .control-draw-border { position: absolute; inset: 0; z-index: 6; overflow: hidden; pointer-events: none; border-radius: inherit; }
-.site-controls .control-draw-border > i { position: absolute; display: block; margin: 0; border: 0; border-radius: 0; opacity: 0; background: linear-gradient(90deg, rgba(var(--theme-rgb),.48), var(--accent), rgba(var(--theme-rgb),.72)); box-shadow: 0 0 9px rgba(var(--theme-rgb),.36); will-change: transform, opacity; }
-.site-controls .control-draw-border > i:nth-child(1), .site-controls .control-draw-border > i:nth-child(3) { left: 0; width: 100%; height: 1px; transform: scaleX(0); transform-origin: left center; }
-.site-controls .control-draw-border > i:nth-child(1) { top: 0; transition: transform .28s cubic-bezier(.2,.8,.2,1) .24s, opacity .18s ease .24s; }
-.site-controls .control-draw-border > i:nth-child(3) { bottom: 0; transition: transform .28s cubic-bezier(.2,.8,.2,1), opacity .18s ease; }
-.site-controls .control-draw-border > i:nth-child(2), .site-controls .control-draw-border > i:nth-child(4) { top: 0; width: 1px; height: 100%; transform: scaleY(0); transform-origin: center top; }
-.site-controls .control-draw-border > i:nth-child(2) { right: 0; transition: transform .28s cubic-bezier(.2,.8,.2,1), opacity .18s ease; }
-.site-controls .control-draw-border > i:nth-child(4) { left: 0; transition: transform .28s cubic-bezier(.2,.8,.2,1) .24s, opacity .18s ease .24s; }
+.site-controls .control-draw-border > i { position: absolute; display: block; margin: 0; border: 0; border-radius: 0; opacity: 0; background: var(--accent); box-shadow: 0 0 10px rgba(var(--theme-rgb),.52); transition-property: transform, opacity; transition-duration: var(--border-step), .01s; transition-timing-function: cubic-bezier(.3,.72,.18,1), linear; will-change: transform, opacity; }
+.site-controls .control-draw-border > i:nth-child(1), .site-controls .control-draw-border > i:nth-child(3) { width: 100%; height: 3px; transform: scaleX(0); }
+.site-controls .control-draw-border > i:nth-child(1) { left: 0; top: 0; transform-origin: left center; transition-delay: var(--border-delay-3), var(--border-duration); }
+.site-controls .control-draw-border > i:nth-child(2), .site-controls .control-draw-border > i:nth-child(4) { width: 3px; height: 100%; transform: scaleY(0); }
+.site-controls .control-draw-border > i:nth-child(2) { right: 0; top: 0; transform-origin: center top; transition-delay: var(--border-delay-2), var(--border-delay-3); }
+.site-controls .control-draw-border > i:nth-child(3) { right: 0; bottom: 0; transform-origin: right center; transition-delay: var(--border-delay-1), var(--border-delay-2); }
+.site-controls .control-draw-border > i:nth-child(4) { left: 0; bottom: 0; transform-origin: center bottom; transition-delay: 0s, var(--border-delay-1); }
 .site-controls .border-draw-host:is(:hover, :focus-visible, :focus-within) > .control-draw-border > i { opacity: 1; transform: none; }
-.site-controls .border-draw-host:is(:hover, :focus-visible, :focus-within) > .control-draw-border > i:nth-child(1), .site-controls .border-draw-host:is(:hover, :focus-visible, :focus-within) > .control-draw-border > i:nth-child(4) { transition-delay: 0s; }
-.site-controls .border-draw-host:is(:hover, :focus-visible, :focus-within) > .control-draw-border > i:nth-child(2), .site-controls .border-draw-host:is(:hover, :focus-visible, :focus-within) > .control-draw-border > i:nth-child(3) { transition-delay: .24s; }
+.site-controls .border-draw-host:is(:hover, :focus-visible, :focus-within) > .control-draw-border > i:nth-child(1) { transition-delay: 0s, 0s; }
+.site-controls .border-draw-host:is(:hover, :focus-visible, :focus-within) > .control-draw-border > i:nth-child(2) { transition-delay: var(--border-delay-1), var(--border-delay-1); }
+.site-controls .border-draw-host:is(:hover, :focus-visible, :focus-within) > .control-draw-border > i:nth-child(3) { transition-delay: var(--border-delay-2), var(--border-delay-2); }
+.site-controls .border-draw-host:is(:hover, :focus-visible, :focus-within) > .control-draw-border > i:nth-child(4) { transition-delay: var(--border-delay-3), var(--border-delay-3); }
 .site-controls .settings-trigger { position: fixed; z-index: 48; right: 0; top: 48%; display: grid; width: 48px; height: 48px; place-items: center; padding: 7px; overflow: hidden; border: 1px solid rgba(255,255,255,.12); border-right: 0; border-radius: 9px 0 0 9px; background: rgba(8,8,8,.72); box-shadow: -16px 12px 42px rgba(0,0,0,.42), inset 0 1px rgba(255,255,255,.04); backdrop-filter: blur(22px) saturate(115%); color: #fff; transition: border-color .3s ease, background .3s ease, box-shadow .45s ease; }
 .site-controls .settings-trigger:hover, .site-controls .settings-trigger:focus-visible, .site-controls .settings-trigger[aria-expanded="true"] { width: 48px; border-color: rgba(255,255,255,.27); background: rgba(15,15,15,.9); outline: none; }
 .settings-trigger-core { width: 32px; height: 32px; display: grid; place-items: center; border-radius: 6px; background: #fff; color: #050505; box-shadow: 0 0 20px rgba(255,255,255,.09); transition: transform .62s cubic-bezier(.18,.9,.2,1), border-radius .45s ease, box-shadow .45s ease; }
