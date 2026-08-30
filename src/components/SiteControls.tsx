@@ -192,6 +192,7 @@ export function SiteControls({ currentPage, panel, onPanelChange }: SiteControls
   const [dockRun, setDockRun] = useState(0);
   const [modalTextRuns, setModalTextRuns] = useState<Record<string, number>>({});
   const [settingsTop, setSettingsTop] = useState<number | null>(null);
+  const [isSettingsDragging, setIsSettingsDragging] = useState(false);
   const dockExpanded = panel !== null;
   const dock = settingsOpen
     ? { index: 'SYS', label: 'Settings', icon: GearSixIcon }
@@ -207,14 +208,18 @@ export function SiteControls({ currentPage, panel, onPanelChange }: SiteControls
   const modalTextRun = (key: string) => modalTextRuns[key] ?? 0;
 
   useEffect(() => {
-    const savedTop = Number(window.localStorage.getItem('tm-settings-trigger-top'));
-    if (Number.isFinite(savedTop) && savedTop > 0) setSettingsTop(clampSettingsPosition(savedTop));
-
+    const restoreFrame = window.requestAnimationFrame(() => {
+      const savedTop = Number(window.localStorage.getItem('tm-settings-trigger-top'));
+      if (Number.isFinite(savedTop) && savedTop > 0) setSettingsTop(clampSettingsPosition(savedTop));
+    });
     const keepSettingsTriggerVisible = () => {
       setSettingsTop((current) => current === null ? current : clampSettingsPosition(current));
     };
     window.addEventListener('resize', keepSettingsTriggerVisible);
-    return () => window.removeEventListener('resize', keepSettingsTriggerVisible);
+    return () => {
+      window.cancelAnimationFrame(restoreFrame);
+      window.removeEventListener('resize', keepSettingsTriggerVisible);
+    };
   }, []);
 
   const startSettingsDrag = (event: ReactPointerEvent<HTMLButtonElement>) => {
@@ -233,7 +238,10 @@ export function SiteControls({ currentPage, panel, onPanelChange }: SiteControls
     const drag = settingsDragRef.current;
     if (!drag || drag.pointerId !== event.pointerId) return;
     const distance = event.clientY - drag.startY;
-    if (Math.abs(distance) > 3) drag.dragged = true;
+    if (Math.abs(distance) > 3) {
+      drag.dragged = true;
+      setIsSettingsDragging(true);
+    }
     if (!drag.dragged) return;
     setSettingsTop(clampSettingsPosition(drag.startTop + distance));
   };
@@ -249,6 +257,7 @@ export function SiteControls({ currentPage, panel, onPanelChange }: SiteControls
       suppressSettingsClickRef.current = true;
     }
     settingsDragRef.current = null;
+    setIsSettingsDragging(false);
   };
 
   const toggleSettings = () => {
@@ -282,7 +291,7 @@ export function SiteControls({ currentPage, panel, onPanelChange }: SiteControls
   return (
     <div className="site-controls" ref={controlsRef}>
       <button
-        className={`settings-trigger border-draw-host ${settingsDragRef.current?.dragged ? 'is-dragging' : ''}`}
+        className={`settings-trigger border-draw-host ${isSettingsDragging ? 'is-dragging' : ''}`}
         style={settingsTop === null ? undefined : { '--settings-trigger-top': `${settingsTop}px` } as CSSProperties}
         onClick={toggleSettings}
         onPointerDown={startSettingsDrag}
