@@ -1,15 +1,20 @@
 import type { PortfolioProfile } from '../types/portfolio';
 
+export const resumeDownload = {
+  href: '/Tayab-Malik.pdf',
+  filename: 'Tayab-Malik-Resume.pdf',
+} as const;
+
 export const portfolio: PortfolioProfile = {
   name: 'Tayab Malik',
-  primaryRole: 'SQA Analyst',
+  primaryRole: 'SQA Engineer',
   secondaryRole: 'Software Testing / Quality Assurance',
   shortIntroduction:
-    'SQA Analyst focused on manual testing, UI and usability validation, API response testing, and reliable software delivery.',
+    'SQA Engineer focused on manual testing, automation, and API validation across AI healthcare, publishing, and fintech platforms.',
   experience: [
     {
-      role: 'SQA Analyst',
-      company: 'Tallysis',
+      role: 'SQA Engineer',
+      company: 'Tallysis.Inc',
       dates: 'December 2025 - Present',
       status: 'active',
     },

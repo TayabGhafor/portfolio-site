@@ -66,12 +66,12 @@ export function ProjectDetailClient({ project }: { project: Project }) {
       label="PROJECTS"
       wide
       showIndex={false}
-      breadcrumb={<><Link href="/">HOME</Link><i>/</i><Link href="/projects">PROJECTS</Link><i>/</i><b>{project.name.toUpperCase()}</b></>}
+      breadcrumb={<><Link href="/">HOME</Link><i>/</i><Link href="/projects?view=development">PROJECTS</Link><i>/</i><b>{project.name.toUpperCase()}</b></>}
     >
       <main className={`project-detail ${isNavigating ? 'is-navigating' : ''}`}>
         <section className="project-detail-hero" aria-labelledby="project-detail-title">
           <div className="project-detail-heading">
-            <Link href="/projects" className="project-detail-back" aria-label="Back to all projects"><ArrowUUpLeftIcon size={22} weight="light" /></Link>
+            <Link href="/projects?view=development" className="project-detail-back" aria-label="Back to development projects"><ArrowUUpLeftIcon size={22} weight="light" /></Link>
             <h1 id="project-detail-title">{project.name}</h1>
           </div>
 

@@ -13,6 +13,7 @@ import {
   type Icon,
 } from '@phosphor-icons/react';
 import { useSiteExperience } from './SiteExperienceProvider';
+import { resumeDownload } from '../content/portfolio';
 import type { AudioTrack, CoreTheme, PerformanceTier } from '../lib/sitePreferences';
 
 export type ControlPanel = 'menu' | 'settings' | null;
@@ -54,6 +55,14 @@ const audioTracks: Array<{ key: AudioTrack; label: string; meta: string }> = [
 
 export function ScrambleText({ text, run, enabled, delay = 0 }: { text: string; run: number; enabled: boolean; delay?: number }) {
   const textRef = useRef<HTMLSpanElement>(null);
+  const latestTextRef = useRef(text);
+  const animationActiveRef = useRef(false);
+
+  useEffect(() => {
+    latestTextRef.current = text;
+    const node = textRef.current;
+    if (node && !animationActiveRef.current) node.textContent = text;
+  }, [text]);
 
   useEffect(() => {
     const node = textRef.current;
@@ -61,14 +70,24 @@ export function ScrambleText({ text, run, enabled, delay = 0 }: { text: string; 
 
     let frame = 0;
     let timeout = 0;
-    node.textContent = text;
 
-    if (!enabled || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    const finish = () => {
+      animationActiveRef.current = false;
+      node.textContent = latestTextRef.current;
+    };
+
+    if (!enabled || window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      finish();
+      return;
+    }
+
+    const targetText = latestTextRef.current;
+    animationActiveRef.current = true;
 
     timeout = window.setTimeout(() => {
-      const glyphs = Array.from(text);
+      const glyphs = Array.from(targetText);
       const glyphCount = glyphs.filter((glyph) => glyph !== ' ').length;
-      const duration = 600 + Math.min(text.length * 14, 190);
+      const duration = 600 + Math.min(targetText.length * 14, 190);
       const startedAt = performance.now();
       let lastPaint = 0;
 
@@ -89,7 +108,7 @@ export function ScrambleText({ text, run, enabled, delay = 0 }: { text: string; 
         }
 
         if (progress < 1) frame = requestAnimationFrame(paint);
-        else node.textContent = text;
+        else finish();
       };
 
       frame = requestAnimationFrame(paint);
@@ -98,9 +117,9 @@ export function ScrambleText({ text, run, enabled, delay = 0 }: { text: string; 
     return () => {
       window.clearTimeout(timeout);
       cancelAnimationFrame(frame);
-      node.textContent = text;
+      if (animationActiveRef.current) finish();
     };
-  }, [delay, enabled, run, text]);
+  }, [delay, enabled, run]);
 
   return (
     <span className="scramble-text" aria-label={text}>
@@ -123,7 +142,7 @@ function MenuGlyph({ open }: { open: boolean }) {
   return <span className={`menu-glyph ${open ? 'is-open' : ''}`} aria-hidden="true"><i /><i /><i /></span>;
 }
 
-function UtilityLink({ href, eyebrow, label, icon, open, motion, delay, external = false }: {
+function UtilityLink({ href, eyebrow, label, icon, open, motion, delay, external = false, download }: {
   href: string;
   eyebrow: string;
   label: string;
@@ -132,6 +151,7 @@ function UtilityLink({ href, eyebrow, label, icon, open, motion, delay, external
   motion: boolean;
   delay: number;
   external?: boolean;
+  download?: string;
 }) {
   const [run, setRun] = useState(0);
   const animate = () => {
@@ -139,7 +159,7 @@ function UtilityLink({ href, eyebrow, label, icon, open, motion, delay, external
   };
 
   return (
-    <a className="icon-hover-scope" href={href} target={external ? '_blank' : undefined} rel={external ? 'noreferrer' : undefined} onPointerEnter={animate} onFocus={animate}>
+    <a className="icon-hover-scope" href={href} download={download} target={external ? '_blank' : undefined} rel={external ? 'noreferrer' : undefined} onPointerEnter={animate} onFocus={animate}>
       <span className="utility-icon"><MorphIcon icon={icon} size={17} /></span>
       <span className="utility-copy">
         <small><ScrambleText text={eyebrow} run={run} enabled={open && motion} delay={run === 0 ? delay : 0} /></small>
@@ -309,7 +329,7 @@ export function SiteControls({ currentPage, panel, onPanelChange }: SiteControls
         </div>
 
         <div className="menu-utility-grid">
-          <UtilityLink href="/Tayab-Malik.pdf" eyebrow="PROFILE" label="RESUME" icon={FileTextIcon} open={menuOpen} motion={motion} delay={90} external />
+          <UtilityLink href={resumeDownload.href} download={resumeDownload.filename} eyebrow="PROFILE" label="RESUME" icon={FileTextIcon} open={menuOpen} motion={motion} delay={90} />
           <UtilityLink href="https://syntaxguild.vercel.app/" eyebrow="DEV LAB" label="SYNTAX GUILD" icon={SparkleIcon} open={menuOpen} motion={motion} delay={145} external />
         </div>
 

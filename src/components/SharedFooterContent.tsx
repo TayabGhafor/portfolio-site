@@ -3,7 +3,7 @@
 import { Fragment, useState } from 'react';
 import { ScrambleText } from './SiteControls';
 
-export function SharedFooterContent({ time, motion = true }: { time: string; motion?: boolean }) {
+export function SharedFooterContent({ time, motion = true, showHoverCue = false }: { time: string; motion?: boolean; showHoverCue?: boolean }) {
   const [emailRun, setEmailRun] = useState(0);
   const [timeRun, setTimeRun] = useState(0);
   const animateEmail = () => motion && setEmailRun((value) => value + 1);
@@ -16,6 +16,7 @@ export function SharedFooterContent({ time, motion = true }: { time: string; mot
         <strong><ScrambleText text="tayabghafor@gmail.com" run={emailRun} enabled={motion && emailRun > 0} /></strong>
       </a>
       <div className="footer-scramble-scope" tabIndex={0} aria-label={`Local time Pakistan ${time}`} onPointerEnter={animateTime} onFocus={animateTime}>
+        {showHoverCue && <small className="footer-hover-cue" aria-hidden="true">HOVER: ONE PASS</small>}
         <span><ScrambleText text="Local Time" run={timeRun} enabled={motion && timeRun > 0} /></span>
         <strong><ScrambleText text={`Pakistan / PKT  ${time}`} run={timeRun} enabled={motion && timeRun > 0} delay={55} /></strong>
       </div>

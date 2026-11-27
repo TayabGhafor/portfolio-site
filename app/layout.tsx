@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from 'next';
 import { Geist, Geist_Mono, Oswald } from 'next/font/google';
 import { SiteExperienceProvider } from '../src/components/SiteExperienceProvider';
 import './globals.css';
+import './qa.css';
 
 const geist = Geist({ variable: '--font-sans', subsets: ['latin'] });
 const mono = Geist_Mono({ variable: '--font-mono', subsets: ['latin'] });
@@ -16,19 +17,19 @@ const siteUrl = process.env.NEXT_PUBLIC_SITE_URL
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
-  title: 'Tayab Malik | Frontend Developer',
-  description: 'Frontend developer building polished React, Next.js, TypeScript, and responsive SaaS interfaces.',
+  title: 'Tayab Malik | SQA Engineer',
+  description: 'SQA Engineer focused on manual testing, automation, and API validation across healthcare, publishing, and fintech platforms. Explore my QA work and development projects.',
   icons: { icon: '/favicon.png' },
   openGraph: {
-    title: 'Tayab Malik | Frontend Developer',
-    description: 'React, Next.js, TypeScript, and responsive product interfaces.',
+    title: 'Tayab Malik | SQA Engineer',
+    description: 'Manual testing, QA automation, and API validation. Quality at every step.',
     type: 'website',
-    images: [{ url: '/og.png', width: 1200, height: 630, alt: 'Tayab Malik - Frontend Developer' }],
+    images: [{ url: '/og.png', width: 1200, height: 630, alt: 'Tayab Malik portfolio' }],
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Tayab Malik | Frontend Developer',
-    description: 'React, Next.js, TypeScript, and responsive product interfaces.',
+    title: 'Tayab Malik | SQA Engineer',
+    description: 'Manual testing, QA automation, and API validation. Quality at every step.',
     images: ['/og.png'],
   },
 };

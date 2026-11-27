@@ -1,12 +1,14 @@
 'use client';
 
-import { useCallback, useEffect, useRef, useState, type CSSProperties, type PointerEvent as ReactPointerEvent } from 'react';
+import { useCallback, useEffect, useRef, useState, useSyncExternalStore, type CSSProperties, type PointerEvent as ReactPointerEvent } from 'react';
 import dynamic from 'next/dynamic';
+import Link from 'next/link';
+import { ArrowUpRightIcon } from '@phosphor-icons/react';
 import { IdentityMark } from '../src/components/IdentityMark';
 import { SharedFooterContent } from '../src/components/SharedFooterContent';
-import { ScrambleText, SiteControls, type ControlPanel } from '../src/components/SiteControls';
+import { SiteControls, type ControlPanel } from '../src/components/SiteControls';
 import { useSiteExperience } from '../src/components/SiteExperienceProvider';
-import { projects } from '../src/content/projects';
+import { qaProjects } from '../src/content/qaProjects';
 import type { PerformanceTier } from '../src/lib/sitePreferences';
 
 const ParticlePortrait = dynamic(
@@ -15,13 +17,27 @@ const ParticlePortrait = dynamic(
 );
 
 const homeStatusItems = [
-  ['[ ROLE ]', 'FRONTEND DEVELOPER'],
-  ['[ MODE ]', 'CREATIVE ENGINEERING'],
-  ['[ SYS ]', 'REACT / NEXT.JS'],
-  ['[ STATUS ]', 'AVAILABLE'],
+  ['[ ROLE ]', 'SQA ENGINEER'],
+  ['[ FOCUS ]', 'MANUAL / AUTOMATION / API TESTING'],
+  ['[ TOOLS ]', 'PLAYWRIGHT / CYPRESS / SELENIUM'],
+  ['[ DOMAINS ]', 'HEALTHCARE / PUBLISHING / FINTECH'],
+] as const;
+
+const heroRoles = [
+  { text: 'SQA\nENGINEER', label: 'SQA Engineer' },
+  { text: 'QA AUTOMATION\nENGINEER', label: 'QA Automation Engineer' },
+  { text: 'SOFTWARE\nTESTER', label: 'Software Tester' },
 ] as const;
 
 const loaderExitDuration = 1320;
+
+const subscribeReducedMotion = (notify: () => void) => {
+  const query = window.matchMedia('(prefers-reduced-motion: reduce)');
+  query.addEventListener('change', notify);
+  return () => query.removeEventListener('change', notify);
+};
+const readReducedMotion = () => window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+const serverReducedMotion = () => true;
 
 function Loader({ progress, ready, leaving, audioEnabled, tier, onToggleAudio, onTierChange, onEnter }: { progress: number; ready: boolean; leaving: boolean; audioEnabled: boolean; tier: PerformanceTier; onToggleAudio: () => void; onTierChange: (tier: PerformanceTier) => void; onEnter: () => void }) {
   const loadPercent = Math.min(100, Math.round(progress));
@@ -70,7 +86,11 @@ export default function Home() {
   const [sceneFallbackReady, setSceneFallbackReady] = useState(false);
   const [entered, setEntered] = useState(false);
   const [leaving, setLeaving] = useState(false);
-  const [roleRun, setRoleRun] = useState(0);
+  const [roleIndex, setRoleIndex] = useState(0);
+  const [typedRoleLength, setTypedRoleLength] = useState(0);
+  const reducedMotion = useSyncExternalStore(subscribeReducedMotion, readReducedMotion, serverReducedMotion);
+  const animateRoles = motion && !reducedMotion;
+  const heroRole = heroRoles[animateRoles ? roleIndex : 0];
 
   useEffect(() => {
     loadStartRef.current = performance.now();
@@ -128,6 +148,39 @@ export default function Home() {
     return () => window.removeEventListener('keydown', handleKey);
   }, [displayProgress, entered, leaving, motion]);
 
+  useEffect(() => {
+    if (!animateRoles || !entered) return;
+    let typingTimer = 0;
+    let roleTimer = 0;
+    let currentRole = 0;
+
+    const beginRole = () => {
+      const role = heroRoles[currentRole];
+      setRoleIndex(currentRole);
+      setTypedRoleLength(0);
+
+      let characterCount = 0;
+      typingTimer = window.setInterval(() => {
+        characterCount += 1;
+        setTypedRoleLength(characterCount);
+        if (characterCount >= role.text.length) {
+          window.clearInterval(typingTimer);
+          roleTimer = window.setTimeout(() => {
+            currentRole = (currentRole + 1) % heroRoles.length;
+            beginRole();
+          }, 3000);
+        }
+      }, 62);
+    };
+
+    // Start with the hero entrance, so the first visible role is always SQA.
+    roleTimer = window.setTimeout(beginRole, 130);
+    return () => {
+      window.clearInterval(typingTimer);
+      window.clearTimeout(roleTimer);
+    };
+  }, [animateRoles, entered]);
+
   const handleSceneProgress = useCallback((progress: number) => setAssetProgress(progress), []);
   const handleSceneReady = useCallback(() => setModelReady(true), []);
 
@@ -178,21 +231,17 @@ export default function Home() {
           </div>
         </div>
 
-        <section id="content" className="hero-copy">
-          <span className="hero-kicker"><i /> PORTFOLIO / INDEX_01</span>
-          <h1
-            aria-label="Frontend Developer"
-            tabIndex={0}
-            onPointerEnter={() => motion && setRoleRun((value) => value + 1)}
-            onFocus={() => motion && setRoleRun((value) => value + 1)}
-          >
-            <span className="hero-role-line"><ScrambleText text="FRONTEND" run={roleRun} enabled={motion && roleRun > 0} /></span>
-            <span className="hero-role-line"><ScrambleText text="DEVELOPER" run={roleRun} enabled={motion && roleRun > 0} delay={75} /></span>
+        <section id="content" className={`hero-copy ${roleIndex === 0 ? '' : 'has-alternate-role'}`}>
+          <span className="hero-kicker"><i /> TAYAB MALIK / SOFTWARE QUALITY</span>
+          <h1 aria-label={heroRole.label}>
+            <span className="hero-typewriter-text" aria-hidden="true">{animateRoles ? heroRole.text.slice(0, typedRoleLength) : heroRole.text}</span>
+            <span className="hero-typewriter-cursor" aria-hidden="true">_</span>
           </h1>
           <div className="info-log">
             <i aria-hidden="true" />
-            <p><b>[ INFO_LOG ]</b>ENGINEERING RESPONSIVE INTERFACES<br />FOR PRODUCTS BUILT TO SCALE.</p>
+            <p><b>[ QUALITY AT EVERY STEP ]</b>FINDING RISKS EARLY.<br />HELPING TEAMS RELEASE<br />WITH CONFIDENCE.</p>
           </div>
+          <Link href="/projects" className="hero-work-link">Explore QA work <ArrowUpRightIcon size={16} aria-hidden="true" /></Link>
         </section>
 
         <section className="face-stage">
@@ -203,15 +252,15 @@ export default function Home() {
           <span className="face-coordinate coordinate-right">POINTER_REACTIVE</span>
         </section>
 
-        <section className="developer-stats" aria-label="Developer statistics">
-          <div className="stats-title"><span><i /> PROFILE STATUS</span><b>ACTIVE</b></div>
-          <div className="stat-row"><span>PROJECTS</span><strong>{String(projects.length).padStart(2, '0')}</strong><i><em style={{ '--value': '92%' } as CSSProperties} /></i></div>
-          <div className="stat-row"><span>PRIMARY FOCUS</span><strong>FE</strong><i><em style={{ '--value': '84%' } as CSSProperties} /></i></div>
-          <p>&gt; ACTIVE_STACK: REACT_NEXT_TYPESCRIPT<br />&gt; INTERFACE_MODE: RESPONSIVE<br />&gt; PRODUCT_RANGE: SAAS_COMMERCE_SOCIAL<br />&gt; RENDER_TIER: [{tier.toUpperCase()}]</p>
+        <section className="developer-stats" aria-label="Software quality experience">
+          <div className="stats-title"><span><i /> PRIMARY FOCUS</span><b>SQA</b></div>
+          <div className="stat-row"><span>TEST CASES</span><strong>100+</strong><i><em style={{ '--value': '100%' } as CSSProperties} /></i></div>
+          <div className="stat-row"><span>QA PROJECTS</span><strong>{String(qaProjects.length).padStart(2, '0')}</strong><i><em style={{ '--value': '100%' } as CSSProperties} /></i></div>
+          <p>&gt; MANUAL / AUTOMATION / API<br />&gt; PLAYWRIGHT / CYPRESS / SELENIUM<br />&gt; AI PLATFORMS / FINTECH<br /><span className="home-secondary-focus">ALSO: FRONTEND &amp; META ADS</span></p>
         </section>
 
         <footer className="shell-footer">
-          <SharedFooterContent time={time} motion={motion} />
+          <SharedFooterContent time={time} motion={motion} showHoverCue />
         </footer>
 
         <SiteControls currentPage="home" panel={panel} onPanelChange={setPanel} />
